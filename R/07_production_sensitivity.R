@@ -243,58 +243,9 @@ f7c <- ggplot(inter, aes(block_start, interaction)) +
        x = NULL, y = "g/yr of surplus production") + theme_wh
 
 for (nm in c("f7a", "f7b", "f7c"))
-  ggsave(file.path(OUT, "figures", paste0("07_", nm, ".png")), get(nm),
-         width = 9.5, height = 5, dpi = 150)
-# =============================================================================
-# FIGURES2
-# =============================================================================
-for(siteIN in SITES){
-f7a <- prod %>% filter(pathway == "both") %>%filter(site==siteIN)%>%mutate(yminIN=100 * d_biomass_lo / (abs(d_biomass_lo + 1e-9) * abs(d_prod_pct)),
-                                                                           ymaxIN=d_prod_pct)%>%
-  ggplot(aes(block_start, d_prod_pct)) +
-  geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
-  # geom_ribbon(aes(ymin = yminIN,
-                  # ymax = ymaxIN), alpha = 0.1) +
-  geom_col(aes(fill = d_prod_pct > 0), width = BLOCK) +
-  scale_fill_manual(values = c("TRUE" = PAL[["blue"]], "FALSE" = PAL[["red"]]), guide = "none") +
-  facet_wrap(~ site) +
-  scale_x_continuous(breaks = MON_B, labels = MON_L) +
-  labs(title = paste0("Figure 7a. Effect on total population production of adding ", DELTA,
-                      " cfs for ", BLOCK, " days"),
-       subtitle = paste0("Percent change in mean annual surplus production, both pathways, common random numbers.\n",
-                         "This is the whole-population answer: it includes the compounding of survival into future\n",
-                         "spawning stock, which adding the two curves separately would miss."),
-       x = NULL, y = "% change in surplus production") + theme_wh
+  save_fig(paste0("07_", nm), get(nm),
+           width = 9.5, height = 5, dpi = 150)
 
-f7b <- prod %>%filter(site==siteIN)%>%
-  ggplot(aes(block_start, d_prod_pct, colour = pathway)) +
-  geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
-  geom_line(linewidth = .8) +
-  scale_colour_manual(values = c(both = PAL[["ink"]], recruitment = PAL[["blue"]],
-                                 survival = PAL[["green"]]), name = NULL) +
-  facet_wrap(~ site, scales = "free_y") +
-  scale_x_continuous(breaks = MON_B, labels = MON_L) +
-  labs(title = "Figure 7b. Which pathway carries the effect, and when?",
-       subtitle = paste0("If recruitment and survival peak at different times of year, the two vital rates are\n",
-                         "flow-limited in different seasons -- which life stage is the bottleneck, and when.\n",
-                         "That divergence is the core ecological result (RQ2)."),
-       x = NULL, y = "% change in surplus production") +
-  theme_wh + theme(legend.position = "bottom")
-
-f7c <- ggplot(subset(inter,site==siteIN), aes(block_start, interaction)) +
-  geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
-  geom_col(fill = PAL[["gold"]], width = BLOCK) +
-  facet_wrap(~ site, scales = "free_y") +
-  scale_x_continuous(breaks = MON_B, labels = MON_L) +
-  labs(title = "Figure 7c. The interaction between pathways",
-       subtitle = paste0("both - recruitment - survival. Non-zero means the pathways compound and cannot be\n",
-                         "reported as additive contributions. Positive = the whole exceeds the sum of the parts."),
-       x = NULL, y = "g/yr of surplus production") + theme_wh
-
-for (nm in c("f7a", "f7b", "f7c"))
-  ggsave(file.path(OUT, "figures", paste0("07_", nm,"__",gsub(".", "_", siteIN, fixed = TRUE),".png")), get(nm),
-         width = 9.5, height = 5, dpi = 150)
-}
 saveRDS(list(production = prod, interaction = inter,
              settings = list(block_days = BLOCK, n_years = N_YEARS, burn_in = BURN,
                              delta_cfs = DELTA, n_draws = N_DRAW),

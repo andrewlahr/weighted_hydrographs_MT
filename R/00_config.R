@@ -93,6 +93,120 @@ path_of <- function(p) if (grepl("^(/|[A-Za-z]:)", p)) p else here::here(p)
 #
 # MON_B / MON_L put month names on the CALENDAR day-of-year axis (1 = 1 Jan).
 # =============================================================================
+
+# =============================================================================
+# SAVE A FIGURE: ALL-SITES VERSION PLUS ONE PER SITE
+# -----------------------------------------------------------------------------
+# Per-site report pages call FIG("03_f3a", SITE_FOCUS), which looks for
+#   figures/03_f3a__Madison_Norris.png
+# and falls back to figures/03_f3a.png when that is absent. That fallback is why
+# the site pages were quietly showing faceted all-site plots instead of failing.
+#
+# Writing a site-suffixed COPY of the faceted plot would not fix it -- the image
+# would still show every site. The plot DATA has to be filtered.
+#
+# Done generically here so ~40 individual ggplot calls did not need rewriting: a
+# ggplot keeps its data in p$data, and any layer given its own data keeps it in
+# p$layers[[i]]$data. Filter both to one site, drop the site facet (one panel is
+# not a facet), and save.
+#
+# A plot with no `site` column anywhere is a genuine all-sites figure -- the
+# among-site synthesis, the explain figures -- and is saved once, unfiltered.
+# =============================================================================
+save_fig <- function(name, plot, width = 9.5, height = 5.2, dpi = 150,
+                     sites = NULL, dir = file.path(OUT, "figures")) {
+  if (is.null(plot)) return(invisible(NULL))
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+  ggplot2::ggsave(file.path(dir, paste0(name, ".png")), plot,
+                  width = width, height = height, dpi = dpi)
+
+  has_site <- function(d) is.data.frame(d) && "site" %in% names(d)
+  present <- character(0)
+  if (has_site(plot$data)) present <- unique(as.character(plot$data$site))
+  for (ly in plot$layers)
+    if (has_site(ly$data)) present <- union(present, as.character(ly$data$site))
+  if (!length(present)) return(invisible(NULL))          # genuinely all-sites
+
+  for (s in (if (is.null(sites)) present else sites)) {
+    ps <- plot
+    if (has_site(ps$data))
+      ps$data <- ps$data[as.character(ps$data$site) == s, , drop = FALSE]
+    for (i in seq_along(ps$layers)) {
+      ld <- ps$layers[[i]]$data
+      if (has_site(ld))
+        ps$layers[[i]]$data <- ld[as.character(ld$site) == s, , drop = FALSE]
+    }
+    n_main <- if (is.data.frame(ps$data)) nrow(ps$data) else 0L
+    n_lyr  <- sum(vapply(ps$layers,
+                 function(l) if (has_site(l$data)) nrow(l$data) else 0L, numeric(1)))
+    if (n_main == 0 && n_lyr == 0) next                  # site absent from this figure
+
+    # Drop a site facet; keep a facet on anything else (process, scenario).
+    fv <- tryCatch(names(ps$facet$params$facets), error = function(e) NULL)
+    fr <- tryCatch(names(ps$facet$params$rows),   error = function(e) NULL)
+    fc <- tryCatch(names(ps$facet$params$cols),   error = function(e) NULL)
+    if (identical(fv, "site") ||
+        (identical(fr, "site") && !length(fc)) ||
+        (identical(fc, "site") && !length(fr)))
+      ps <- ps + ggplot2::facet_null()
+
+    # A filtered plot inherits a title written for the all-sites version
+    # ("every site's beta(d)"). Append the site so the per-site page is not
+    # captioned with a claim about sites it does not show.
+    ttl <- tryCatch(ps$labels$title, error = function(e) NULL)
+    if (!is.null(ttl) && nzchar(ttl) && !grepl(s, ttl, fixed = TRUE))
+      ps <- ps + ggplot2::labs(title = paste0(ttl, " — ", s))
+
+    ggplot2::ggsave(
+      file.path(dir, paste0(name, "__", gsub("[^A-Za-z0-9]", "_", s), ".png")),
+      ps, width = width, height = height, dpi = dpi)
+  }
+
+  # Record what was split, so RUN_ALL.R can report which figures are all-sites
+  # only. Without this the gap is invisible until a page renders wrong.
+  if (!exists(".FIG_INDEX", envir = globalenv()))
+    assign(".FIG_INDEX", list(), envir = globalenv())
+  idx <- get(".FIG_INDEX", envir = globalenv())
+  idx[[name]] <- present
+  assign(".FIG_INDEX", idx, envir = globalenv())
+
+  invisible(present)
+}
+
+# =============================================================================
+# fig_report() -- which figures exist per site, and which are all-sites only
+# -----------------------------------------------------------------------------
+# A figure whose data carries no `site` column cannot be split, so the per-site
+# pages will show a gap for it. That is correct behaviour, but it must be
+# VISIBLE: the alternative is discovering it when a collaborator opens the site.
+# Called at the end of RUN_ALL.R.
+# =============================================================================
+fig_report <- function(sites = SITES) {
+  idx <- if (exists(".FIG_INDEX", envir = globalenv()))
+    get(".FIG_INDEX", envir = globalenv()) else list()
+  if (!length(idx)) { message("  (no figures recorded this run)"); return(invisible(NULL)) }
+
+  split_ok <- names(idx)[vapply(idx, length, integer(1)) > 0]
+  all_only <- setdiff(names(idx), split_ok)
+
+  message(sprintf("\n  figures: %d produced | %d split per site | %d all-sites only",
+                  length(idx), length(split_ok), length(all_only)))
+  if (length(all_only)) {
+    message("  all-sites only (no `site` column in the plot data):")
+    for (n in all_only) message("    ", n)
+    message("  These will show a gap on per-site pages. If one of them SHOULD be")
+    message("  per-site, give its data a `site` column; otherwise reference it")
+    message("  only from the all-sites page.")
+  }
+  # which sites are missing from figures that DID split
+  for (n in split_ok) {
+    miss <- setdiff(sites, idx[[n]])
+    if (length(miss))
+      message("  ", n, ": no data for ", paste(miss, collapse = ", "))
+  }
+  invisible(idx)
+}
+
 PAL <- c(blue = "#2c6fa8", red = "#b5462f", gold = "#c9a227",
          green = "#4a7c4e", ink = "#16202a", mute = "#7a8590")
 

@@ -40,8 +40,8 @@ BS   <- if (file.exists(file.path(OUT, "models", "beta_survival.rds")))
           readRDS(file.path(OUT, "models", "beta_survival.rds")) else NULL
 FLOW <- readRDS(file.path(OUT, "models", "flow.rds"))
 GATE <- readRDS(file.path(OUT, "models", "gate.rds"))$gate
-for(site in CFG$sites$bor){
-# site <- SITES[1]
+
+site <- SITES[1]
 FS <- FLOW$sites[[site]]
 bor_path <- path_of(CFG$paths$bor_flow)
 if (!file.exists(bor_path))
@@ -211,9 +211,8 @@ f8c <- attrib %>%
   theme_wh + theme(legend.position = "bottom")
 
 for (nm in c("f8a", "f8b", "f8c"))
-  ggsave(file.path(OUT, "figures", paste0("08_", nm, "__",gsub(".", "_", site, fixed = TRUE),".png")), get(nm),
+  save_fig(paste0("08_", nm), get(nm),
          width = 10, height = if (nm == "f8c") 6 else 5.2, dpi = 150)
-}
 
 saveRDS(list(scenario_years = sy, effects = eff, attribution = attrib,
              x_hist = x_hist, gate_passed = all(passes, na.rm = TRUE), run = Sys.time()),

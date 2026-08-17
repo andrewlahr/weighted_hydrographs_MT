@@ -235,7 +235,7 @@ positive β_R during incubation implicates redd dewatering; negative during runo
 implicates fry displacement. Divergence between β_R(t) and β_S(t) is itself the
 finding: it says the two vital rates are limited at different times of year, which
 has direct implications for which life stage is the bottleneck. Script 09,
-`manuscript/results_by_site.Rmd`.
+`manuscript/_site_template.Rmd`.
 
 **RQ3 — BoR forecasted flows.**
 Outputs: η per scenario computed as $\sum_t \beta(t) x_{\text{scen}}(t)$; the

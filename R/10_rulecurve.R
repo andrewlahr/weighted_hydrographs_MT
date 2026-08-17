@@ -40,8 +40,7 @@ source(here::here("R", "00_config.R"))
 suppressPackageStartupMessages({ library(tidyr); library(purrr); library(lubridate) })
 
 RC   <- CFG$rulecurve
-for(site in CFG$sites$bor){
-# site <- CFG$sites$bor[1]
+site <- SITES[[1]]
 hdr  <- function(x) message("\n", strrep("=", 72), "\n  ", x, "\n", strrep("=", 72))
 
 if (length(SITES) > 1)
@@ -296,7 +295,7 @@ if (!file.exists(bor_path))
   stop("BoR flow file not found:\n  ", bor_path,
        "\n  Adjust rulecurve_bor_path() in config.R.")
 
-bor <- readRDS(bor_path)%>%bind_rows()
+bor <- readRDS(bor_path)
 flow_col <- intersect(c("Flow_cfs", "Discharge", "flow"), names(bor))[1]
 if (is.na(flow_col)) stop("No recognisable flow column in the BoR file.")
 
@@ -417,7 +416,7 @@ f10a <- ggplot(curve_df, aes(X, Y, colour = level)) +
   scale_colour_manual(values = c(low = PAL[["red"]], base = PAL[["ink"]], high = PAL[["blue"]]),
                       labels = sprintf("%s (z = %+.2f)", names(z_show), z_show), name = NULL) +
   coord_cartesian(xlim = c(0, max(res$K, na.rm = TRUE) * 1.6),
-                  ylim = c(0, max(res$K, na.rm = TRUE) * 2.5)) +
+                  ylim = c(0, max(res$K, na.rm = TRUE) * 1.6)) +
   labs(title = paste0("Figure 10a. The rule curve at three summer flows — ", site),
        subtitle = paste0("Dashed = the 1:1 replacement line. K is where a curve crosses it going down;\n",
                          "MS is the largest vertical gap between the curve and the line.\n",
@@ -458,8 +457,7 @@ f10c <- ggplot(res, aes(Q, K)) +
   theme_wh
 
 for (nm in c("f10a", "f10b", "f10c"))
-  ggsave(file.path(OUT, "figures", paste0("10_", sub("^f10", "", nm),"__",gsub(".", "_", site, fixed = TRUE),".png")),
-         get(nm), width = 9.5, height = 5.4, dpi = 150)
+  save_fig(paste0("10_", sub("^f10", "", nm)), get(nm), width = 9.5, height = 5.4, dpi = 150)
 
 
 # =============================================================================
@@ -474,8 +472,8 @@ saveRDS(list(site = site, settings = RC, export = EX[c("Season","global","RecLag
 
              scale_check = scale_ok, n_draws = M, run = Sys.time()),
         file.path(OUT, "models", "rulecurve.rds"))
-write.csv(res,         file.path(OUT, "tables", "rulecurve_by_year__",gsub(".", "_", site, fixed = TRUE),".csv"), row.names = FALSE)
-write.csv(summary_tbl, file.path(OUT, "tables", "rulecurve_summary__",gsub(".", "_", site, fixed = TRUE),".csv"), row.names = FALSE)
+write.csv(res,         file.path(OUT, "tables", "rulecurve_by_year.csv"), row.names = FALSE)
+write.csv(summary_tbl, file.path(OUT, "tables", "rulecurve_summary.csv"), row.names = FALSE)
 
 message("\n  wrote rulecurve.rds + 2 tables + 3 figures")
 message("\n  READ BEFORE QUOTING:")
@@ -492,5 +490,4 @@ if (!all(terms_present)) {
                   paste(names(which(!terms_present)), collapse = ", ")))
 } else {
   message("")
-}
 }

@@ -301,7 +301,7 @@ if (length(BR$fits) >= 2) {
 }
 
 for (nm in names(DIAG))
-  ggsave(file.path(OUT, "figures", paste0("fpc_diag_", nm, ".png")), DIAG[[nm]],
+  save_fig(paste0("fpc_diag_", nm), DIAG[[nm]],
          width = 9.5, height = 5, dpi = 150)
 
 message("\n  Diagnostics written. See docs/notes/FPC_reviewer_critiques.md for how to")

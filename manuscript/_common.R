@@ -122,20 +122,46 @@ doy_date <- function(d) {
 # <name>__<site>.png) it is preferred; otherwise the faceted all-site figure is
 # used. That lets the plotting scripts move to per-site output incrementally
 # without the pages changing.
+# =============================================================================
+# FIG(name, site)
+# -----------------------------------------------------------------------------
+# On a PER-SITE page, `site` is supplied and the ONLY acceptable image is the
+# site-specific one. Falling back to the all-sites figure was the bug behind
+# "every site page shows faceted results for all sites": one missing file and
+# the page silently showed the wrong thing, looking entirely plausible.
+#
+# So: when `site` is given and the per-site file is absent, say so and show
+# nothing. A visible gap is recoverable; a wrong figure that looks right is not.
+#
+# The all-sites pages call FIG(name) with no site and get the faceted figure,
+# which is correct for them.
+# =============================================================================
 FIG <- function(name, site = NULL) {
+  sfx <- function(s) paste0(name, "__", gsub("[^A-Za-z0-9]", "_", s), ".png")
+
   if (!is.null(site)) {
-    per <- file.path("figures", paste0(name, "__", gsub("[^A-Za-z0-9]", "_", site), ".png"))
-    if (file.exists(per)) return(knitr::include_graphics(per))
+    rel <- file.path("figures", sfx(site))
+    if (file.exists(rel)) return(knitr::include_graphics(rel))
+    abs <- file.path(OUTD, "figures", sfx(site))
+    if (file.exists(abs)) return(knitr::include_graphics(abs))
+    cat(sprintf("\n> **No per-site figure for `%s` at %s.** The all-sites version
+exists but is not shown here: on a single-site page it would be misleading.
+Re-run the script that produces `%s`; if the underlying plot has no `site`
+column, `save_fig()` cannot split it and the figure belongs on the all-sites
+page instead.\n\n", name, site, name))
+    return(invisible(NULL))
   }
-  rel <- file.path("figures", paste0(name, ".png"))     # relative to the .Rmd
+
+  rel <- file.path("figures", paste0(name, ".png"))
   if (file.exists(rel)) return(knitr::include_graphics(rel))
   abs <- file.path(OUTD, "figures", paste0(name, ".png"))
   if (file.exists(abs)) {
-    warning(sprintf("FIG('%s') fell back to an absolute path. Fine for local knitting; ",
-                    name), "run render_site.R before publishing.", call. = FALSE)
+    warning(sprintf("FIG('%s') fell back to an absolute path; run render_site.R before publishing.",
+                    name), call. = FALSE)
     return(knitr::include_graphics(abs))
   }
   cat("\n> **Figure not available** — run the corresponding script.\n\n")
+  invisible(NULL)
 }
 
 # Calendar day-of-year axis. MUST match MON_B / MON_L in R/00_config.R, or the

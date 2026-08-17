@@ -98,6 +98,7 @@ Run in order. Each saves before the next begins, so they can be run one at a tim
 
 | File | Purpose |
 |---|---|
+| `WORKFLOW.md` | **Start here.** What to run, in what order, what to check. |
 | `PROPOSAL_02_daily_estimand.md` | **Read before the code.** Why β(t) is not the curve a water manager needs. |
 | `GITHUB_PAGES.md` | Publishing the website, step by step. |
 | `notes/FILE_MAP.md` | This file. |

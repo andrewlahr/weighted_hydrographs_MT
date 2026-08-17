@@ -271,8 +271,8 @@ if (!is.null(BS)) for (s in names(BS$fits)) {
 }
 
 for (nm in names(figs))
-  ggsave(file.path(OUT, "figures", paste0(nm, ".png")), figs[[nm]],
-         width = 10, height = 5.6, dpi = 200)
+  save_fig(nm, figs[[nm]],
+           width = 10, height = 5.6, dpi = 200)
 
 write.csv(bind_rows(STATS), file.path(OUT, "tables", "derived_stats.csv"), row.names = FALSE)
 message("\n  wrote ", length(figs), " presentation figures and derived_stats.csv")

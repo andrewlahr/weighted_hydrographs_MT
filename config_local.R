@@ -32,9 +32,12 @@
 # site out to drop it from a run without losing the entry.
 # =============================================================================
 CFG$sites$active <- c(
-  "Smith.EagleCreek", "Ruby.Vigilante", "Missouri.Craig",
-  "Missouri.Cascade", "Madison.Norris", "BigHole.Melrose",
-  "Beaverhead.Hildreth", "Beaverhead.FishAndGame","Bighorn.MallardsLanding",'Bighorn.Bighorn','Madison.Varney','Madison.PineButte'
+  "Madison.Norris",
+  "Missouri.Cascade",
+  "Missouri.Craig",
+  "BigHole.Melrose",
+  "Beaverhead.FishAndGame",
+  "Beaverhead.Hildreth"
 )
 
 
@@ -52,29 +55,6 @@ CFG$sites$active <- c(
 # vector rather than a switch(), so an unconfigured site can be detected and
 # reported instead of silently taking a default.
 # =============================================================================
-# 
-# flow_lag <- function(site) {
-#   ss <- gsub(".", "", site, fixed = TRUE)
-#   
-#   switch(site,
-#          
-#          "Jefferson.Waterloo" =
-#            d<-read.csv(file.path("../Jefferson/JAGS_PVA/ModelOutput/csvs_quadratic",
-#                      paste0(ss, "_LLallParams_resids.csv"))),
-#          
-#          # ---- default: every other site -----------------------------------------
-#          d<-read.csv(file.path("../LL/JAGS_PVA/ModelOutput/csvs_quadratic",
-#                    paste0(ss, "allParams_update2026_02.csv")))
-#   )
-#   if (site == "BigHole.Melrose") {
-#     stopifnot(all(c("SummerLag", "WinterLag") %in% names(d)))
-#     d[d$SummerLag == 2 & d$WinterLag == 2, , drop = FALSE]%>%filter(!is.na(SummerLag))%>%pull(SummerLag)%>%unique()
-#   } else {
-#     stopifnot("model" %in% names(d))
-#     d[grepl("SUMMERQ|Global", d$model), , drop = FALSE]%>%filter(!is.na(SummerLag))%>%pull(SummerLag)%>%unique()
-#   }
-# }
-# 
 
 FLOW_LAG_BY_SITE <- c(
   "Madison.Norris"         = 3L,
@@ -90,6 +70,8 @@ FLOW_LAG_BY_SITE <- c(
   "Madison.Varney" = 2L,
   "Madison.Pinebutte" = 2L
 )
+
+
 
 
 # =============================================================================

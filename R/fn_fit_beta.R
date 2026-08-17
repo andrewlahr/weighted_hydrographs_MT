@@ -34,7 +34,7 @@ suppressPackageStartupMessages(library(mgcv))
 #' Fit beta(t) and return the curve WITH its full 365 x 365 covariance
 #'
 #' @param y          length-n response
-#' @param Curves     [n x 365] standardized daily anomalies, water-year axis
+#' @param Curves     [n x 365] standardized daily anomalies, calendar-year axis
 #' @param estimator  "penalized" or "fpc"
 #' @param k,sp       basis dimension and smoothing parameter (penalized only)
 #' @param fpc_rule   how components are chosen (fpc only):
@@ -65,7 +65,7 @@ fit_beta_curve <- function(y, Curves, estimator = c("penalized", "fpc"),
 #' Fit beta(t) once and return the curve WITH its full covariance
 #'
 #' @param y       length-n response
-#' @param Curves  [n x 365] standardized daily anomalies, water-year axis
+#' @param Curves  [n x 365] standardized daily anomalies, calendar-year axis
 #' @param k       spline basis dimension (upper bound on flexibility)
 #' @param sp      smoothing parameter. NULL = estimate by REML.
 #' @param extra   optional matrix of scalar covariates (e.g. stock)
@@ -154,10 +154,8 @@ fit_beta_curve <- function(y, Curves, estimator = c("penalized", "fpc"),
 # leave-one-out and collapsing under blocked CV.
 # =============================================================================
 .fit_beta_fpc <- function(y, Curves, rule = c("cumulative", "individual", "both"),
-                          target_var = 90, min_var = 5, k_max = 10L, extra = NULL) {
-  # y<-y_bar
-  # rule<-'both'
-  # rule <- match.arg(rule)
+                          target_var = 90, min_var = 0, k_max = 10L, extra = NULL) {
+  rule <- match.arg(rule)
   n <- length(y)
   stopifnot(nrow(Curves) == n, ncol(Curves) == 365L)
 
@@ -226,13 +224,6 @@ fit_beta_curve <- function(y, Curves, estimator = c("penalized", "fpc"),
   if (!is.null(extra)) d <- cbind(d, as.data.frame(extra))
   m <- stats::lm(y ~ ., data = d)
 
-  m_sum<-summary(m)
-  m_coef<-m_sum$coefficients
-  good_coef<-names(which(m_coef[,4]<0.1))[-1]
-  
-  d2<-d[which(colnames(d)%in%c(good_coef,'y'))]
-  m2 <- stats::lm(y ~ ., data = d2)
-  summary(m2)
   ii  <- match(colnames(Z), names(stats::coef(m)))
   Phi <- pc$rotation[, seq_len(K), drop = FALSE]        # [365 x K] eigenfunctions
   b   <- stats::coef(m)[ii]

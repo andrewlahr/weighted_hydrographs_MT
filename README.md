@@ -28,6 +28,8 @@ extrapolation flagged explicitly.
 
 ## Quick start
 
+Full step-by-step, including what to check at each stop: **[`docs/WORKFLOW.md`](docs/WORKFLOW.md)**.
+
 ```r
 source("check_setup.R")                             # verify the project loads
 source("R/00_config.R")                             # every line must say OK

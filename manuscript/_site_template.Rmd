@@ -79,6 +79,52 @@ if (is.null(GATE)) {
 }
 ```
 
+# 0. What went into the model
+
+Before any result: the abundance series the response was built from, and the
+hydrograph it was regressed on. If either looks wrong here, nothing downstream
+is worth reading.
+
+## 0.1 The response
+
+```{r f1b}
+FIG("01_f1b", SITE_FOCUS)
+```
+
+```{r f1a}
+FIG("01_f1a", SITE_FOCUS)
+```
+
+Blue is variation between years, which flow could explain. Red is spread across
+posterior draws — the IPM saying it does not know. **If red is comparable to
+blue, the ceiling on any flow analysis at this site is low**, and that is worth
+knowing before reading a coefficient.
+
+```{r f1c}
+FIG("01_f1c", SITE_FOCUS)
+```
+
+## 0.2 The hydrograph
+
+```{r f2a}
+FIG("02_f2a", SITE_FOCUS)
+```
+
+```{r f2d}
+FIG("02_f2d", SITE_FOCUS)
+```
+
+```{r f2b}
+FIG("02_f2b", SITE_FOCUS)
+```
+
+```{r f2c}
+FIG("02_f2c", SITE_FOCUS)
+```
+
+Where two seasonal predictors are strongly correlated the model cannot separate
+their effects, and their individual coefficients should not be read apart.
+
 # 1. What was estimated
 
 For every day of the calendar year, two curves per site:
@@ -93,7 +139,7 @@ and one derived curve:
 
 ```{r gate-table}
 if (!is.null(GATE))
-  GATE %>%
+  GATE %>% filter(site == SITE_FOCUS) %>%
     transmute(Process = process, Model = ifelse(startsWith(form, "beta"),
                              sub("^beta:", "daily β(d), ", form), "4 windows"),
               Years = n_years, `Eff. df` = round(edf, 1),
@@ -102,6 +148,26 @@ if (!is.null(GATE))
               Passes = ifelse(passes, "yes", "no")) %>%
     kable(caption = "Validation. Blocked cross-validation is the honest number; in-sample is arithmetic, not evidence. Leave-one-out is shown so the inflation from flow autocorrelation is visible.")
 ```
+
+## 1.0 Does it survive validation?
+
+```{r f5c}
+FIG("05_f5c", SITE_FOCUS)
+```
+
+Each test left to right is harder. The drop from in-sample to blocked is the
+optimism that would otherwise have been published.
+
+```{r f5a}
+FIG("05_f5a", SITE_FOCUS)
+```
+
+```{r f5b}
+FIG("05_f5b", SITE_FOCUS)
+```
+
+The permutation null is **not centred on zero**. That is precisely why a positive
+cross-validated R² is not, on its own, evidence.
 
 ## 1.1 The fitted curves
 
@@ -139,6 +205,15 @@ FIG("03_f3b", SITE_FOCUS)
 FIG("04_f4a", SITE_FOCUS)
 ```
 
+```{r f4b}
+FIG("04_f4b", SITE_FOCUS)
+```
+
+The survival lag is fitted **separately** from the recruitment flow lag: survival
+responds to conditions in or near the year it is measured, not at a spawning lag.
+Each candidate lag is gated independently and the p-values are Bonferroni-adjusted
+for the number tried.
+
 ```{r beta-surv-note, results='asis'}
 if (is.null(BETAS)) {
   cat("*No survival curve — run `R/04_fit_beta_survival.R`. It needs `Surv[]` ",
@@ -172,8 +247,8 @@ FIG("03_f3e", SITE_FOCUS)
 
 ```{r fpc-mode-table}
 if (!is.null(MODES))
-  MODES %>%filter(site==SITE_FOCUS)%>%
-    transmute(Site = site, Mode = paste0("FPC", k),
+  MODES %>% filter(site == SITE_FOCUS) %>%
+    transmute(Mode = paste0("FPC", k),
               `Flow var. (%)` = round(flow_var, 1),
               `Recruit var. (%)` = round(recruit_var, 1),
               `P(consistent sign)` = round(p_dir, 2),
@@ -210,8 +285,8 @@ FIG("09_f9a_life_history", SITE_FOCUS)
 
 ```{r stage-table}
 if (!is.null(STAGE))
-  STAGE %>%filter(site==SITE_FOCUS)%>%
-    transmute(Site = site, `Vital rate` = process, `Life stage` = stage,
+  STAGE %>% filter(site == SITE_FOCUS) %>%
+    transmute(`Vital rate` = process, `Life stage` = stage,
               `Mean β` = round(mean_beta, 5),
               `Fraction of stage positive` = round(frac_positive, 2)) %>%
     arrange(Site, `Vital rate`, `Life stage`) %>%
@@ -260,13 +335,21 @@ at the snowmelt peak.
 
 ## 3.2 How precisely can a day be named?
 
+```{r f6b}
+FIG("06_f6b", SITE_FOCUS)
+```
+
 ```{r f6c}
 FIG("06_f6c", SITE_FOCUS)
 ```
 
+```{r f6d}
+FIG("06_f6d", SITE_FOCUS)
+```
+
 ```{r iv-table}
 if (!is.null(IVS))
-  IVS %>%
+  IVS %>% filter(site == SITE_FOCUS) %>%
     transmute(Process = process, Which = which,
               Window = paste0(doy_date(lo_doy), " – ", doy_date(hi_doy)),
               Median = doy_date(median_doy),
@@ -294,7 +377,7 @@ FIG("06_f6e", SITE_FOCUS)
 
 ```{r relw-table}
 if (!is.null(RELW))
-  RELW %>% filter(process == "recruitment") %>%
+  RELW %>% filter(site == SITE_FOCUS, process == "recruitment") %>%
     group_by(volume_af) %>% slice_max(effect, n = 1) %>% ungroup() %>%
     transmute(`Volume (acre-ft)` = volume_af, `Window (days)` = window_days,
               `Sustained cfs` = round(sustained_cfs, 1),
@@ -351,7 +434,7 @@ FIG("06b_g", SITE_FOCUS)
 
 ```{r dw-cost-table}
 if (!is.null(DWCOST))
-  DWCOST %>%
+  DWCOST %>% filter(site == SITE_FOCUS) %>%
     transmute(Process = process, Site = site,
               `Best day (unconstrained)` = best_free_date,
               `Best feasible day` = best_dec_date,
@@ -399,7 +482,7 @@ FIG("06b_h", SITE_FOCUS)
 
 ```{r dw-sched-table}
 if (!is.null(DWSCH))
-  DWSCH %>% filter(process == "recruitment") %>%
+  DWSCH %>% filter(site == SITE_FOCUS, process == "recruitment") %>%
     group_by(volume_af) %>% slice_max(effect, n = 1, with_ties = FALSE) %>% ungroup() %>%
     transmute(`Volume (acre-ft)` = volume_af, `Duration (days)` = window_days,
               `Sustained cfs` = round(sustained_cfs, 1),
@@ -457,13 +540,17 @@ briefed to managers or included as a recommendation.\n")
 
 ## 3.5 Whole-population production
 
+```{r f7a-sweep}
+FIG("07_f7a", SITE_FOCUS)
+```
+
 ```{r f7a}
 FIG("09_f9d_production", SITE_FOCUS)
 ```
 
 ```{r prod-table}
 if (!is.null(PRODT))
-  PRODT %>% filter(pathway == "both") %>%
+  PRODT %>% filter(site == SITE_FOCUS, pathway == "both") %>%
     group_by(site) %>%
     summarise(`Best block` = doy_date(block_start[which.max(d_prod_pct)]),
               `Best (%)` = round(max(d_prod_pct), 2),
@@ -476,6 +563,15 @@ if (!is.null(PRODT))
 ```{r f7b}
 FIG("07_f7b", SITE_FOCUS)
 ```
+
+```{r f7c}
+FIG("07_f7c", SITE_FOCUS)
+```
+
+The production sweep propagates **both** pathways and their compounding — a
+survival gain raises the spawning stock, which feeds the Ricker three years later.
+The recruitment and survival curves cannot show that separately, which is why
+production is derived here rather than fitted.
 
 # 4. Bureau of Reclamation scenarios (RQ3)
 
@@ -490,13 +586,17 @@ HAS_BOR <- SITE_FOCUS %in% (CFG$sites$bor %||% character(0))
 if (!HAS_BOR) BOR_PLACEHOLDER(SITE_FOCUS)
 ```
 
+```{r f8a, eval = HAS_BOR}
+FIG("08_f8a", SITE_FOCUS)
+```
+
 ```{r f9e, eval = HAS_BOR}
 FIG("09_f9e_scenarios", SITE_FOCUS)
 ```
 
 ```{r sc-table, eval = HAS_BOR}
 if (!is.null(SCEFF))
-  SCEFF %>%
+  SCEFF %>% filter(site == SITE_FOCUS) %>%
     transmute(across(any_of(c("Scenario","Period","Type"))), Process = process,
               Years = n_years, Effect = round(effect, 2),
               `10th–90th` = paste0(round(effect_lo, 2), " – ", round(effect_hi, 2)),
@@ -585,7 +685,7 @@ FIG("10_b", SITE_FOCUS)
 
 ```{r rc-table, eval = HAS_BOR}
 if (!is.null(RCSUM))
-  RCSUM %>% arrange(dK_pct) %>%
+  RCSUM %>% filter(site == SITE_FOCUS) %>% arrange(dK_pct) %>%
     kable(digits = 2,
           caption = "Equilibrium K and MS by scenario. dK_pct is the change relative to historical mean summer flow. Check frac_extrapolating before quoting a row: a high value means the fitted flow terms are being evaluated outside the range that calibrated them.")
 ```

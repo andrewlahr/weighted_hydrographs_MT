@@ -13,11 +13,11 @@
 
 set -euo pipefail
 
-REPO_NAME="${1:-weighted_hydrographs_MT}"
+REPO_NAME="${1:-weighted-hydrographs-fpca}"
 BRANCH="main"
 
 echo "=============================================================="
-echo "  Setting up git for: $(andrewlahr)"
+echo "  Setting up git for: $(pwd)"
 echo "  Repository name:    ${REPO_NAME}"
 echo "=============================================================="
 echo

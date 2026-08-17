@@ -328,6 +328,58 @@ exact command. Genuinely ambiguous strays still get the three options.
 
 ---
 
+## 2026-07-29 — Session 34: per-site pages actually per-site
+
+Andrew: every site page shows faceted all-site figures and unfiltered tables.
+Diagnosis was right in substance — the pages were not site-specific — though the
+mechanism was not quite the one proposed.
+
+### `[FINDING]` `save_fig()` was already correct; `FIG()` was hiding the gaps
+`save_fig()` in `00_config.R` filters the plot's data to one site, drops a site
+facet, and writes `<name>__<Site>.png`. Every script already calls it.
+
+The bug was in `FIG(name, site)`: **when the per-site file was absent it silently
+returned the all-sites figure.** One missing file and the page showed faceted
+results for 23 sites, looking entirely plausible. Same class as every other
+failure in this project — a silent fallback producing wrong-but-credible output.
+
+`FIG()` now shows an explicit gap on a per-site page and never substitutes. A
+visible hole is recoverable; a wrong figure that looks right is not.
+
+### `[FINDING]` All TEN tables on the site page were unfiltered
+Independent of the figures, and arguably worse: `gate-table`, `fpc-mode-table`,
+`stage-table`, `iv-table`, `relw-table`, `dw-cost-table`, `dw-sched-table`,
+`prod-table`, `sc-table`, `rc-table` all rendered every site's rows on every
+site's page. Now every one filters on `SITE_FOCUS`, and the redundant `Site`
+column is dropped where it appeared.
+
+### `[FINDING]` 16 site-specific figures were produced but never shown
+Scripts 01, 02, 04, 05, 06, 07 and 08 produce figures the site page never
+referenced — including **the entire validation section** (`05_f5a/b/c`), the
+response-construction diagnostics (`01_f1a/b/c`) and the hydrograph
+standardization (`02_f2a-d`). All now on the page, in two new sections:
+
+- **§0 What went into the model** — the response and its posterior uncertainty, the stock–recruit relationship, the hydrograph and the seasonal predictor correlations
+- **§1.0 Does it survive validation?** — the three-way R² comparison, out-of-sample prediction, and the permutation null
+
+The site page went from 22 figures to 38. §0 in particular matters: if posterior
+uncertainty dominates real between-year variation at a site, the ceiling on the
+whole analysis is low, and that should be visible before any coefficient is read.
+
+### `[CHANGE]` Three additions so this cannot recur silently
+1. `save_fig()` **re-titles** a filtered plot with the site name — otherwise a per-site figure carries a title written for the all-sites version.
+2. `save_fig()` records `.FIG_INDEX`; `fig_report()` runs at the end of `RUN_ALL.R` and lists which figures split per site and which could not (no `site` column in the plot data).
+3. `check_setup.R` cross-references every `FIG(name, SITE_FOCUS)` in the template against the files on disk and reports gaps **before** rendering.
+
+### `[NOTE]` Why the diagnosis pointed at filenames
+Because from the outside that is exactly what it looks like. The per-site files
+either were not written on that machine — a stale `00_config.R` predating the
+per-site logic is the likeliest explanation, this being the fifth such incident
+— or were written and masked by the fallback. Either way `fig_report()` and the
+`check_setup.R` check now make the answer visible rather than inferable.
+
+---
+
 ## 2026-07-29 — Session 33: one results page per site, with a selector
 
 Andrew asked for a way to choose which site's results to view, keeping the

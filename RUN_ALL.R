@@ -52,6 +52,11 @@ for (s in steps) {
 message("\n", strrep("=", 70))
 message(sprintf("  finished in %.1f minutes", as.numeric(difftime(Sys.time(), t0, units = "mins"))))
 message("  figures -> output/figures/    tables -> output/tables/")
+
+# Which figures were split per site, and which could not be. A figure that
+# cannot be split shows a gap on every per-site page, and that must be visible
+# here rather than discovered when the site renders.
+if (exists("fig_report")) fig_report()
 message("")
 message("  SEPARATE ARM, not run above:")
 message("    source('R/10_rulecurve.R')   equilibrium K and MS under BoR summer flows")

@@ -11,7 +11,7 @@ source("_common.R")
 =============================================================================
 THIS PAGE ANSWERS RESEARCH QUESTION 2.
 
-  RQ1 (results_by_site.html) -- where in the year does water buy the most trout?
+  RQ1 (results.html) -- where in the year does water buy the most trout?
   RQ2 (this page)            -- what does that tell us about population ecology?
   RQ3 (scenarios section)    -- how does it change under BoR futures?
 
@@ -31,7 +31,7 @@ inferential lever available without a manipulative experiment.
 # The inferential logic
 
 A single site gives ~43 annual observations. That is not enough to resolve a
-365-point curve with confidence, and `results_by_site.html` says so explicitly
+365-point curve with confidence, and `results.html` says so explicitly
 for each site.
 
 What multiple sites buy is not more precision at any one site — it is the ability
@@ -238,7 +238,7 @@ management levers with separate calendars.\n")
 case for management, and worth stating plainly.\n")
   else
     cat("Partial overlap. There is a compromise window, and the production sweep in
-`results_by_site.html` reports the joint optimum, which is the right quantity because
+`results.html` reports the joint optimum, which is the right quantity because
 it propagates both pathways through the age structure.\n")
 }
 ```

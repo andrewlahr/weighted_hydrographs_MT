@@ -24,7 +24,7 @@
 # 1. SETTINGS
 # =============================================================================
 CFG <- list(
-
+  
   # ---- folders. These are the lines that change between machines ------------
   #
   # Relative to the PROJECT ROOT (the folder holding this file). This project
@@ -47,14 +47,14 @@ CFG <- list(
     bor_flow      = "../WeightedHydrograph/BOR_Weighted/Data/Madison_Norris_BOR_future_flow_data.rds",
     output        = "output"
   ),
-
+  
   # ---- which sites to run ---------------------------------------------------
   # Move names from `all` into `active` as you roll the framework out. The
   # scripts already loop, and the among-site synthesis switches itself on once
   # there is more than one site. No code changes needed.
   sites = list(
     active = c("Madison.Norris"),
-
+    
     # ---- sites with Bureau of Reclamation forecast flows ---------------------
     # RQ3 (scenario projections, script 08) and the rule-curve arm (script 10)
     # need BoR downscaled hydrographs, which exist for 8 of the 23 populations.
@@ -67,12 +67,11 @@ CFG <- list(
     bor = c("Smith.EagleCreek", "Ruby.Vigilante", "Missouri.Craig",
             "Missouri.Cascade", "Madison.Norris", "BigHole.Melrose",
             "Beaverhead.Hildreth", "Beaverhead.FishAndGame"),
-
+    
     all    = c("Smith.EagleCreek", "Ruby.Vigilante", "Missouri.Craig",
                "Missouri.Cascade", "Madison.Norris", "BigHole.Melrose",
                "Beaverhead.Hildreth", "Beaverhead.FishAndGame","Bighorn.MallardsLanding",'Bighorn.Bighorn','Madison.Varney','Madison.PineButte')
   ),
-
   # ---- which JAGS nodes carry the response ---------------------------------
   posterior = list(
     recruit_node = "R",
@@ -155,8 +154,8 @@ CFG <- list(
   ),
 
   sensitivity = list(
-    n_sim          = 1000,                 # simulated beta(t) curves
-    delta_cfs      = 25,                   # the "add this much water" unit
+    n_sim          = 4000,                 # simulated beta(t) curves
+    delta_cfs      = 10,                   # the "add this much water" unit
     volumes_af     = c(200, 1000, 5000),   # leased volumes to schedule
     window_lengths = c(7, 14, 30, 60),     # release durations to consider
     cred_level     = 0.80                  # for the "best day" interval
@@ -176,7 +175,7 @@ CFG <- list(
     block_days = 5,     # width of each perturbation block in the IPM sweep
     n_years    = 40,
     burn_in    = 15,
-    n_draws    = 1000
+    n_draws    = 400
   ),
 
   qc = list(
@@ -207,6 +206,10 @@ flow_path <- function(site) {
   file.path(CFG$paths$flow_dir, paste0(site, "_imputed.csv"))
 }
 
+#' JAGS parameter CSV -- the file the calendar years are read from
+#'
+#' Reproduces the original extraction. `StreamSection` is the site name with the
+#' dot removed: Madison.Norris -> MadisonNorris.
 #' JAGS parameter CSV -- the file the calendar years are read from
 #'
 #' Reproduces the original extraction. `StreamSection` is the site name with the
@@ -245,6 +248,7 @@ params_filter <- function(site, d) {
     d[grepl("SUMMERQ|Global", d$model), , drop = FALSE]
   }
 }
+
 
 
 # =============================================================================
@@ -286,7 +290,6 @@ CFG$rulecurve <- list(
   n_draws = 1000, stock_max = 5000, stock_n = 2001
 )
 
-
 #' FishCast export for a site: covarLagIn1Real, Flows, Weight3/4, Survival, RecLag
 rulecurve_export_path <- function(site)
   file.path(paste0("../LL/JAGS_PVA/ModelOutput/",site, "_rulecurve_inputs.rds"))
@@ -302,6 +305,7 @@ rulecurve_bor_path <- function(site) {
   ss <- gsub(".", "_", site, fixed = TRUE)
   paste0("../WeightedHydrograph/BOR_Weighted/data/",ss,"_BOR_future_flow_data.rds")
 }
+
 
 
 # =============================================================================

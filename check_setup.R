@@ -79,6 +79,30 @@ for (f in c("check_setup.R", "render_site.R", "diagnose_site.R",
   say(isTRUE(e), basename(f), if (isTRUE(e)) "" else sub("\n.*", "", e))
 }
 
+# --- per-site figures the template requests ----------------------------------
+# The per-site pages call FIG(name, SITE_FOCUS), which now shows a gap rather
+# than silently substituting the all-sites figure. This reports the gaps before
+# you render, so they are fixed in the pipeline rather than noticed on the site.
+tpl <- file.path("manuscript", "_site_template.Rmd")
+if (file.exists(tpl) && dir.exists(file.path(OUT, "figures"))) {
+  want <- unique(regmatches(
+    paste(readLines(tpl, warn = FALSE), collapse = " "),
+    gregexpr('FIG\\("[^"]+", *SITE_FOCUS\\)',
+             paste(readLines(tpl, warn = FALSE), collapse = " ")))[[1]])
+  want <- gsub('FIG\\("|", *SITE_FOCUS\\)', "", want)
+  have <- list.files(file.path(OUT, "figures"), "[.]png$")
+  gaps <- character(0)
+  for (s_ in SITES) {
+    sfx <- gsub("[^A-Za-z0-9]", "_", s_)
+    miss <- want[!paste0(want, "__", sfx, ".png") %in% have]
+    if (length(miss)) gaps <- c(gaps, sprintf("%s: %s", s_, paste(miss, collapse = ", ")))
+  }
+  say(length(gaps) == 0, "per-site figures exist for every template FIG() call",
+      if (length(gaps)) paste0(length(gaps), " site(s) with gaps") else
+        paste(length(want), "figures x", length(SITES), "site(s)"))
+  for (g in gaps) cat("      ", g, "\n")
+}
+
 # =============================================================================
 # STALE-FILE SCAN
 # -----------------------------------------------------------------------------
