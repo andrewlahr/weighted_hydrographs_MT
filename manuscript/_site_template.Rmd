@@ -172,7 +172,7 @@ FIG("03_f3e", SITE_FOCUS)
 
 ```{r fpc-mode-table}
 if (!is.null(MODES))
-  MODES %>%
+  MODES %>%filter(site==SITE_FOCUS)%>%
     transmute(Site = site, Mode = paste0("FPC", k),
               `Flow var. (%)` = round(flow_var, 1),
               `Recruit var. (%)` = round(recruit_var, 1),
@@ -210,7 +210,7 @@ FIG("09_f9a_life_history", SITE_FOCUS)
 
 ```{r stage-table}
 if (!is.null(STAGE))
-  STAGE %>%
+  STAGE %>%filter(site==SITE_FOCUS)%>%
     transmute(Site = site, `Vital rate` = process, `Life stage` = stage,
               `Mean β` = round(mean_beta, 5),
               `Fraction of stage positive` = round(frac_positive, 2)) %>%
