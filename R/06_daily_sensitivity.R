@@ -337,7 +337,107 @@ for (nm in c("f6a", "f6b", "f6c", "f6d", "f6e"))
   ggsave(file.path(OUT, "figures", paste0("06_", nm, ".png")), get(nm),
          width = 10, height = 6, dpi = 150)
 
+# =============================================================================
+# FIGURES2
+# =============================================================================
+gate_note <- function(d) if (all(d$passes, na.rm = TRUE))
+  "beta(t) passed validation in script 05." else
+    "*** beta(t) DID NOT PASS validation. Shapes below are not supported findings. ***"
+for(siteIN in SITES){
+# --- 6a: THE KEY FIGURE. beta(t) vs the management curve, same panel scale ----
+f6a <- daily %>%
+  select(process, site, doy, `beta(t): ecological sensitivity` = beta,
+         `s(t): benefit per cfs released` = sens_per_delta) %>%
+  pivot_longer(-c(process, site, doy)) %>%
+  group_by(process, site, name) %>%
+  mutate(scaled = value / max(abs(value))) %>% ungroup() %>%
+  filter(site==siteIN)%>%
+  ggplot(aes(doy, scaled, colour = name)) +
+  geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
+  geom_line(linewidth = 1) +
+  scale_colour_manual(values = c(PAL[["ink"]], PAL[["red"]]), name = NULL) +
+  scale_x_continuous(breaks = MON_B, labels = MON_L) +
+  facet_grid(process ~ site) +
+  labs(title = "Figure 6a. The ecological curve and the management curve are different shapes",
+       subtitle = paste0("Both scaled to a maximum of 1 so the SHAPES can be compared.\n",
+                         "s(t) = beta(t) / (sigma x Qbar(t)): the same water is a large proportional change at base\n",
+                         "flow and a small one at the snowmelt peak. Read beta(t) for ecology, s(t) for management.\n",
+                         gate_note(daily)),
+       x = NULL, y = "scaled to max = 1") + theme_wh + theme(legend.position = "bottom")
 
+# --- 6b: the management curve in real units, with simultaneous bands ---------
+f6b <- ggplot(subset(daily,site==siteIN), aes(doy, effect)) +
+  geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
+  geom_ribbon(aes(ymin = 100 * (exp(sens_lo) - 1), ymax = 100 * (exp(sens_hi) - 1)),
+              fill = PAL[["red"]], alpha = .15) +
+  geom_line(colour = PAL[["red"]], linewidth = 1) +
+  facet_grid(process ~ site, scales = "free_y") +
+  scale_x_continuous(breaks = MON_B, labels = MON_L) +
+  labs(title = paste0("Figure 6b. Benefit of adding ", DELTA_CFS, " cfs on a single day"),
+       subtitle = paste0("Recruitment: percent change in recruits per unit stock. Survival: percentage points.\n",
+                         "Positive = releasing water on that day helps. ", gate_note(daily)),
+       x = NULL, y = "effect") + theme_wh
+
+# --- 6c: THE RESOLUTION FIGURE -- how precisely can we name a day? -----------
+bd <- bind_rows(lapply(names(sim_store), function(k) {
+  z <- strsplit(k, " ")[[1]]
+  data.frame(process = z[1], site = z[2],
+             doy = c(sim_store[[k]]$best, sim_store[[k]]$worst),
+             which = rep(c("most beneficial", "most harmful"),
+                         c(length(sim_store[[k]]$best), length(sim_store[[k]]$worst))))
+}))
+
+f6c <- ggplot(subset(bd,site==siteIN), aes(doy, fill = which)) +
+  geom_histogram(bins = 73, alpha = .7, colour = NA, position = "identity") +
+  geom_rect(data = subset(intervals,site==siteIN), inherit.aes = FALSE,
+            aes(xmin = lo_doy, xmax = hi_doy, ymin = -Inf, ymax = Inf,
+                colour = which), fill = NA, linetype = 3, linewidth = .5) +
+  scale_fill_manual(values = c("most beneficial" = PAL[["blue"]],
+                               "most harmful" = PAL[["red"]]), name = NULL) +
+  scale_colour_manual(values = c("most beneficial" = PAL[["blue"]],
+                                 "most harmful" = PAL[["red"]]), guide = "none") +
+  scale_x_continuous(breaks = MON_B, labels = MON_L, limits = c(1, 365)) +
+  facet_grid(process ~ site, scales = "free_y") +
+  labs(title = "Figure 6c. How precisely can we name a day?",
+       subtitle = paste0("Each simulated curve votes for its best and worst day. Dotted boxes are the ",
+                         sprintf("%.0f%%", 100 * CRED), " intervals.\n",
+                         "A NARROW cluster means real timing guidance. A spread across the year means the",
+                         " honest answer\nis a season, not a date -- and the width is set by the data, not by us."),
+       x = NULL, y = "simulations") + theme_wh + theme(legend.position = "bottom")
+
+# --- 6d: P(this day is in the true best 10%) --------------------------------
+f6d <- ggplot(subset(daily,site==siteIN), aes(doy, p_top10pct)) +
+  geom_hline(yintercept = 0.10, linetype = 2, colour = PAL[["mute"]]) +
+  geom_col(fill = PAL[["blue"]], width = 1) +
+  facet_grid(process ~ site) +
+  scale_x_continuous(breaks = MON_B, labels = MON_L) +
+  labs(title = "Figure 6d. Probability each day is among the best 10% of days to release",
+       subtitle = paste0("Dashed line = 0.10, what you would see if every day were equally good.\n",
+                         "Days rising well above it are robustly good regardless of curve uncertainty.\n",
+                         "This is often the most defensible timing statement available."),
+       x = NULL, y = "probability") + theme_wh
+
+# --- 6e: the release schedule table as a figure ------------------------------
+f6e <- windows_t %>%
+  filter(process == "recruitment") %>%filter(site==siteIN)%>%
+  ggplot(aes(best_start_doy, factor(window_days), colour = effect)) +
+  geom_linerange(aes(xmin = start_lo, xmax = start_hi), linewidth = 1) +
+  geom_point(size = 3.5) +
+  scale_colour_gradient2(low = PAL[["red"]], mid = "grey85", high = PAL[["blue"]],
+                         midpoint = 0, name = "% change in\nrecruits/stock") +
+  scale_x_continuous(breaks = MON_B, labels = MON_L, limits = c(1, 365)) +
+  facet_grid(site ~ paste0(volume_af, " acre-feet")) +
+  labs(title = "Figure 6e. Where to put a fixed volume of water",
+       subtitle = paste0("Optimal START day for releasing a given volume evenly over a given number of days.\n",
+                         "Bars are the ", sprintf("%.0f%%", 100 * CRED),
+                         " interval on the optimal start. Longer windows are usually better because\n",
+                         "the log-response means the hundredth cfs buys less than the first."),
+       x = NULL, y = "release window (days)") + theme_wh
+
+for (nm in c("f6a", "f6b", "f6c", "f6d", "f6e"))
+  ggsave(file.path(OUT, "figures", paste0("06_", nm, "__",gsub(".", "_", siteIN, fixed = TRUE),".png")), get(nm),
+         width = 10, height = 6, dpi = 150)
+}
 # =============================================================================
 # SAVE
 # =============================================================================
@@ -358,3 +458,4 @@ message("  'I have V acre-feet, when do I release it?'")
 message("  FOR THE MANUSCRIPT: best_day_intervals.csv is the honest resolution statement.")
 message("\n  If `resolvable` is FALSE, do not report a date anywhere. Report the season")
 message("  and say the record cannot resolve finer. That is a finding, not a failure.\n")
+

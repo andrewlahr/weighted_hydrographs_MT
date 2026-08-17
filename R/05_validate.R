@@ -321,7 +321,58 @@ f5c <- ggplot(resol, aes(edf, heuristic_resolution_days, colour = process)) +
 for (nm in c("f5a", "f5b", "f5c"))
   ggsave(file.path(OUT, "figures", paste0("05_", nm, ".png")), get(nm),
          width = 9.5, height = 5.2, dpi = 150)
+# =============================================================================
+# FIGURES2
+# =============================================================================
+for(siteIN in SITES){
+f5a <- gate %>%
+  select(process, site, form, `in-sample` = r2_insample,
+         `leave-one-out` = r2_loo, `blocked` = r2_blocked) %>%
+  pivot_longer(-c(process, site, form), names_to = "test", values_to = "r2") %>%
+  filter(!is.na(r2)) %>%
+  mutate(test = factor(test, levels = c("in-sample", "leave-one-out", "blocked"))) %>%
+  filter(site==siteIN)%>%
+  ggplot(aes(test, r2, colour = form, group = interaction(site, form))) +
+  geom_hline(yintercept = 0, linetype = 2, colour = PAL[["red"]]) +
+  geom_line(alpha = .6) + geom_point(size = 3) +
+  scale_colour_manual(values = c(beta = PAL[["blue"]], seasonal = PAL[["gold"]]), name = NULL) +
+  facet_grid(process ~ site) +
+  labs(title = "Figure 5a. The same data, judged three ways",
+       subtitle = paste0("Each test left to right is harder and more honest. Below the red line the model is worse\n",
+                         "than predicting the long-run average. The drop from left to right is the optimism you\n",
+                         "would otherwise have published."),
+       x = NULL, y = "R-squared") + theme_wh + theme(legend.position = "bottom")
 
+f5b <- ggplot(subset(nulls,site==siteIN), aes(null_r2, fill = form)) +
+  geom_histogram(bins = 20, alpha = .6, colour = "white", position = "identity") +
+  geom_vline(data = subset(gate,site==siteIN), aes(xintercept = r2_blocked, colour = form), linewidth = 1) +
+  scale_fill_manual(values = c(beta = PAL[["blue"]], seasonal = PAL[["gold"]]), name = NULL) +
+  scale_colour_manual(values = c(beta = PAL[["blue"]], seasonal = PAL[["gold"]]), guide = "none") +
+  facet_grid(process ~ site, scales = "free") +
+  labs(title = "Figure 5b. Permutation nulls",
+       subtitle = paste0("Histograms = scores from deliberately mismatched alignments. Vertical lines = the real one.\n",
+                         "The nulls are NOT centred on zero. That is why a positive cross-validated R-squared is not,\n",
+                         "on its own, evidence of anything."),
+       x = "blocked-CV R-squared under a shifted alignment", y = "count") +
+  theme_wh + theme(legend.position = "bottom")
+
+f5c <- ggplot(subset(resol,site==siteIN), aes(edf, heuristic_resolution_days, colour = process)) +
+  geom_point(size = 4) +
+  geom_text(aes(label = site), hjust = -0.12, size = 3, show.legend = FALSE) +
+  scale_colour_manual(values = c(recruitment = PAL[["blue"]], survival = PAL[["green"]]),
+                      name = NULL) +
+  scale_x_continuous(expand = expansion(mult = .25)) +
+  labs(title = "Figure 5c. How finely can you speak?",
+       subtitle = paste0("Effective degrees of freedom against the implied resolution (365/edf days).\n",
+                         "edf near 3 means the curve is nearly a straight line and 'the best day' is meaningless.\n",
+                         "This is a heuristic -- script 06 measures resolution directly by simulation."),
+       x = "effective degrees of freedom", y = "implied resolution (days)") +
+  theme_wh + theme(legend.position = "bottom")
+
+for (nm in c("f5a", "f5b", "f5c"))
+  ggsave(file.path(OUT, "figures", paste0("05_", nm,"__",gsub(".", "_", siteIN, fixed = TRUE),".png")), get(nm),
+         width = 9.5, height = 5.2, dpi = 150)
+}
 saveRDS(list(gate = gate, nulls = nulls, resolution = resol, block_len = BL,
              run = Sys.time()), file.path(OUT, "models", "gate.rds"))
 write.csv(gate, file.path(OUT, "tables", "gate.csv"), row.names = FALSE)

@@ -95,7 +95,7 @@ CFG <- list(
 
     # Thin to this many posterior draws. The design matrix does not change
     # across draws, so 2000 is ample; more just costs time.
-    max_draws = 20000
+    max_draws = 2000
   ),
 
   biology = list(
@@ -155,7 +155,7 @@ CFG <- list(
   ),
 
   sensitivity = list(
-    n_sim          = 10000,                 # simulated beta(t) curves
+    n_sim          = 1000,                 # simulated beta(t) curves
     delta_cfs      = 25,                   # the "add this much water" unit
     volumes_af     = c(200, 1000, 5000),   # leased volumes to schedule
     window_lengths = c(7, 14, 30, 60),     # release durations to consider
@@ -289,7 +289,7 @@ CFG$rulecurve <- list(
 
 #' FishCast export for a site: covarLagIn1Real, Flows, Weight3/4, Survival, RecLag
 rulecurve_export_path <- function(site)
-  file.path(CFG$paths$data_root, paste0(site, "_rulecurve_inputs.rds"))
+  file.path(paste0("../LL/JAGS_PVA/ModelOutput/",site, "_rulecurve_inputs.rds"))
 
 #' Observed daily flow, used to verify the summer window reproduces the IPM's covariate
 rulecurve_observed_path <- function(site) {
@@ -338,22 +338,30 @@ FLOW_LAG_BY_SITE <- c(
   # Add each site as you roll out, from its _RecLagInclusionProbQuad.csv.
 )
 
+
 flow_lag <- function(site) {
-  if (site %in% names(FLOW_LAG_BY_SITE))
-    return(unname(FLOW_LAG_BY_SITE[[site]]))
+  ss <- gsub(".", "", site, fixed = TRUE)
   
-  # LOUD, not silent. The lag genuinely varies between sites (Norris 3,
-  # BigHole.Melrose 2), so a wrong default shifts every flow window by a year and
-  # still produces entirely plausible coefficients. A site that reaches here has
-  # not been configured and its results must not be trusted.
-  warning("flow_lag(): '", site, "' is not configured, defaulting to ",
-          CFG$biology$recruit_lag, ".\n",
-          "  Read the selected lag from that site's _RecLagInclusionProbQuad.csv\n",
-          "  and add it to FLOW_LAG_BY_SITE in config.R. Until then, results for\n",
-          "  this site assume the spawning-year hypothesis and may be wrong.",
-          call. = FALSE)
-  as.integer(CFG$biology$recruit_lag)
+  switch(site,
+         
+         "Jefferson.Waterloo" =
+           d<-read.csv(file.path("../Jefferson/JAGS_PVA/ModelOutput/csvs_quadratic",
+                                 paste0(ss, "_LLallParams_resids.csv"))),
+         
+         # ---- default: every other site -----------------------------------------
+         d<-read.csv(file.path("../LL/JAGS_PVA/ModelOutput/csvs_quadratic",
+                               paste0(ss, "allParams_update2026_02.csv")))
+  )
+  if (site == "BigHole.Melrose") {
+    stopifnot(all(c("SummerLag", "WinterLag") %in% names(d)))
+    d[d$SummerLag == 2 & d$WinterLag == 2, , drop = FALSE]%>%filter(!is.na(SummerLag))%>%pull(SummerLag)%>%unique()
+  } else {
+    stopifnot("model" %in% names(d))
+    d[grepl("SUMMERQ|Global", d$model), , drop = FALSE]%>%filter(!is.na(SummerLag))%>%pull(SummerLag)%>%unique()
+  }
 }
+
+
 #' Which calendar year's hydrograph predicts a given recruit year
 #'
 #' On a calendar axis this is exactly the lag the IPM selected -- no conversion,

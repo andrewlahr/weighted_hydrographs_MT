@@ -292,6 +292,78 @@ for (nm in c("f1a", "f1b", "f1c"))
          width = 9.5, height = 5.2, dpi = 150)
 
 
+for(siteIN in SITES){
+  # siteIN<-'Madison.Norris'
+  var_split <- meta %>%
+    transmute(site,
+              `real between-year variation` = sd_between_years^2,
+              `posterior uncertainty`       = sd_across_draws^2) %>%
+    pivot_longer(-site, names_to = "source", values_to = "variance")
+  # var_split<-var_split[which(var_split$site==siteIN),]
+  f1a <- ggplot(subset(var_split,site==siteIN), aes(site, variance, fill = source)) +
+    geom_col(alpha = 0.85) +
+    scale_fill_manual(values = c(PAL[["blue"]], PAL[["red"]]), name = NULL) +
+    coord_flip() +
+    labs(title = "Figure 1a. How much of log(R/S) is signal, and how much is the IPM being unsure?",
+         subtitle = paste0("Blue = variation between years, which flow might explain. Red = spread across posterior draws.\n",
+                           "If red is comparable to blue, the ceiling on any flow analysis is low, and that is worth\n",
+                           "knowing BEFORE you fit a model rather than after."),
+         x = NULL, y = "variance in log(R/S)") +
+    theme_wh + theme(legend.position = "bottom")
+  
+  # --- 1b: the response through time, with the posterior ribbon ----------------
+  ts <- map_dfr(names(logRS_list), function(s) {
+    L <- logRS_list[[s]]
+    data.frame(site = s, recruit_year = L$recruit_years,
+               med = apply(L$logRS, 2, median, na.rm = TRUE),
+               lo  = apply(L$logRS, 2, quantile, .05, na.rm = TRUE, names = FALSE),
+               hi  = apply(L$logRS, 2, quantile, .95, na.rm = TRUE, names = FALSE))
+  })
+  
+  f1b <- ggplot(subset(ts,site==siteIN), aes(recruit_year, med)) +
+    geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
+    geom_ribbon(aes(ymin = lo, ymax = hi), fill = PAL[["blue"]], alpha = 0.22) +
+    geom_line(colour = PAL[["blue"]], linewidth = 0.8) +
+    geom_point(colour = PAL[["blue"]], size = 1.6) +
+    facet_wrap(~ site, scales = "free_y") +
+    labs(title = "Figure 1b. The response, with posterior uncertainty",
+         subtitle = paste0("log(recruits / ", meta$stock_node[1], "). Ribbon = 90% across posterior draws.\n",
+                           "Wide years are ones the IPM is unsure about; the model in script 03 weights them down."),
+         x = "recruit year", y = "log(R/S)") +
+    theme_wh
+  
+  # --- 1c: stock and recruitment, the Ricker view ------------------------------
+  sr <- map_dfr(names(logRS_list), function(s) {
+    L <- logRS_list[[s]]
+    data.frame(site = s, recruit_year = L$recruit_years,
+               S = apply(L$S, 2, median, na.rm = TRUE),
+               R = apply(L$R, 2, median, na.rm = TRUE),
+               S_lo = apply(L$S, 2, quantile, .05, na.rm = TRUE, names = FALSE),
+               S_hi = apply(L$S, 2, quantile, .95, na.rm = TRUE, names = FALSE),
+               R_lo = apply(L$R, 2, quantile, .05, na.rm = TRUE, names = FALSE),
+               R_hi = apply(L$R, 2, quantile, .95, na.rm = TRUE, names = FALSE))
+  })
+  
+  f1c <- ggplot(subset(sr,site==siteIN), aes(S, R)) +
+    geom_linerange(aes(ymin = R_lo, ymax = R_hi), colour = PAL[["mute"]], linewidth = 0.35) +
+    geom_linerange(aes(xmin = S_lo, xmax = S_hi), colour = PAL[["mute"]], linewidth = 0.35,
+                   orientation = "y") +
+    geom_point(aes(colour = recruit_year), size = 2.3) +
+    scale_colour_gradient(low = PAL[["gold"]], high = PAL[["ink"]], name = "recruit year") +
+    facet_wrap(~ site, scales = "free") +
+    labs(title = "Figure 1c. Stock and recruitment from the null IPM",
+         subtitle = paste0("Posterior medians with 90% intervals on both axes. Stock is ",
+                           meta$stock_node[1], ", lagged ", REC_LAG, " years.\n",
+                           "Flow is the deviation from this relationship -- that is what script 03 tries to explain."),
+         x = paste0("stock (", meta$stock_node[1], ")"), y = "recruits") +
+    theme_wh
+  
+  for (nm in c("f1a", "f1b", "f1c"))
+    ggsave(file.path(OUT, "figures", paste0("01_", nm,"__",gsub(".", "_", siteIN, fixed = TRUE), ".png")), get(nm),
+           width = 9.5, height = 5.2, dpi = 150)
+  
+}
+
 # =============================================================================
 # 7. SAVE
 # =============================================================================

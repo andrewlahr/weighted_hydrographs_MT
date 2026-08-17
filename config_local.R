@@ -32,12 +32,9 @@
 # site out to drop it from a run without losing the entry.
 # =============================================================================
 CFG$sites$active <- c(
-  "Madison.Norris",
-  "Missouri.Cascade",
-  "Missouri.Craig",
-  "BigHole.Melrose",
-  "Beaverhead.FishAndGame",
-  "Beaverhead.Hildreth"
+  "Smith.EagleCreek", "Ruby.Vigilante", "Missouri.Craig",
+  "Missouri.Cascade", "Madison.Norris", "BigHole.Melrose",
+  "Beaverhead.Hildreth", "Beaverhead.FishAndGame","Bighorn.MallardsLanding",'Bighorn.Bighorn','Madison.Varney','Madison.PineButte'
 )
 
 
@@ -55,13 +52,43 @@ CFG$sites$active <- c(
 # vector rather than a switch(), so an unconfigured site can be detected and
 # reported instead of silently taking a default.
 # =============================================================================
+# 
+# flow_lag <- function(site) {
+#   ss <- gsub(".", "", site, fixed = TRUE)
+#   
+#   switch(site,
+#          
+#          "Jefferson.Waterloo" =
+#            d<-read.csv(file.path("../Jefferson/JAGS_PVA/ModelOutput/csvs_quadratic",
+#                      paste0(ss, "_LLallParams_resids.csv"))),
+#          
+#          # ---- default: every other site -----------------------------------------
+#          d<-read.csv(file.path("../LL/JAGS_PVA/ModelOutput/csvs_quadratic",
+#                    paste0(ss, "allParams_update2026_02.csv")))
+#   )
+#   if (site == "BigHole.Melrose") {
+#     stopifnot(all(c("SummerLag", "WinterLag") %in% names(d)))
+#     d[d$SummerLag == 2 & d$WinterLag == 2, , drop = FALSE]%>%filter(!is.na(SummerLag))%>%pull(SummerLag)%>%unique()
+#   } else {
+#     stopifnot("model" %in% names(d))
+#     d[grepl("SUMMERQ|Global", d$model), , drop = FALSE]%>%filter(!is.na(SummerLag))%>%pull(SummerLag)%>%unique()
+#   }
+# }
+# 
+
 FLOW_LAG_BY_SITE <- c(
   "Madison.Norris"         = 3L,
   "Missouri.Cascade"       = 2L,
   "Missouri.Craig"         = 3L,
   "BigHole.Melrose"        = 2L,
   "Beaverhead.FishAndGame" = 2L,
-  "Beaverhead.Hildreth"    = 2L
+  "Beaverhead.Hildreth"    = 2L,
+  "Smith.EagleCreek" = 1L,
+  "Ruby.Vigilante" = 2L,
+  "Bighorn.Mallards.Landing" = 1L,
+  "Bighorn.Bighorn" = 1L,
+  "Madison.Varney" = 2L,
+  "Madison.Pinebutte" = 2L
 )
 
 
@@ -103,7 +130,7 @@ CFG$fitting$compare_estimators <- FALSE
 CFG$fitting$fpc_rule       <- "both"
 CFG$fitting$fpc_target_var <- 90
 CFG$fitting$fpc_min_var    <- 1
-CFG$fitting$fpc_max        <- 6
+CFG$fitting$fpc_max        <- 10
 
 
 # =============================================================================

@@ -243,4 +243,37 @@ if (!length(fits)) {
           paste(sprintf("%s=%d", names(fits),
                         vapply(fits, function(f) as.integer(f$surv_lag), integer(1))),
                 collapse = "  "), "\n")
+  ##figs2
+  
+
+  for(siteIN in SITES){
+    f4a <- ggplot(subset(bt,site==siteIN), aes(doy, beta)) +
+    geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
+    geom_ribbon(aes(ymin = lo, ymax = hi), fill = PAL[["green"]], alpha = .2) +
+    geom_line(colour = PAL[["green"]], linewidth = 1) +
+    facet_wrap(~ paste0(site, "  (lag ", lag, ")"), scales = "free_y") +
+    scale_x_continuous(breaks = MON_B, labels = MON_L) +
+    labs(title = expression(paste("Figure 4a. ", beta[S], "(t) -- flow and adult survival")),
+         subtitle = paste0("Effect on logit(adult survival) of a one-SD wetter-than-normal day.\n",
+                           "Response is the survival process deviate: what the density-dependent null model\n",
+                           "leaves unexplained. Pointwise 95% bands; script 06 locates peaks properly."),
+         x = NULL, y = expression(beta[S](t))) + theme_wh
+  
+  swp <- bind_rows(lapply(fits, function(f) bind_rows(f$lag_sweep) %>%
+                            mutate(site = f$site, chosen = lag == f$surv_lag)))
+  f4b <- ggplot(subset(swp,site==siteIN), aes(factor(lag), r2_insample, fill = chosen)) +
+    geom_col(alpha = .85) +
+    scale_fill_manual(values = c("FALSE" = PAL[["mute"]], "TRUE" = PAL[["green"]]),
+                      guide = "none") +
+    facet_wrap(~ site) +
+    labs(title = "Figure 4b. Survival flow-signal lag sweep",
+         subtitle = paste0("Lag 0 = conditions in the same year as the survival interval; lag 1 = the previous year\n",
+                           "(overwinter). In-sample R2 shown; script 05 gates every lag out of sample and\n",
+                           "Bonferroni-adjusts the winner for having looked at more than one."),
+         x = "flow lag (years)", y = "in-sample R-squared") + theme_wh
+  
+  for (nm in c("f4a", "f4b"))
+    ggsave(file.path(OUT, "figures", paste0("04_", nm,"__",gsub(".", "_", siteIN, fixed = TRUE),".png")), get(nm),
+           width = 9.5, height = 5, dpi = 150)
+}
 }
