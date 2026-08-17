@@ -35,9 +35,13 @@ IVS   <- only(IVS);   RELW  <- only(RELW)
 # move between sites without going back to the hub.
 sites <- CFG$sites$active
 if (length(sites) > 1) {
+  # Mark sites without BoR forecasts, so the dropdown itself says which pages
+  # carry scenario results. Cheaper than discovering it after clicking through.
+  bor <- CFG$sites$bor %||% character(0)
+  lbl <- ifelse(sites %in% bor, sites, paste0(sites, "  (no BoR)"))
   opts <- paste(sprintf('<option value="site_%s.html"%s>%s</option>',
                         gsub("[^A-Za-z0-9]", "_", sites),
-                        ifelse(sites == SITE_FOCUS, " selected", ""), sites),
+                        ifelse(sites == SITE_FOCUS, " selected", ""), lbl),
                 collapse = "\n")
   cat(sprintf(paste0(
     '<div style="margin:0 0 1.2em 0;padding:0.7em 1em;background:#f5f7f9;',
@@ -475,11 +479,22 @@ FIG("07_f7b", SITE_FOCUS)
 
 # 4. Bureau of Reclamation scenarios (RQ3)
 
-```{r f9e}
+```{r bor-availability, results='asis'}
+# Forecast hydrographs exist for 8 of the 23 populations. Everything above this
+# point is complete for every site and does not depend on BoR data.
+#
+# A site without BoR gets an explicit, labelled placeholder rather than an empty
+# panel: an empty panel reads as "the analysis found nothing", which is a
+# completely different claim from "the input does not exist here".
+HAS_BOR <- SITE_FOCUS %in% (CFG$sites$bor %||% character(0))
+if (!HAS_BOR) BOR_PLACEHOLDER(SITE_FOCUS)
+```
+
+```{r f9e, eval = HAS_BOR}
 FIG("09_f9e_scenarios", SITE_FOCUS)
 ```
 
-```{r sc-table}
+```{r sc-table, eval = HAS_BOR}
 if (!is.null(SCEFF))
   SCEFF %>%
     transmute(across(any_of(c("Scenario","Period","Type"))), Process = process,
@@ -490,9 +505,11 @@ if (!is.null(SCEFF))
     kable(caption = "Scenario effects relative to historical mean flow. 'Extrapolating' is the share of days outside the training flow range — where β(d) is evaluated with no data behind it.")
 ```
 
-## Which days drive each scenario?
+```{r sc-days-head, results='asis', eval = HAS_BOR}
+cat("## Which days drive each scenario?\n")
+```
 
-```{r f8b}
+```{r f8b, eval = HAS_BOR}
 FIG("08_f8b", SITE_FOCUS)
 ```
 
@@ -500,22 +517,28 @@ A scenario can act because flow changes on days the population is sensitive to, 
 because it changes greatly on days it is not. The multiplier alone cannot tell those
 apart, and they call for different management responses.
 
-```{r f8c}
+```{r f8c, eval = HAS_BOR}
 FIG("08_f8c", SITE_FOCUS)
 ```
 
-# 4b. Equilibrium carrying capacity (rule-curve arm)
+```{r rc-head, results='asis', eval = HAS_BOR}
+cat("# 4b. Equilibrium carrying capacity (rule-curve arm)\n")
+```
 
-A separate analysis answering a different question. Sections 3 and 4 ask **when**
-water helps and what a scenario does over a 30-year projection. This asks: if the
-**summer mean** flow settles at a new level, where does the population settle?
+```{r rc-intro, results='asis', eval = HAS_BOR}
+cat("A separate analysis answering a different question. Sections 3 and 4 ask
+**when** water helps and what a scenario does over a 30-year projection. This
+asks: if the **summer mean** flow settles at a new level, where does the
+population settle?
 
 Two differences from everything above, both deliberate. It reads the
 **flow-informed** IPM, because it propagates the flow response that model already
-fitted rather than estimating a new one. And it uses its own standardization —
-the z of the annual summer mean, on exactly the scale the IPM was fitted with.
+fitted rather than estimating a new one. And it uses its own standardization --
+the z of the annual summer mean, on exactly the scale the IPM was fitted with.\n\n")
+```
 
-```{r rulecurve, results='asis'}
+
+```{r rulecurve, results='asis', eval = HAS_BOR}
 if (is.null(RCV)) {
   cat("> **NOT AVAILABLE** — run `R/10_rulecurve.R`. It needs the FishCast export
 (`<SITE>_rulecurve_inputs.rds`) and the flow-informed posterior it names.\n")
@@ -552,26 +575,26 @@ comes entirely from the recruitment pathway.\n\n")
 }
 ```
 
-```{r f10a}
+```{r f10a, eval = HAS_BOR}
 FIG("10_a", SITE_FOCUS)
 ```
 
-```{r f10b}
+```{r f10b, eval = HAS_BOR}
 FIG("10_b", SITE_FOCUS)
 ```
 
-```{r rc-table}
+```{r rc-table, eval = HAS_BOR}
 if (!is.null(RCSUM))
   RCSUM %>% arrange(dK_pct) %>%
     kable(digits = 2,
           caption = "Equilibrium K and MS by scenario. dK_pct is the change relative to historical mean summer flow. Check frac_extrapolating before quoting a row: a high value means the fitted flow terms are being evaluated outside the range that calibrated them.")
 ```
 
-```{r f10c}
+```{r f10c, eval = HAS_BOR}
 FIG("10_c", SITE_FOCUS)
 ```
 
-```{r rc-caveats, results='asis'}
+```{r rc-caveats, results='asis', eval = HAS_BOR}
 if (!is.null(RCV)) {
   cat("**Read these before quoting a number.**\n\n")
   cat("- K is an *equilibrium* under a sustained shift in summer mean flow. It is not a 30-year projection and is not comparable to the production sensitivities in §3.5 — different question, different units.\n")

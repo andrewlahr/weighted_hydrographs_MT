@@ -379,6 +379,66 @@ with no page edits.
 
 ---
 
+## 2026-07-29 — Session 33: per-site pages, site selector, BoR gating
+
+Andrew: a site selector on the results tab; all 23 populations get the non-BoR
+results, only the 8 with forecast flows get scenario sections; keep the all-site
+and among-site views.
+
+### `[DECISION]` One page per site, generated from one template
+For static GitHub Pages the alternative — every site on one page with JavaScript
+show/hide — would load ~500 images at once and give facets too small to read.
+Instead `render_site.R` writes a three-line `site_<SITE>.Rmd` wrapper per active
+site, each setting `SITE_FOCUS` and knitting `_site_template.Rmd` as a child.
+
+Because `render_site()` picks the wrappers up natively they inherit the navbar
+and theme automatically, which a standalone `rmarkdown::render()` would not.
+`_site_template.Rmd` begins with an underscore, so it is never rendered on its
+own. The wrappers are generated, therefore git-ignored — editing one by hand
+would be silently overwritten on the next render.
+
+Site names contain dots (`Madison.Norris`), so filenames use a sanitised form;
+the selector and the hub both apply the same `safe()` transform.
+
+### `[DECISION]` A missing input gets a labelled placeholder, never an empty panel
+`CFG$sites$bor` lists the 8 populations with forecast hydrographs. Sections 4
+(scenarios) and 4b (rule curve) are gated on `eval = HAS_BOR`; a site without
+them gets a bordered note stating that this is a **data-availability limit, not a
+modelling result**.
+
+That distinction matters more than it looks. An empty scenario panel reads as
+"the analysis found nothing" — a claim about trout. The placeholder says "the
+input does not exist here" — a claim about data. Confusing the two would be a
+real misreading for a BoR audience, and the 15 sites without forecasts are the
+majority.
+
+### `[CHANGE]` Availability is visible before you click
+- the dropdown appends `(no BoR)` to sites without forecasts
+- the hub table gains a `BoR forecasts` column
+- both derive from `CFG$sites$bor`, so there is one source of truth
+
+### `[FINDING]` I nearly built a second, conflicting mechanism
+An interrupted turn had already written the generation block, hub and template
+using `SITE_FOCUS` / `_site_template.Rmd`. I began adding a parallel
+`THIS_SITE` / `_site_body.Rmd` implementation before checking. Removed mine and
+kept the existing one, which was more complete — its hub carries per-site gate
+status rather than being a bare menu.
+
+Same for the selector: I added `SITE_PICKER()` to `_common.R` when the template
+already had one. Removed it. Two copies of a widget is how they drift.
+
+### `[NOTE]` Three sites, three roles
+`results.html` (hub, gate status per site) · `site_<SITE>.html` (one site in
+full) · `results_among_sites.html` (cross-site synthesis, RQ2). The old
+`results_by_site.Rmd` is superseded by the hub plus the per-site pages.
+
+### `[OPEN]` Add the other 15 sites to `CFG$sites$active`
+Only sites in `active` get a page; the selector deliberately lists only those, so
+it never offers a 404. Run the two-site dry run first — the `geom_hline` failure
+in session 32 shows single-site assumptions are the likeliest remaining defects.
+
+---
+
 ## 2026-07-29 — Session 32: faceted geom_hline with vector parameters
 
 `03_fit_beta_recruitment.R` Figure 3b failed with

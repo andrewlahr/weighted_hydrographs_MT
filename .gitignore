@@ -66,6 +66,7 @@ Output/
 # manuscript/figures/ is a staging copy render_site.R makes so the pages can
 # reference figures relatively. The published copies travel inside _site/.
 _site/
+manuscript/figures/**
 manuscript/figures/
 manuscript/*_files/
 

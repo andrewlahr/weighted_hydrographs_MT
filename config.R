@@ -44,7 +44,7 @@ CFG <- list(
     data_root     = "../LL/Data",
     posterior_dir = "../LL/JAGS_PVA/ModelFits",
     flow_dir      = "../WeightedHydrograph/BOR_Weighted/imputed_output",
-    bor_flow      = "../LL/Data/Madison_Norris_BOR_future_flow_data.rds",
+    bor_flow      = "../WeightedHydrograph/BOR_Weighted/Data/Madison_Norris_BOR_future_flow_data.rds",
     output        = "output"
   ),
 
@@ -53,13 +53,25 @@ CFG <- list(
   # scripts already loop, and the among-site synthesis switches itself on once
   # there is more than one site. No code changes needed.
   sites = list(
-    active = c("BigHole.Melrose"),
-    
-    all    = c("Madison.Norris", 'Missouri.Cascade','Missouri.Craig', "BigHole.Melrose", "Beaverhead.FishAndGame","Beaverhead.Hildreth")
-    # all    = c("Madison.Norris", "Missouri.Craig",'Missouri.Cascade', "BigHole.Melrose",
-    #            "Ruby.Vigilante", "Beaverhead.FishAndGame")
+    active = c("Madison.Norris"),
+
+    # ---- sites with Bureau of Reclamation forecast flows ---------------------
+    # RQ3 (scenario projections, script 08) and the rule-curve arm (script 10)
+    # need BoR downscaled hydrographs, which exist for 8 of the 23 populations.
+    # Everything else -- beta(d), the daily guidance, production sensitivity,
+    # and the among-site synthesis -- runs for ALL sites.
+    #
+    # A site not listed here gets a clearly-labelled placeholder in place of the
+    # scenario sections, rather than an empty panel that reads like a failed
+    # analysis.
+    bor = c("Smith.EagleCreek", "Ruby.Vigilante", "Missouri.Craig",
+            "Missouri.Cascade", "Madison.Norris", "BigHole.Melrose",
+            "Beaverhead.Hildreth", "Beaverhead.FishAndGame"),
+
+    all    = c("Smith.EagleCreek", "Ruby.Vigilante", "Missouri.Craig",
+               "Missouri.Cascade", "Madison.Norris", "BigHole.Melrose",
+               "Beaverhead.Hildreth", "Beaverhead.FishAndGame","Bighorn.MallardsLanding",'Bighorn.Bighorn','Madison.Varney','Madison.PineButte')
   ),
-  
 
   # ---- which JAGS nodes carry the response ---------------------------------
   posterior = list(
@@ -83,7 +95,7 @@ CFG <- list(
 
     # Thin to this many posterior draws. The design matrix does not change
     # across draws, so 2000 is ample; more just costs time.
-    max_draws = 2000
+    max_draws = 20000
   ),
 
   biology = list(
@@ -161,10 +173,10 @@ CFG <- list(
   ),
 
   production = list(
-    block_days = 30,     # width of each perturbation block in the IPM sweep
+    block_days = 5,     # width of each perturbation block in the IPM sweep
     n_years    = 40,
     burn_in    = 15,
-    n_draws    = 400
+    n_draws    = 1000
   ),
 
   qc = list(
@@ -213,6 +225,11 @@ params_path <- function(site) {
                    paste0(ss, "allParams_update2026_02.csv"))
   )
 }
+
+#' Which rows of the parameter CSV to keep
+#'
+#' Also reproduces the original: most sites select on the model string,
+#' BigHole.Melrose selects on the lag columns instead.
 params_year_name <- "Estimated NAdults"
 
 #' Which rows of the parameter CSV to keep
@@ -228,22 +245,6 @@ params_filter <- function(site, d) {
     d[grepl("SUMMERQ|Global", d$model), , drop = FALSE]
   }
 }
-#' Which rows of the parameter CSV to keep
-#'
-#' Also reproduces the original: most sites select on the model string,
-#' BigHole.Melrose selects on the lag columns instead.
-params_filter <- function(site, d) {
-  if (site == "BigHole.Melrose") {
-    stopifnot(all(c("SummerLag", "WinterLag") %in% names(d)))
-    d[d$SummerLag == 2 & d$WinterLag == 2, , drop = FALSE]
-  } else {
-    stopifnot("model" %in% names(d))
-    d[grepl("SUMMERQ|Global", d$model), , drop = FALSE]
-  }
-}
-
-#' The row label whose Year column carries the annual series
-params_year_name <- "Estimated NAdults"
 
 
 # =============================================================================
@@ -285,6 +286,7 @@ CFG$rulecurve <- list(
   n_draws = 1000, stock_max = 5000, stock_n = 2001
 )
 
+
 #' FishCast export for a site: covarLagIn1Real, Flows, Weight3/4, Survival, RecLag
 rulecurve_export_path <- function(site)
   file.path(CFG$paths$data_root, paste0(site, "_rulecurve_inputs.rds"))
@@ -297,8 +299,8 @@ rulecurve_observed_path <- function(site) {
 
 #' BoR projected daily flow for the rule-curve arm
 rulecurve_bor_path <- function(site) {
-  ss <- toupper(sub("^[^.]*\\.", "", site))
-  file.path(CFG$paths$data_root, paste0(ss, "_BOR_future_flow_data.RDS"))
+  ss <- gsub(".", "_", site, fixed = TRUE)
+  paste0("../WeightedHydrograph/BOR_Weighted/data/",ss,"_BOR_future_flow_data.rds")
 }
 
 
@@ -339,7 +341,7 @@ FLOW_LAG_BY_SITE <- c(
 flow_lag <- function(site) {
   if (site %in% names(FLOW_LAG_BY_SITE))
     return(unname(FLOW_LAG_BY_SITE[[site]]))
-
+  
   # LOUD, not silent. The lag genuinely varies between sites (Norris 3,
   # BigHole.Melrose 2), so a wrong default shifts every flow window by a year and
   # still produces entirely plausible coefficients. A site that reaches here has
@@ -352,7 +354,6 @@ flow_lag <- function(site) {
           call. = FALSE)
   as.integer(CFG$biology$recruit_lag)
 }
-
 #' Which calendar year's hydrograph predicts a given recruit year
 #'
 #' On a calendar axis this is exactly the lag the IPM selected -- no conversion,

@@ -42,6 +42,32 @@ BETAR <- .tb("beta_recruitment.csv"); BETAS <- .tb("beta_survival.csv")
 # lags describe different years of the fish's life and must not be pooled.
 lag_of <- function(B) if (is.null(B) || is.null(B$fits)) NULL else
   vapply(B$fits, function(f) as.integer(f$flow_lag %||% NA), integer(1))
+# --- BoR availability ---------------------------------------------------------
+# Forecast flows exist for 8 of 23 populations. Everything else runs everywhere.
+# A site without BoR data gets a labelled placeholder, never an empty panel: an
+# empty panel reads as a failed analysis, which is a different claim entirely.
+HAS_BOR <- function(site) site %in% (CFG$sites$bor %||% character(0))
+
+BOR_PLACEHOLDER <- function(site) {
+  cat(sprintf('
+<div style="border-left:4px solid #c9a227; background:#fdf9ec; padding:12px 16px; margin:16px 0;">
+<strong>Bureau of Reclamation scenarios are not available for %s.</strong><br>
+Downscaled forecast hydrographs exist for %d of the %d populations in this
+analysis. Everything on this page above this point &mdash; the daily
+&beta;(<em>d</em>) curves, the release guidance, and the production
+sensitivity &mdash; is complete for this site and does not depend on BoR data.
+<br><br>
+<em>This is a data-availability limit, not a modelling result. Nothing here
+implies flow has no effect at this site.</em>
+</div>
+', site, length(CFG$sites$bor %||% character(0)),
+  length(CFG$sites$all %||% CFG$sites$active)))
+}
+
+# NOTE: the site selector lives in manuscript/_site_template.Rmd, which renders
+# it once per page with the current site marked `selected`. It is not duplicated
+# here -- two copies of the same widget is how they drift apart.
+
 lag_group_of <- function(lags) ifelse(
   is.na(lags), "lag unknown",
   ifelse(lags >= CFG$biology$recruit_lag, "spawning-year lag", "rearing-year lag"))
