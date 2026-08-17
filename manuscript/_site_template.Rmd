@@ -1,0 +1,623 @@
+<!--
+=============================================================================
+_site_template.Rmd -- the per-site results body.
+
+The leading underscore keeps render_site() from rendering it as a page. It is
+included as a CHILD by each generated site_<name>.Rmd, which sets SITE_FOCUS
+first. Edit the results content HERE; the generated wrappers are disposable.
+=============================================================================
+-->
+
+```{r setup, include=FALSE}
+source("_common.R")
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+# Set by the generated wrapper. Falls back to the first active site so the
+# template can still be knitted on its own while drafting.
+if (!exists("SITE_FOCUS")) SITE_FOCUS <- CFG$sites$active[[1]]
+s1 <- SITE_FOCUS
+
+# Every table below is filtered to this site. `only()` is a no-op on any table
+# that has no `site` column, so it is safe to apply everywhere.
+only <- function(d, site = SITE_FOCUS) {
+  if (is.null(d) || !"site" %in% names(d)) return(d)
+  d[d$site == site, , drop = FALSE]
+}
+GATE  <- only(GATE);  DAILY <- only(DAILY);  BETAR <- only(BETAR)
+BETAS <- only(BETAS); DWDAY <- only(DWDAY);  DWCOST <- only(DWCOST)
+DWSCH <- only(DWSCH); SCEFF <- only(SCEFF);  PRODT <- only(PRODT)
+IVS   <- only(IVS);   RELW  <- only(RELW)
+```
+
+```{r site-selector, results='asis'}
+# A plain <select> that navigates on change. No JavaScript library, no build
+# step, and it works on static hosting. Rendered on every site page so you can
+# move between sites without going back to the hub.
+sites <- CFG$sites$active
+if (length(sites) > 1) {
+  opts <- paste(sprintf('<option value="site_%s.html"%s>%s</option>',
+                        gsub("[^A-Za-z0-9]", "_", sites),
+                        ifelse(sites == SITE_FOCUS, " selected", ""), sites),
+                collapse = "\n")
+  cat(sprintf(paste0(
+    '<div style="margin:0 0 1.2em 0;padding:0.7em 1em;background:#f5f7f9;',
+    'border-left:4px solid #2c6fa8;border-radius:3px;">\n',
+    '<label style="font-weight:600;margin-right:0.6em;">Site:</label>\n',
+    '<select style="padding:0.35em 0.6em;font-size:1em;" ',
+    'onchange="if(this.value)location.href=this.value;">\n%s\n</select>\n',
+    '<span style="margin-left:1em;font-size:0.9em;color:#555;">',
+    '<a href="results.html">all sites</a> &middot; ',
+    '<a href="results_among_sites.html">among-site synthesis</a></span>\n</div>\n'),
+    opts))
+}
+```
+
+# `r SITE_FOCUS`
+
+
+```{r gate-banner, results='asis'}
+if (is.null(GATE)) {
+  cat("> **Analysis not yet run.** Execute `RUN_ALL.R` and re-render. Every claim below is conditional on the validation result.\n")
+} else if (!isTRUE(GATE_OK("recruitment", "beta")) && !isTRUE(GATE_OK("recruitment", "seasonal"))) {
+  cat("> ## Read this first\n>\n",
+      "> **No flow signal survives validation at this site.** Curves and tables below are\n",
+      "> correct arithmetic on a relationship that is not detectable in this record. They\n",
+      "> are retained so the pipeline can be audited end to end, not so the numbers can be\n",
+      "> quoted. Every section is labelled accordingly.\n>\n",
+      "> This is a result, not a failure. It says that ~40 years of annual data cannot\n",
+      "> resolve a flow effect on these vital rates at this site, and that releases cannot\n",
+      "> be timed to trout on this evidence.\n")
+} else if (!isTRUE(GATE_OK("recruitment", "beta"))) {
+  cat("> ## Read this first\n>\n",
+      "> **Flow affects recruitment, but its daily timing is not resolvable here.** The\n",
+      "> four-window confirmatory model passed validation; the daily curve did not.\n",
+      "> Guidance is reported at seasonal resolution. Daily curves are shown for shape only.\n")
+}
+```
+
+# 1. What was estimated
+
+For every day of the calendar year, two curves per site:
+
+- **β_R(d)** — effect of a wetter-than-normal day on recruits per unit spawning stock
+- **β_S(d)** — effect on adult survival, on the logit scale
+
+and one derived curve:
+
+- **s(d)** — the benefit per unit of water actually released, which is
+  β(d) divided by baseline discharge and is therefore a **different shape**
+
+```{r gate-table}
+if (!is.null(GATE))
+  GATE %>%
+    transmute(Process = process, Model = ifelse(startsWith(form, "beta"),
+                             sub("^beta:", "daily β(d), ", form), "4 windows"),
+              Years = n_years, `Eff. df` = round(edf, 1),
+              `In-sample` = round(r2_insample, 3), `Leave-one-out` = round(r2_loo, 3),
+              `Blocked CV` = round(r2_blocked, 3), `Perm. p` = round(p_value, 3),
+              Passes = ifelse(passes, "yes", "no")) %>%
+    kable(caption = "Validation. Blocked cross-validation is the honest number; in-sample is arithmetic, not evidence. Leave-one-out is shown so the inflation from flow autocorrelation is visible.")
+```
+
+## 1.1 The fitted curves
+
+β(d) is the effect on the response of one standard deviation of extra flow on day
+d, holding every other day fixed. It is the primary estimate — everything in
+§3 and §4 is a summary of it.
+
+**Read it against its band, not as a line.** Where the interval spans zero the
+data cannot tell the sign of the effect on that day, however sharp the peak looks.
+
+```{r f3a}
+FIG("03_f3a", SITE_FOCUS)
+```
+
+```{r beta-rec-note, results='asis'}
+if (!is.null(BETAR)) {
+  d  <- BETAR %>% filter(site == s1)
+  pk <- d$doy[which.max(d$beta)]; tr <- d$doy[which.min(d$beta)]
+  frac <- mean(d$lo > 0 | d$hi < 0, na.rm = TRUE)
+  cat(sprintf(paste0("At **%s**, β(d) is largest on **%s** and most negative on **%s**. ",
+                     "Its 95%% interval excludes zero on **%.0f%%** of days.\n\n"),
+              s1, doy_date(pk), doy_date(tr), 100 * frac))
+  if (frac < 0.05)
+    cat("> On almost no day does the interval exclude zero. The curve's shape is\n",
+        "> being supplied by the smoothness prior rather than by the data. Do not\n",
+        "> read a peak off it — see §3.2 for what can honestly be named.\n", sep = "")
+}
+```
+
+```{r f3b}
+FIG("03_f3b", SITE_FOCUS)
+```
+
+```{r f4a}
+FIG("04_f4a", SITE_FOCUS)
+```
+
+```{r beta-surv-note, results='asis'}
+if (is.null(BETAS)) {
+  cat("*No survival curve — run `R/04_fit_beta_survival.R`. It needs `Surv[]` ",
+      "monitored per year in the null IPM.*\n", sep = "")
+} else if (!is.null(BS) && !is.null(BS$fits)) {
+  L <- unique(vapply(BS$fits, function(f) as.integer(f$surv_lag %||% NA), integer(1)))
+  cat(sprintf(paste0("The survival curve is fitted at a lag of **%s year(s)**, chosen by the ",
+                     "sweep in script 04 and gated in script 05. That lag is fitted ",
+                     "independently of the recruitment flow lag, so the two curves need not ",
+                     "describe the same year.\n"), paste(L, collapse = "/")))
+}
+```
+
+## 1.2 The flow modes β(d) is built from
+
+```{r fpc-modes-intro, results='asis'}
+if (!identical(S[["estimator"]] %||% CFG$fitting$estimator, "fpc")) {
+  cat("*This section applies to the functional-principal-component estimator. ",
+      "The current fit uses the penalized spline, which has no components — ",
+      "β(d) is a smooth curve rather than a weighted sum of modes.*\n", sep = "")
+} else {
+  cat("β(d) from this estimator is a weighted sum of eigenfunctions of the ",
+      "hydrographs. Plotting the modes shows **what shape of flow variation the ",
+      "model responds to**, which β(d) alone does not reveal.\n", sep = "")
+}
+```
+
+```{r f3e}
+FIG("03_f3e", SITE_FOCUS)
+```
+
+```{r fpc-mode-table}
+if (!is.null(MODES))
+  MODES %>%
+    transmute(Site = site, Mode = paste0("FPC", k),
+              `Flow var. (%)` = round(flow_var, 1),
+              `Recruit var. (%)` = round(recruit_var, 1),
+              `P(consistent sign)` = round(p_dir, 2),
+              Supported = ifelse(consistent_sign, "yes", "no")) %>%
+    kable(caption = "Retained flow modes. 'Flow var.' is what selected the mode; 'recruit var.' is what makes it interesting. Recruit variance is IN-SAMPLE and optimistic, because components were chosen on flow variance and only then tested against recruitment — the blocked cross-validation above is what decides whether any of it predicts.")
+```
+
+```{r f3f}
+FIG("03_f3f", SITE_FOCUS)
+```
+
+```{r fpc-modes-note, results='asis'}
+if (!is.null(MODES)) {
+  top <- MODES[which.max(MODES$recruit_var), ]
+  cat(sprintf(paste0("\nThe mode explaining the most recruitment variance is **FPC%d**, ",
+                     "which carries %.1f%% of hydrograph variation but %.1f%% of variation ",
+                     "in log(R/S). "), top$k, top$flow_var, top$recruit_var))
+  if (top$k > 1)
+    cat("Note that it is **not** the leading mode: the dominant pattern of flow ",
+        "variation is not the one most associated with recruitment. That is the ",
+        "central objection to selecting components on predictor variance, and it ",
+        "is visible here rather than hypothetical.\n", sep = "")
+  else
+    cat("It is also the leading mode, so in this case selection on flow variance ",
+        "and relevance to recruitment happen to agree.\n", sep = "")
+}
+```
+
+# 2. The ecological curves (RQ2)
+
+```{r f9a}
+FIG("09_f9a_life_history", SITE_FOCUS)
+```
+
+```{r stage-table}
+if (!is.null(STAGE))
+  STAGE %>%
+    transmute(Site = site, `Vital rate` = process, `Life stage` = stage,
+              `Mean β` = round(mean_beta, 5),
+              `Fraction of stage positive` = round(frac_positive, 2)) %>%
+    arrange(Site, `Vital rate`, `Life stage`) %>%
+    kable(caption = "Mean flow sensitivity within each life stage. Positive means wetter-than-normal conditions during that stage are associated with better performance.")
+```
+
+```{r ecology-text, results='asis'}
+if (!is.null(STAGE) && nrow(STAGE)) {
+  for (st in unique(STAGE$site)) {
+    d <- STAGE %>% filter(site == st)
+    cat(sprintf("\n**%s.** ", st))
+    for (pr in unique(d$process)) {
+      dp <- d %>% filter(process == pr) %>% arrange(desc(mean_beta))
+      cat(sprintf("For %s, the strongest positive association is during **%s** and the strongest negative during **%s**. ",
+                  pr, dp$stage[1], dp$stage[nrow(dp)]))
+    }
+    if (length(unique(d$process)) > 1) {
+      pk <- d %>% group_by(process) %>% slice_max(mean_beta, n = 1) %>% ungroup()
+      cat(if (length(unique(pk$stage)) > 1)
+        sprintf("\n\nRecruitment and survival peak in **different** life stages (%s), which implies the two vital rates are flow-limited at different times of year and that the bottleneck shifts seasonally. ",
+                paste(paste0(pk$process, ": ", pk$stage), collapse = "; "))
+        else "\n\nBoth vital rates peak in the same stage, implying a single seasonal bottleneck. ")
+    }
+    cat("\n")
+  }
+  cat("\n*Interpretation requires the life-history timeline in `output/tables/life_history_timeline.csv` to be correct for this system. Edit `LIFE` in `R/09_figures.R` and cite the source.*\n")
+}
+```
+
+```{r f9b}
+FIG("09_f9b_stage_means", SITE_FOCUS)
+```
+
+# 3. Guidance for water managers (RQ1)
+
+## 3.1 The two curves are not the same shape
+
+```{r f6a}
+FIG("06_f6a", SITE_FOCUS)
+```
+
+This is the practical core. β(d) says when the population is sensitive to
+hydrology; s(d) says when a unit of released water buys the most fish. They differ
+because the same water is a large proportional change at base flow and a small one
+at the snowmelt peak.
+
+## 3.2 How precisely can a day be named?
+
+```{r f6c}
+FIG("06_f6c", SITE_FOCUS)
+```
+
+```{r iv-table}
+if (!is.null(IVS))
+  IVS %>%
+    transmute(Process = process, Which = which,
+              Window = paste0(doy_date(lo_doy), " – ", doy_date(hi_doy)),
+              Median = doy_date(median_doy),
+              `Width (days)` = round(width_days),
+              `Credible level` = paste0(100 * cred_level, "%"),
+              Resolvable = ifelse(resolvable, "yes", "no — report a season")) %>%
+    kable(caption = "The honest resolution. Each simulated curve votes for its best and worst day; this is the credible interval of that vote. Width is a property of the record, not a modelling choice.")
+```
+
+```{r resolution-text, results='asis'}
+if (!is.null(IVS)) {
+  if (all(IVS$resolvable)) {
+    cat("All windows are narrower than 90 days, so daily-scale timing guidance is supportable.\n")
+  } else {
+    cat("**At least one window exceeds 90 days.** For those, no date should be reported anywhere in the manuscript or in guidance to managers — the record supports a season, not a week. Stating a date would give actionable-looking advice built on noise, which is worse than declining to advise, because water gets moved and money gets spent.\n")
+  }
+}
+```
+
+## 3.3 Where to put a fixed volume of water
+
+```{r f6e}
+FIG("06_f6e", SITE_FOCUS)
+```
+
+```{r relw-table}
+if (!is.null(RELW))
+  RELW %>% filter(process == "recruitment") %>%
+    group_by(volume_af) %>% slice_max(effect, n = 1) %>% ungroup() %>%
+    transmute(`Volume (acre-ft)` = volume_af, `Window (days)` = window_days,
+              `Sustained cfs` = round(sustained_cfs, 1),
+              `Best start` = doy_date(best_start_doy),
+              `Start range` = paste0(doy_date(start_lo), " – ", doy_date(start_hi)),
+              `Effect (%)` = round(effect, 2),
+              `P(positive)` = round(p_positive, 2)) %>%
+    kable(caption = "Best release schedule for each leased volume. This is the answer to 'I have V acre-feet — when do I release it?' Longer windows usually win because the log-response means the hundredth cfs buys less than the first.")
+```
+
+## 3.4 The season when water can actually be released
+
+Sections 3.1–3.3 use the full calendar year, which is the right *ecological* domain —
+β(d) is estimated over all 365 days and should be reported that way. But nobody
+can release water in February. Leased water, shepherded water and reservoir
+re-timing are negotiated and delivered across the irrigation season.
+
+Restricting to that season is a **constrained optimisation, not a zoom**. The best
+feasible day is an argmax over a subset and can be a different day; its credible
+interval has to be recomputed within the subset rather than truncated; and release
+schedules must be restricted to starts whose full duration fits inside the season.
+
+```{r dw-window, results='asis'}
+if (is.null(DW)) {
+  cat("> **NOT AVAILABLE** — run `R/06b_decision_window.R`.\n")
+} else {
+  w <- DW$window
+  cat(sprintf("The window used here is the **%s**: %s to %s, %d days.",
+              w$label, doy_date(w$start), doy_date(w$end), w$n_days))
+  # On a calendar axis the allocation season (May-October, days 121-304) is a
+  # plain contiguous range. The water-year version wrapped the 1 October boundary
+  # and needed a position axis to plot; script 06b now stops if start > end.
+  cat(" Set it in `config.R` under `CFG$decision_window`.\n")
+}
+```
+
+### The curve across the season, and what drives it
+
+```{r f6bf}
+FIG("06b_f", SITE_FOCUS)
+```
+
+Baseline discharge is on the right axis for a reason. Benefit per cfs scales as
+1/Q, and discharge falls sharply from the snowmelt peak to autumn base flow — so
+the same acre-foot buys progressively more as the season goes on. **Where the
+benefit curve peaks later than β(d) does, that gap is pure 1/Q leverage**, and it
+is the part a water user can act on.
+
+### The best feasible day, and what the constraint costs
+
+```{r f6bg}
+FIG("06b_g", SITE_FOCUS)
+```
+
+```{r dw-cost-table}
+if (!is.null(DWCOST))
+  DWCOST %>%
+    transmute(Process = process, Site = site,
+              `Best day (unconstrained)` = best_free_date,
+              `Best feasible day` = best_dec_date,
+              `Feasible window` = paste0(lo_date, " – ", hi_date),
+              `Width (days)` = round(width_days),
+              `Benefit retained` = paste0(round(100 * frac_retained), "%"),
+              `Constraint binds` = paste0(round(100 * p_constraint_binds), "% of draws"),
+              Resolvable = ifelse(resolvable, "yes", "no — report a period")) %>%
+    kable(caption = "What the allocation season costs. 'Benefit retained' is the effect at the best feasible day divided by the effect at the unconstrained optimum. 'Constraint binds' is how often the globally best day fell outside the season.")
+```
+
+```{r dw-cost-text, results='asis'}
+if (!is.null(DWCOST)) {
+  fr <- min(DWCOST$frac_retained, na.rm = TRUE)
+  if (fr >= 0.9) {
+    cat("**The constraint is close to free.** The best feasible day retains at least ",
+        round(100 * fr), "% of the unconstrained optimum, so the season in which water can be
+released largely contains the season in which it matters. This is the
+straightforward case: the guidance in the next section can be delivered through
+existing allocation mechanisms.\n", sep = "")
+  } else if (fr >= 0.5) {
+    cat("**The constraint costs something real.** The best feasible day retains ",
+        round(100 * fr), "% of the unconstrained optimum. Water delivered inside the
+allocation season still helps, but part of the achievable benefit sits outside any
+window a lease or a shepherding agreement can reach. Worth stating explicitly to a
+BoR audience, because it is an argument about *institutional* timing rather than
+about volume.\n", sep = "")
+  } else {
+    cat("**The biology wants water when the allocation system cannot deliver it.** The
+best feasible day retains only ", round(100 * fr), "% of the unconstrained optimum.
+This is a finding, not a nuisance: it says the binding constraint on trout benefit
+here is not how much water is available for lease but *when it can be moved*. That
+conclusion belongs in the abstract, and it points at a different intervention —
+changing the rules about when water can be re-timed — rather than at buying more
+of it.\n", sep = "")
+  }
+}
+```
+
+### Every feasible schedule, scored
+
+```{r f6bh}
+FIG("06b_h", SITE_FOCUS)
+```
+
+```{r dw-sched-table}
+if (!is.null(DWSCH))
+  DWSCH %>% filter(process == "recruitment") %>%
+    group_by(volume_af) %>% slice_max(effect, n = 1, with_ties = FALSE) %>% ungroup() %>%
+    transmute(`Volume (acre-ft)` = volume_af, `Duration (days)` = window_days,
+              `Sustained cfs` = round(sustained_cfs, 1),
+              `Start` = start_date, `End` = end_date,
+              `Start range` = paste0(start_lo_date, " – ", start_hi_date),
+              `Effect (%)` = round(effect, 2),
+              `P(positive)` = round(p_positive, 2)) %>%
+    kable(caption = "The operational answer: for each leased volume, the best schedule that fits entirely inside the allocation season. Compare the effect column against the unconstrained table in 3.3 to see the cost of the constraint directly.")
+```
+
+### Does the timing decision actually matter?
+
+```{r f6bi}
+FIG("06b_i", SITE_FOCUS)
+```
+
+```{r dw-flatness, results='asis'}
+if (!is.null(DW) && !is.null(DW$grid)) {
+  g <- DW$grid %>% filter(process == "recruitment")
+  if (nrow(g)) {
+    flat <- g %>% group_by(site, volume_af, window_days) %>%
+      summarise(best = max(effect), spread = max(effect) - min(effect),
+                near = mean(effect >= max(effect) - 0.1 * abs(max(effect))),
+                .groups = "drop")
+    med_near <- median(flat$near, na.rm = TRUE)
+    cat(sprintf("Across schedules, a median of **%.0f%%** of feasible start dates land within 10%% of the best achievable benefit.\n\n",
+                100 * med_near))
+    if (med_near > 0.5)
+      cat("**Timing is not the binding decision.** Most of the season performs close to
+optimally, so the operational message is to release when it is easiest — during a
+convenient call, or when a lease happens to be available — rather than negotiating
+hard for a specific date. That is a *better* outcome for a water user than a sharp
+optimum, and it is invisible if you plot only the best day.\n")
+    else if (med_near > 0.2)
+      cat("**Timing matters moderately.** A substantial part of the season is near-optimal,
+but the tails are meaningfully worse. Guidance should name a period to aim for and
+a period to avoid, rather than a single date.\n")
+    else
+      cat("**Timing is the binding decision.** Only a narrow part of the season is
+near-optimal, so *when* the water moves matters as much as how much of it there is.
+This is the case where negotiating for a specific delivery window is worth the
+transaction cost — provided the interval in the table above is narrow enough to
+name one.\n")
+  }
+}
+```
+
+```{r dw-gate-warning, results='asis'}
+if (!is.null(DWCOST) && "passes" %in% names(DWCOST) && !isTRUE(all(DWCOST$passes)))
+  cat("\n> **None of this section is supported.** The validation gate in script 05 did
+not pass for at least one curve used here. The schedules above are correct
+arithmetic on a relationship the record cannot demonstrate, and must not be
+briefed to managers or included as a recommendation.\n")
+```
+
+## 3.5 Whole-population production
+
+```{r f7a}
+FIG("09_f9d_production", SITE_FOCUS)
+```
+
+```{r prod-table}
+if (!is.null(PRODT))
+  PRODT %>% filter(pathway == "both") %>%
+    group_by(site) %>%
+    summarise(`Best block` = doy_date(block_start[which.max(d_prod_pct)]),
+              `Best (%)` = round(max(d_prod_pct), 2),
+              `Worst block` = doy_date(block_start[which.min(d_prod_pct)]),
+              `Worst (%)` = round(min(d_prod_pct), 2), .groups = "drop") %>%
+    rename(Site = site) %>%
+    kable(caption = "Effect on mean annual surplus production, propagated through the age-structured model. Includes the compounding of survival into future spawning stock, which adding the recruitment and survival curves separately would miss.")
+```
+
+```{r f7b}
+FIG("07_f7b", SITE_FOCUS)
+```
+
+# 4. Bureau of Reclamation scenarios (RQ3)
+
+```{r f9e}
+FIG("09_f9e_scenarios", SITE_FOCUS)
+```
+
+```{r sc-table}
+if (!is.null(SCEFF))
+  SCEFF %>%
+    transmute(across(any_of(c("Scenario","Period","Type"))), Process = process,
+              Years = n_years, Effect = round(effect, 2),
+              `10th–90th` = paste0(round(effect_lo, 2), " – ", round(effect_hi, 2)),
+              `Extrapolating` = paste0(round(100 * frac_extrap), "%"),
+              Status = status) %>%
+    kable(caption = "Scenario effects relative to historical mean flow. 'Extrapolating' is the share of days outside the training flow range — where β(d) is evaluated with no data behind it.")
+```
+
+## Which days drive each scenario?
+
+```{r f8b}
+FIG("08_f8b", SITE_FOCUS)
+```
+
+A scenario can act because flow changes on days the population is sensitive to, or
+because it changes greatly on days it is not. The multiplier alone cannot tell those
+apart, and they call for different management responses.
+
+```{r f8c}
+FIG("08_f8c", SITE_FOCUS)
+```
+
+# 4b. Equilibrium carrying capacity (rule-curve arm)
+
+A separate analysis answering a different question. Sections 3 and 4 ask **when**
+water helps and what a scenario does over a 30-year projection. This asks: if the
+**summer mean** flow settles at a new level, where does the population settle?
+
+Two differences from everything above, both deliberate. It reads the
+**flow-informed** IPM, because it propagates the flow response that model already
+fitted rather than estimating a new one. And it uses its own standardization —
+the z of the annual summer mean, on exactly the scale the IPM was fitted with.
+
+```{r rulecurve, results='asis'}
+if (is.null(RCV)) {
+  cat("> **NOT AVAILABLE** — run `R/10_rulecurve.R`. It needs the FishCast export
+(`<SITE>_rulecurve_inputs.rds`) and the flow-informed posterior it names.\n")
+} else {
+  cat(sprintf("Baseline at the historical geometric-mean summer flow (z = %s): **K = %s**, **MS = %s**.\n\n",
+              V(RCV$baseline_z, 2),
+              V(median(RCV$baseline$K, na.rm = TRUE), 0),
+              V(median(RCV$baseline$MS, na.rm = TRUE), 0)))
+  if (!is.null(RCV$scale_check) && !is.na(RCV$scale_check))
+    cat(sprintf("Geometry-to-posterior scale check: %s (1.00 is exact agreement).\n\n",
+                V(RCV$scale_check, 3)))
+
+  # WHICH FLOW TERMS THE IPM SELECTED. This varies by site -- some fits have no
+  # quadratic term because model selection found no curvature -- and it changes
+  # how the results below must be read, so it is reported rather than assumed.
+  tp <- RCV$terms_present
+  if (!is.null(tp)) {
+    lbl <- c(b1r = "recruitment linear", b12r = "recruitment quadratic",
+             b1S = "survival linear",    b12S = "survival quadratic")
+    got <- names(which(tp)); missing <- names(which(!tp))
+    cat(sprintf("Flow terms selected by the IPM at this site: **%s**.\n\n",
+                if (length(got)) paste(lbl[got], collapse = ", ") else "none"))
+    if (length(missing))
+      cat(sprintf("Not selected: %s — those coefficients are zero, which is what
+\"not selected\" means, not a gap in the fit.\n\n",
+                  paste(lbl[missing], collapse = ", ")))
+    if (!tp[["b1r"]] && !tp[["b12r"]])
+      cat("> **Recruitment has no flow response in this fit.** Any change in K below
+comes entirely from the survival pathway. That is a result, not a failure.\n\n")
+    if (!tp[["b1S"]] && !tp[["b12S"]])
+      cat("> **Survival has no flow response in this fit.** Any change in K below
+comes entirely from the recruitment pathway.\n\n")
+  }
+}
+```
+
+```{r f10a}
+FIG("10_a", SITE_FOCUS)
+```
+
+```{r f10b}
+FIG("10_b", SITE_FOCUS)
+```
+
+```{r rc-table}
+if (!is.null(RCSUM))
+  RCSUM %>% arrange(dK_pct) %>%
+    kable(digits = 2,
+          caption = "Equilibrium K and MS by scenario. dK_pct is the change relative to historical mean summer flow. Check frac_extrapolating before quoting a row: a high value means the fitted flow terms are being evaluated outside the range that calibrated them.")
+```
+
+```{r f10c}
+FIG("10_c", SITE_FOCUS)
+```
+
+```{r rc-caveats, results='asis'}
+if (!is.null(RCV)) {
+  cat("**Read these before quoting a number.**\n\n")
+  cat("- K is an *equilibrium* under a sustained shift in summer mean flow. It is not a 30-year projection and is not comparable to the production sensitivities in §3.5 — different question, different units.\n")
+  if (!is.null(RCSUM) && any(RCSUM$frac_extrapolating > 0.2))
+    cat(if (!is.null(RCV$terms_present) && any(RCV$terms_present[c("b12r","b12S")]))
+      "- Some scenarios extrapolate beyond the calibration range in more than 20% of years. A quadratic fitted inside a range can turn over sharply outside it, so those K values carry more model than data.\n"
+    else
+      "- Some scenarios extrapolate beyond the calibration range in more than 20% of years. The flow response is linear here, so the curve cannot turn over unexpectedly — but a linear extrapolation still assumes the relationship holds where nothing measured it.\n")
+  if (!is.null(RCSUM) && any(RCSUM$frac_K_finite < 0.9))
+    cat("- For some scenarios the replacement curve does not cross the 1:1 line in a substantial fraction of draws, so K is undefined there. The *change* in K may still be informative where its level is not.\n")
+  if (!is.null(RCV$vertex) && any(RCV$vertex$inside_training & RCV$vertex$curvature < 0, na.rm = TRUE))
+    cat("- A quadratic vertex falls **inside** the training range with downward curvature: the fitted response already peaks within the observed flows, so the model predicts additional flow reduces that rate.\n")
+}
+```
+
+# 5. Among sites
+
+The cross-site synthesis lives on its own page:
+**[Among sites](results_among_sites.html)**. It compares the daily curves across
+populations, which is the evidence base for the population-ecology question, and
+it is not repeated here.
+
+# 6. Limitations
+
+```{r lag-limitation, results='asis'}
+# Do NOT assert which year the hydrograph represents -- it is a per-site model
+# selection result and it varies (Madison.Norris 3, BigHole.Melrose 2). Asserting
+# it would be wrong at any site whose lag differs from the recruit lag.
+L  <- S[[paste0("flow_lag_", s1)]] %||% NA
+R_ <- CFG$biology$recruit_lag
+if (is.na(L)) {
+  cat("- **Which year the hydrograph represents** is set by the site's flow lag; run the pipeline to populate it.\n")
+} else if (L >= R_) {
+  cat(sprintf("- **Spawn-year effect.** The flow lag (%s) equals the recruit lag (%s), so the hydrograph is the spawning year and flow shares a calendar year with the stock. Any pathway from spawn-year flow to adult abundance is differenced out of log(R/S).\n", L, R_))
+} else {
+  cat(sprintf("- **Rearing-year effect.** The flow lag (%s) is shorter than the recruit lag (%s), so the hydrograph is the age-0 rearing year, not the spawning year. Spawning-year conditions are not represented, and β_R(d) should not be read as a spawning effect.\n", L, R_))
+}
+cat("- **Incubation spans the year boundary.** On a calendar axis, December of the spawning year and January–March of the rearing year fall in different lag years. A mechanism operating continuously through incubation is split between them and will read weakly in both (`docs/notes/CALENDAR_AXIS.md`).\n")
+```
+
+- **Growth is frozen.** Mean mass at age is held at its launch value, so production results capture the flow-on-abundance pathway only, not temperature-mediated growth.
+- **Local linearity.** Effects are exact under the fitted model but the model is linear in the standardized anomaly, so large extrapolations beyond the observed flow range are least reliable — which is where the wettest and driest scenarios sit.
+- **Resolution.** Where the best-day interval exceeds 90 days, guidance is seasonal. This is a limit of a ~40-year annual record, not of the method.
+- **Stock enters twice.** log(R/S) contains −log(S) and S is also the density predictor, so shared posterior uncertainty biases the density coefficient downward (Walters & Ludwig 1981). The flow curves are affected only through the correlation between stock and the flow predictors, which is reported by script 03.
+
+---
+
+*Every number and figure on this page is read from `output/`. Regenerate with
+`source("RUN_ALL.R")` then `source("render_site.R")`.*

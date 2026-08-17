@@ -1,0 +1,430 @@
+---
+title: "Among-site synthesis"
+subtitle: "What daily-scale flow effects reveal about brown trout population ecology in Montana"
+---
+
+```{r setup, include=FALSE}
+source("_common.R")
+```
+
+<!--
+=============================================================================
+THIS PAGE ANSWERS RESEARCH QUESTION 2.
+
+  RQ1 (results_by_site.html) -- where in the year does water buy the most trout?
+  RQ2 (this page)            -- what does that tell us about population ecology?
+  RQ3 (scenarios section)    -- how does it change under BoR futures?
+
+RQ2 is the part that makes this a population-ecology paper rather than a
+consulting report. The logic: if a beta(t) feature is REPRODUCIBLE ACROSS
+INDEPENDENT POPULATIONS, it is evidence about a mechanism. If it appears at one
+site only, it is either local hydrology or noise, and 43 years cannot tell those
+apart.
+
+Fourteen sites is not 14 replicates of one experiment -- they differ in
+regulation, geomorphology, and thermal regime. But they are 14 independent
+draws on the same question, and consistency across them is the strongest
+inferential lever available without a manipulative experiment.
+=============================================================================
+-->
+
+# The inferential logic
+
+A single site gives ~43 annual observations. That is not enough to resolve a
+365-point curve with confidence, and `results_by_site.html` says so explicitly
+for each site.
+
+What multiple sites buy is not more precision at any one site — it is the ability
+to ask whether a feature **recurs**. Three outcomes, and they mean different
+things:
+
+| Pattern across sites | Interpretation |
+|---|---|
+| Same β(t) feature, same sign, most sites | Evidence for a shared biological mechanism |
+| Feature present but shifted in timing | Mechanism is real, cued locally (elevation, thermal regime, run timing) |
+| Feature at one or two sites only | Local hydrology or sampling noise. Do not build a mechanism on it. |
+
+This section reports which of those three applies, for each part of the year, for
+recruitment and for survival separately.
+
+## The comparison is only valid within a flow-lag group
+
+The reasoning above assumes every site's β(d) describes **the same biological
+year**. That assumption fails whenever the integrated population model selected
+different flow lags at different sites, and it did: a lag equal to the recruit lag
+puts the hydrograph in the *spawning* year, while a shorter lag puts it in the
+*age-0 rearing* year.
+
+Day 200 under a spawning-year lag is the summer **before** spawning. Day 200 under
+a rearing-year lag is the first summer of a fish's life. Those are different life
+stages, so agreement between them is not evidence of a shared mechanism — and
+disagreement is not evidence against one.
+
+Sites are therefore grouped by lag below, and agreement is computed **within**
+groups only.
+
+```{r lag-groups}
+if (is.null(BR) || is.null(BR$fits)) {
+  cat("> Run `R/03_fit_beta_recruitment.R`.\n")
+} else {
+  lg <- data.frame(
+    site = names(BR$fits),
+    flow_lag = vapply(BR$fits, function(f) as.integer(f$flow_lag %||% NA), integer(1)),
+    row.names = NULL)
+  lg$hypothesis <- ifelse(is.na(lg$flow_lag), "unknown",
+                   ifelse(lg$flow_lag >= CFG$biology$recruit_lag,
+                          "spawning-year conditions", "age-0 rearing-year conditions"))
+  kable(lg, caption = "Flow lag selected per site by the IPM. Only sites sharing a hypothesis are directly comparable in the figures below.")
+}
+```
+
+```{r lag-group-warning, results='asis'}
+if (!is.null(BR) && !is.null(BR$fits)) {
+  lags <- vapply(BR$fits, function(f) as.integer(f$flow_lag %||% NA), integer(1))
+  if (length(unique(na.omit(lags))) > 1)
+    cat("\n> **More than one flow lag is in use.** The figures below separate sites by
+lag. Do not read across the groups: a feature appearing in both is not
+corroboration, because the two curves describe different years of the same
+fish's life. If the manuscript needs a single across-site statement, it has to
+be made within one lag group, and the other group reported separately.\n")
+  else
+    cat("\n> All sites share one flow lag, so the curves describe the same biological
+year and are directly comparable.\n")
+}
+```
+
+---
+
+# 1. Do sites share a β(t) shape?
+
+```{r shared-shape, fig.height=6}
+if (is.null(BETAR)) {
+  cat("> **NOT AVAILABLE** — run `R/03_fit_beta_recruitment.R`.\n")
+} else if (dplyr::n_distinct(BETAR$site) < 2) {
+  cat("> **ONE SITE ONLY.** This page needs at least two sites.\n>\n",
+      sprintf("> Currently fitted: **%s**. Add the rest to `CFG$sites$active` in\n",
+              paste(unique(BETAR$site), collapse = ", ")),
+      "> `config.R` and re-run — the pipeline already loops.\n")
+} else {
+  lags <- lag_of(BR)
+  # Divide by the site's own SD so this compares SHAPE, not effect size, then
+  # facet by lag group: a spawning-year curve and a rearing-year curve describe
+  # different years and averaging them would be meaningless.
+  cur <- BETAR %>% group_by(site) %>%
+    mutate(beta_z = beta / sd(beta, na.rm = TRUE)) %>% ungroup() %>%
+    mutate(lag_group = lag_group_of(lags[site]))
+
+  ggplot(cur, aes(doy, beta_z, group = site)) +
+    geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
+    geom_line(alpha = 0.45, colour = PAL[["blue"]], linewidth = 0.6) +
+    stat_summary(aes(group = lag_group), fun = mean, geom = "line",
+                 colour = PAL[["ink"]], linewidth = 1.4) +
+    facet_wrap(~ lag_group) +
+    scale_x_continuous(breaks = MON_B, labels = MON_L) +
+    labs(title = "Recruitment: every site's beta(d), scaled to comparable magnitude",
+         subtitle = paste0("Thin blue = one site. Thick black = the mean shape WITHIN a lag group.\n",
+                           "Compare within a panel only — panels describe different years of the fish's life."),
+         x = NULL, y = "beta(d), scaled within site") +
+    theme_wh
+}
+```
+
+```{r agreement, fig.height=4.2}
+if (!is.null(BETAR) && dplyr::n_distinct(BETAR$site) >= 2) {
+  lags <- lag_of(BR)
+  ag <- BETAR %>% group_by(site) %>%
+    mutate(beta_z = beta / sd(beta, na.rm = TRUE)) %>% ungroup() %>%
+    mutate(lag_group = lag_group_of(lags[site])) %>%
+    group_by(lag_group, doy) %>%
+    summarise(consistency = max(mean(beta_z > 0), mean(beta_z < 0)),
+              n_sites = dplyr::n(), .groups = "drop")
+
+  ggplot(ag, aes(doy, consistency)) +
+    geom_hline(yintercept = 0.5, linetype = 3, colour = PAL[["mute"]]) +
+    geom_hline(yintercept = 0.8, linetype = 2, colour = PAL[["red"]]) +
+    geom_line(colour = PAL[["blue"]], linewidth = 0.9) +
+    facet_wrap(~ lag_group) +
+    scale_y_continuous(limits = c(0.4, 1)) +
+    scale_x_continuous(breaks = MON_B, labels = MON_L) +
+    labs(title = "How often do sites agree on the sign of the flow effect?",
+         subtitle = paste0("Fraction of sites on the majority side of zero, computed WITHIN a lag group.\n",
+                           "Above the red line (0.8) the effect is consistent enough across independent\n",
+                           "populations to argue for a mechanism rather than local hydrology."),
+         x = NULL, y = "fraction of sites agreeing on sign") +
+    theme_wh
+}
+```
+
+```{r agreement-text, results='asis'}
+if (!is.null(BETAR) && dplyr::n_distinct(BETAR$site) >= 2) {
+  lags <- lag_of(BR)
+  ag <- BETAR %>% group_by(site) %>%
+    mutate(beta_z = beta / sd(beta, na.rm = TRUE)) %>% ungroup() %>%
+    mutate(lag_group = lag_group_of(lags[site])) %>%
+    group_by(lag_group, doy) %>%
+    summarise(cons = max(mean(beta_z > 0), mean(beta_z < 0)),
+              dir = ifelse(mean(beta_z) > 0, "positive", "negative"), .groups = "drop")
+
+  for (g in unique(ag$lag_group)) {
+    a <- ag %>% filter(lag_group == g) %>% arrange(doy)
+    runs <- rle(a$cons >= 0.8)
+    ends <- cumsum(runs$lengths); starts <- ends - runs$lengths + 1
+    keep <- which(runs$values & runs$lengths >= 14)
+    cat(sprintf("\n**%s.** ", g))
+    if (length(keep)) {
+      cat("Periods where at least 80% of sites agree, lasting two weeks or longer:\n\n")
+      for (i in keep)
+        cat(sprintf("- **%s to %s** (%d days), effect %s\n",
+                    doy_date(a$doy[starts[i]]), doy_date(a$doy[ends[i]]),
+                    ends[i] - starts[i] + 1, a$dir[starts[i]]))
+    } else {
+      cat("No period of two weeks or more reaches 80% agreement. That is a
+substantive result, not a gap: it means the *timing* of flow sensitivity is not
+shared across these populations, which argues against a single basin-wide release
+calendar and for site-specific guidance.\n")
+    }
+  }
+}
+```
+
+---
+
+# 2. Recruitment and survival: one mechanism or two?
+
+```{r rec-vs-surv, fig.height=5}
+if (is.null(BETAS)) {
+  cat("> **NOT AVAILABLE** — run `R/04_fit_beta_survival.R`.\n")
+} else {
+  both <- bind_rows(
+    BETAR %>% mutate(process = "recruitment"),
+    BETAS %>% mutate(process = "survival")) %>%
+    group_by(process, site) %>%
+    mutate(beta_z = beta / sd(beta, na.rm = TRUE)) %>% ungroup()
+
+  ggplot(both, aes(doy, beta_z, group = interaction(site, process), colour = process)) +
+    geom_hline(yintercept = 0, linetype = 2, colour = PAL[["mute"]]) +
+    geom_line(alpha = 0.35, linewidth = 0.5) +
+    stat_summary(aes(group = process), fun = mean, geom = "line", linewidth = 1.3) +
+    scale_colour_manual(values = c(recruitment = PAL[["blue"]], survival = PAL[["green"]]),
+                        name = NULL) +
+    scale_x_continuous(breaks = MON_B, labels = MON_L) +
+    labs(title = "Recruitment and adult survival respond to flow at different times of year",
+         subtitle = paste0("Thin = individual sites, thick = across-site mean. Both scaled within site.\n",
+                           "Different peaks mean two distinct pathways and a release calendar must choose\n",
+                           "between them; coincident peaks mean water does double duty.\n",
+                           "NOTE: the survival lag is fitted separately from the recruitment flow lag,\n",
+                           "so these two curves need not describe the same year."),
+         x = NULL, y = "beta(d), scaled within site") +
+    theme_wh
+}
+```
+
+```{r rec-vs-surv-text, results='asis'}
+if (!is.null(BETAS) && !is.null(BETAR)) {
+  mr <- BETAR %>% group_by(site) %>% mutate(z = beta / sd(beta)) %>%
+    group_by(doy) %>% summarise(m = mean(z), .groups = "drop") %>% arrange(doy)
+  ms <- BETAS %>% group_by(site) %>% mutate(z = beta / sd(beta)) %>%
+    group_by(doy) %>% summarise(m = mean(z), .groups = "drop") %>% arrange(doy)
+  r <- cor(mr$m, ms$m, use = "complete.obs")
+  cat(sprintf(paste0("Across-site mean curves peak on **%s** for recruitment and **%s** for ",
+                     "survival, and are correlated at r = **%.2f** across the year.\n\n"),
+              doy_date(mr$doy[which.max(mr$m)]), doy_date(ms$doy[which.max(ms$m)]), r))
+  if (abs(r) < 0.3)
+    cat("The two pathways are close to independent. Water released for recruitment is not
+the same water released for adult survival, and they should be presented as separate
+management levers with separate calendars.\n")
+  else if (r > 0.5)
+    cat("The two pathways move together. A single release window serves both — the best
+case for management, and worth stating plainly.\n")
+  else
+    cat("Partial overlap. There is a compromise window, and the production sweep in
+`results_by_site.html` reports the joint optimum, which is the right quantity because
+it propagates both pathways through the age structure.\n")
+}
+```
+
+---
+
+# 3. Does the shared structure line up with brown trout life history?
+
+This is the ecological test. β(t) is estimated with no biological input beyond
+the lag structure — it does not know when trout spawn. If the days it flags line
+up with known life-history transitions, that is independent corroboration. If
+they do not, either the mechanism is something other than the obvious one, or the
+curve is fitting noise.
+
+```{r life-history, fig.height=5.5}
+if (is.null(LIFE) || is.null(STAGE)) {
+  cat("> **NOT AVAILABLE** — run `R/09_figures.R`, which writes",
+      "`life_history_timeline.csv` and `life_stage_sensitivity.csv`.\n>\n",
+      "> **Edit the `LIFE` timeline in `R/09_figures.R` to match your system and cite the source.**",
+      "The alignment test is only as good as that timeline.\n")
+} else {
+  kable(STAGE, digits = 3,
+        caption = paste0("Mean flow sensitivity within each life-history stage, averaged across sites. ",
+                         "Stage boundaries come from the timeline in R/09_figures.R -- edit and cite them."))
+}
+```
+
+```{r life-history-caveat, results='asis'}
+if (!is.null(STAGE)) {
+  cat("\n> **Read this before quoting the table.** The stage boundaries were set by hand, ",
+      "not estimated. Choosing them after seeing β(t) would guarantee agreement and prove ",
+      "nothing. Fix the timeline from the literature first, then compare — and say in the ",
+      "manuscript that you did it in that order.\n")
+}
+```
+
+---
+
+# 4. Does site-to-site variation track anything?
+
+```{r site-covariates, results='asis'}
+cat("If the flow response differs among sites, the next question is whether it differs
+*systematically*. Candidate explanations, in rough order of how testable they are
+with what you have:\n\n")
+cat("| Candidate | Why it could matter | Data needed |\n")
+cat("|---|---|---|\n")
+cat("| Degree of regulation | A dam-controlled reach has a compressed natural flow range, so fish may be less flow-limited | Reservoir presence, distance downstream |\n")
+cat("| Elevation / thermal regime | Sets spawning and emergence timing, which shifts β(t) horizontally | Site elevation, summer temperature |\n")
+cat("| Baseline discharge | Determines how much a given release changes proportional flow — see Proposal 02 | Already computed: per-day climatology |\n")
+cat("| Channel confinement | Governs whether high flow means habitat gain or scour | Geomorphic classification |\n")
+cat("| Irrigation withdrawal | Sets whether summer low flow is naturally or anthropogenically limiting | Diversion records |\n\n")
+cat("**None of these is in the pipeline yet, because none is in the data folder.** ",
+    "With 14 sites you can support one, possibly two site-level covariates — not five. ",
+    "Pick the one with the strongest mechanistic prior *before* fitting, and treat the ",
+    "rest as future work. Fourteen sites and five covariates is the same overfitting ",
+    "problem as 43 years and a 365-point curve, one level up.\n")
+```
+
+```{r discharge-driver, fig.height=4.5}
+# Columns come from sensitivity_daily.csv (script 06): doy, Qbar_cfs, effect,
+# sens_per_delta. An earlier draft referenced `delta_logRS` and `Q_baseline`,
+# which that script has never written.
+if (!is.null(DAILY) && dplyr::n_distinct(DAILY$site) >= 2) {
+  bd <- DAILY %>% filter(process == "recruitment") %>%
+    group_by(site) %>%
+    summarise(best_effect = max(effect, na.rm = TRUE),
+              median_Q = median(Qbar_cfs, na.rm = TRUE), .groups = "drop")
+
+  ggplot(bd, aes(median_Q, best_effect)) +
+    geom_point(size = 3, colour = PAL[["blue"]]) +
+    geom_text(aes(label = site), size = 2.8, vjust = -1, colour = "grey30") +
+    scale_x_log10() +
+    labs(title = "Do smaller streams get more benefit per cfs released?",
+         subtitle = paste0("A prediction that falls straight out of the model structure: benefit per cfs\n",
+                           "scales as 1/Q, so low-flow systems should show larger effects for the same\n",
+                           "water. If this slopes down, that is a mechanism confirmed rather than a\n",
+                           "nuisance — and it tells managers where to spend leased water first."),
+         x = "median discharge (cfs, log scale)",
+         y = paste0("largest per-", unique(DAILY$delta_cfs)[1], "-cfs benefit (%)")) +
+    theme_wh
+}
+```
+
+---
+
+# 5. The confirmatory anchor across sites
+
+```{r pooled-anchor}
+if (is.null(GATE) || !"seasonal_r2_blocked" %in% names(GATE)) {
+  cat("> **NOT AVAILABLE** — run `R/05_validate.R`.\n")
+} else {
+  kable(GATE, digits = 3,
+        caption = paste0("Validation for every site: the functional beta(t) model and the four-window ",
+                         "seasonal anchor, on identical blocked folds with identical permutation nulls."))
+}
+```
+
+```{r pooled-text, results='asis'}
+if (!is.null(GATE)) {
+  np <- sum(GATE$passes, na.rm = TRUE); ns <- nrow(GATE)
+  cat(sprintf("\n**%d of %d sites clear the gate.**\n\n", np, ns))
+  if (np == 0) {
+    cat("No site individually shows a flow signal that survives blocked cross-validation and ",
+        "a circular-shift permutation null. Before concluding there is nothing here, note two ",
+        "things.\n\n",
+        "First, **the pooled test is the one with power.** Fourteen underpowered site tests can ",
+        "all fail while a hierarchical fit detects a shared effect, because pooling estimates one ",
+        "common quantity from all the data at once. Section 1 above is the informal version; the ",
+        "formal version is a hierarchical model on the seasonal anchor, which is the next thing ",
+        "to build.\n\n",
+        "Second, **reporting the subset that passed would be a selection problem** even if some ",
+        "had. At α = 0.05 across 14 sites you expect roughly one pass by chance. The pooled ",
+        "estimate has no selection step, which is why it is the defensible headline.\n")
+  } else if (np < ns) {
+    cat("A mixed result is the most interesting outcome and the hardest to write up honestly. ",
+        "The temptation is to report the sites that passed. Resist it: with 14 tests at ",
+        "α = 0.05 you expect about one pass by chance, so a subset of passes is not evidence ",
+        "that those particular sites are special.\n\n",
+        "The defensible framing is the pooled effect plus the between-site SD. A large mean ",
+        "with large between-site variation is a real finding — *on average yes, but not ",
+        "everywhere* — and it is exactly what a basin-scale manager needs to know.\n")
+  } else {
+    cat("Every site clears the gate independently. That is strong, and it makes the ",
+        "across-site consistency in Section 1 the natural headline: the same seasonal ",
+        "structure recovered from independent populations.\n")
+  }
+}
+```
+
+---
+
+# 6. What this says about Montana brown trout population ecology
+
+```{r ecology-synthesis, results='asis'}
+if (is.null(BR)) {
+  cat("> Run the pipeline first.\n")
+} else {
+  cat("Draft the synthesis around whichever of these the results actually support.
+None should be asserted without the corresponding figure above backing it.\n\n")
+  cat("1. **Which vital rate is flow-limited, and when.** If recruitment β(t) is
+structured and survival β(t) is flat, brown trout population dynamics here are
+recruitment-driven and adult survival is buffered against hydrology. That is a
+statement about where density dependence and environmental forcing act, and it
+has direct consequences for what management can and cannot change.\n\n")
+  cat("2. **Whether the limiting window is natural or anthropogenic.** A negative
+spring-runoff effect is a natural-disturbance signal (fry displacement, redd
+scour). A positive summer base-flow effect in a diverted system is an
+anthropogenic-limitation signal. These call for opposite management responses:
+the first argues for accommodating natural variability, the second for
+augmenting it.\n\n")
+  cat("3. **Whether timing is cued locally.** If the β(t) shape is shared but shifted
+between sites, the mechanism is real and phenological — and the shift should
+correlate with elevation or thermal regime. That is a testable prediction from
+this analysis, and a good final paragraph.\n\n")
+  cat("4. **The resolution limit is itself a result.** If 43 years cannot resolve
+finer than a ~60-day window, that bounds how precisely *any* flow-management
+prescription can be specified from observational data at this sample size. Saying
+so quantitatively is more useful to the field than a spuriously precise date, and
+it motivates the experimental releases that would resolve it.\n")
+}
+```
+
+---
+
+# 7. Limits
+
+```{r limits, results='asis'}
+cat("State these in the manuscript. A reviewer will find them anyway, and finding
+them already stated is a different experience from finding them omitted.\n\n")
+cat("- **Sites are not independent replicates.** Several share a basin, a climate signal, and in some cases a reservoir. Shared response may reflect shared weather rather than shared biology. A spatial or basin-level random effect is the fix; it is not yet implemented.\n")
+cat("- **The response is a model output, not an observation.** log(R/S) comes from the null IPM's posterior. Section 1 of `methods.html` covers the circularity guard; the residual risk is that IPM structural assumptions are shared across sites and could induce shared β(t) structure.\n")
+cat("- **β(t) is linear in the flow anomaly.** A dome-shaped response — too little water bad, too much water bad — would be averaged into a shallow monotone slope. Testable by adding a squared term, but only worth spending the degrees of freedom after the linear model passes.\n")
+cat("- **The lag is fixed at ", CFG$biology$recruit_lag, " years and equals the spawning lag**, so flow and spawning stock share a calendar year and any pathway from spawn-year flow to adult abundance is differenced out of log(R/S). This estimates a *spawn-year* effect, not an age-0 rearing-year effect.\n", sep = "")
+cat("- **Mean mass at age is frozen** in the production sweep, so temperature effects on growth are outside the model. Production sensitivities are the flow-on-abundance pathway only.\n")
+cat("- **Fourteen sites supports one site-level covariate, not five.** See Section 4.\n")
+```
+
+---
+
+```{r session, results='asis'}
+cat("<hr>\n<small>")
+cat(sprintf("Rendered %s · %s", format(Sys.time(), "%Y-%m-%d %H:%M"), R.version.string))
+gs <- suppressWarnings(tryCatch(system("git rev-parse --short HEAD", intern = TRUE),
+                                error = function(e) NA))
+if (length(gs) && !is.na(gs[1])) cat(sprintf(" · commit %s", gs[1]))
+cat("<br>Every number on this page is read from <code>output/</code>. ")
+cat("Sections showing <strong>NOT AVAILABLE</strong> mean that stage has not been run.")
+cat("</small>\n")
+```

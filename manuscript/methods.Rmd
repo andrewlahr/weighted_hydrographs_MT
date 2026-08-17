@@ -1,0 +1,413 @@
+---
+title: "Materials and Methods"
+subtitle: "Daily streamflow and brown trout population processes"
+---
+
+```{r setup, include=FALSE}
+source("_common.R")
+```
+
+<!--
+PNAS Research Articles place Materials and Methods after the Results and cap the
+main text near 4,000 words including everything, so a Methods section much past
+~1,300 words will not fit. Detail that does not fit belongs in SI Appendix, which
+is the second half of this document.
+
+Sections marked [VERIFY] contain an assumption that could not be checked from the
+code. Each is listed in PROJECT_LOG.md as an open item.
+-->
+
+# Materials and Methods
+
+## Study system
+
+Brown trout (*Salmo trutta*) populations in regulated Montana rivers, with the
+Madison River below Ennis Lake (USGS gage 06041000) as the focal site. Discharge is
+managed under Bureau of Reclamation operations. Analysis covers
+`r Vi(S[[paste0("n_years_", CFG$sites$active[[1]])]])` recruit-years.
+
+*[VERIFY: state the gage-to-reach distance, any intervening accretion, and the
+long-term monitoring design — reach lengths, sampling season, years — with a
+citation to the Montana Fish, Wildlife and Parks program.]*
+
+## Population model and the response variables
+
+Abundance and demographic rates were estimated with a Bayesian age-structured
+integrated population model fitted in JAGS. Mark–recapture abundance estimation is
+conducted separately, under a protocol agreed with Montana Fish, Wildlife and
+Parks so that estimates match published values. The model tracks age-2 recruits
+($N_2$), age-3 ($N_3$), and an age-4-plus group ($N_4$), with Ricker recruitment on
+adult biomass
+
+$$\log R_t = \alpha_0 + \log B_{t-\ell} - b\,B_{t-\ell} - \tfrac{1}{2}\sigma_R^2 + \varepsilon_t$$
+
+where $B_t = N_{3,t}w_3 + N_{4,t}w_4$ is standing adult biomass in grams and
+$\ell = `r Vi(CFG$biology$recruit_lag)`$ years, and density-dependent apparent
+survival
+
+$$\mathrm{logit}(s_t) = \phi_0 + \phi_N\,N_{\mathrm{all},t-1}/100 + \zeta_t .$$
+
+**The posterior used here contains no flow covariate.** This is the circularity
+guard: were abundance estimated under a flow-informed model, a flow signal would be
+embedded in the response before any regression was fitted.
+
+Two responses were constructed, each on all
+`r Vi(RESP$meta$n_draws[1])` retained posterior draws so that abundance uncertainty
+propagates rather than being collapsed to a point estimate:
+
+**Recruitment.** $y_t^{(m)} = \log R_t^{(m)} - \log B_{t-\ell}^{(m)}$. Stock is
+adult **biomass**, matching the IPM's own Ricker.
+
+**Survival.** The process deviate
+$\varepsilon_t^{(m)} = \mathrm{logit}(s_t^{(m)}) - \phi_0^{(m)} - \phi_N^{(m)} N_{\mathrm{all},t-1}^{(m)}/100$,
+i.e. the part of survival the density-dependent null model leaves unexplained.
+Regressing survival itself on discharge would re-attribute density-driven variation
+to flow, because flow drives recruitment and recruitment drives density at a lag.
+
+## Hydrograph standardization
+
+Daily discharge was log-transformed, centred on a day-of-year climatology, and
+scaled by a single global standard deviation:
+
+$$x_y(t) = \frac{\log Q_y(t) - \bar{c}(t)}{\sigma},\qquad \bar{c}(t) = \frac{1}{n_y}\sum_y \log Q_y(t).$$
+
+The scale is global rather than day-specific; a per-day scale would inflate
+low-variance winter days relative to the snowmelt peak. Curves are placed on a
+**calendar-year** axis (1 January – 31 December). This axis was chosen for
+interpretability: results are reported to water managers, irrigators and
+lease-holders who work in calendar years, and a day index anchored to 1 October
+is a persistent source of confusion outside the hydrologic community.
+
+The trade-off is stated plainly. Brown trout spawn in autumn and emerge the
+following spring, so the spawning-to-emergence interval straddles the calendar
+boundary and no single calendar year contains all of it. The analysis accommodates
+this through the site-specific flow lag rather than through the axis: a lag equal
+to the recruit lag places the hydrograph in the spawning year, while a shorter lag
+places it in the rearing year, and the integrated population model selected between
+these hypotheses independently at each site. A consequence is that a mechanism
+operating continuously across the turn of the year — incubation from December
+through March — is split between two lag years and would be detected only weakly in
+either. Years without a complete 365-day record were excluded.
+
+## Functional regression
+
+For each posterior draw the response was regressed on the full daily hydrograph,
+
+$$y_t^{(m)} = \mu^{(m)} + \gamma^{(m)} S_{t-\ell} + \sum_{d=1}^{365}\beta^{(m)}(d)\,x_{t}(d) + e_t^{(m)},$$
+
+```{r estimator-methods, results='asis'}
+# The estimator description MUST branch. A Methods section that hardcodes
+# "P-spline" while the analysis ran fpc describes a model nobody fitted -- and it
+# would read as correct to anyone who did not check config.R.
+est <- S[["estimator"]] %||% CFG$fitting$estimator
+site1 <- CFG$sites$active[[1]]
+
+if (identical(est, "penalized")) {
+  cat(sprintf(paste0(
+    "with $\\beta(\\cdot)$ a P-spline of basis dimension %s and a second-difference ",
+    "roughness penalty, evaluated by unit-weight daily quadrature (the ",
+    "summation-convention implementation of `mgcv`; Wood 2017 §7.10). The smoothing ",
+    "parameter was estimated once by REML on the posterior-mean response and held ",
+    "fixed across draws, so the estimand does not drift between draws. The ",
+    "resulting effective degrees of freedom are reported as a **result**: %s for ",
+    "recruitment and %s for survival.\n"),
+    Vi(CFG$fitting$k_beta),
+    V(S[[paste0("edf_recruitment_", site1)]], 1),
+    V(S[[paste0("edf_survival_", site1)]], 1)))
+
+} else {
+  rule <- S[["fpc_rule"]] %||% CFG$fitting$fpc_rule
+  rule_txt <- switch(rule,
+    cumulative = sprintf("components were retained until they jointly explained %s%% of the variance in the standardized hydrographs",
+                         Vi(S[["fpc_target_var"]] %||% CFG$fitting$fpc_target_var)),
+    individual = sprintf("components were retained only if each individually explained at least %s%% of the variance in the standardized hydrographs",
+                         Vi(S[["fpc_min_var"]] %||% CFG$fitting$fpc_min_var)),
+    both       = sprintf("components were retained until they jointly explained %s%% of hydrograph variance, and only those individually explaining at least %s%%",
+                         Vi(S[["fpc_target_var"]] %||% CFG$fitting$fpc_target_var),
+                         Vi(S[["fpc_min_var"]] %||% CFG$fitting$fpc_min_var)))
+
+  cat(sprintf(paste0(
+    "with $\\beta(\\cdot)$ expanded in the leading functional principal components ",
+    "of the standardized hydrographs. Functional PCA was computed on the training ",
+    "curves, %s, subject to a maximum of %s. The response was regressed on the ",
+    "retained component scores by ordinary least squares and the coefficients ",
+    "mapped back to the daily domain as $\\beta(d) = \\sum_k b_k \\phi_k(d)$. ",
+    "At %s this retained **%s components**, spanning %s%% of hydrograph variance.\n"),
+    rule_txt, Vi(S[["fpc_max"]] %||% CFG$fitting$fpc_max), site1,
+    Vi(S[[paste0("fpc_K_", site1)]]), V(S[[paste0("fpc_var_explained_", site1)]], 1)))
+
+  if (isTRUE(S[[paste0("fpc_K_capped_", site1)]] == 1))
+    cat("\nThe component cap, rather than the variance rule, determined $K$ at this site; ",
+        "the reported $K$ should therefore be read as a ceiling imposed by the analyst ",
+        "rather than a property of the data.\n")
+  if (isTRUE(S[[paste0("fpc_K_unstable_", site1)]] == 1))
+    cat("\nAt least one component fell within 0.5 percentage points of the retention ",
+        "threshold, so $K$ varies between cross-validation folds; the validation ",
+        "statistics below incorporate that variation because selection was repeated ",
+        "within each fold.\n")
+
+  cat(paste0("\nComponent selection is unsupervised with respect to the response: ",
+             "components are ordered by variance in the predictor and only then tested ",
+             "against recruitment. A mode of flow variation carrying little variance ",
+             "but a strong biological signal would be discarded before it was tested ",
+             "(Jolliffe 1982). We therefore report the incremental predictive ",
+             "contribution of the discarded components in SI, and note that the ",
+             "covariance of $\\hat\\beta$ is of rank $K$ and so excludes uncertainty in ",
+             "the truncation itself.\n"))
+}
+```
+
+The hydrograph paired with each recruit year is **not assumed to be the spawning
+year**. The integrated population model's indicator-variable selection chose a
+flow lag independently at each site, and that choice is carried through here: a
+lag equal to the recruit lag identifies spawning-year conditions, while a shorter
+lag identifies age-0 rearing-year conditions. On a calendar axis these are
+distinct years and the mapping is direct: the hydrograph for recruit year $t$ is
+that of calendar year $t - L$, where $L$ is the selected lag. The selected lag is
+reported per site rather than assumed (`derived_stats.csv`, `flow_lag_*`).
+
+The **full 365 × 365 covariance** of $\hat\beta$ was retained. Adjacent days are
+strongly correlated, so every statement about *where* the curve is high — bands,
+contrasts, the location of extrema — requires the off-diagonal terms.
+
+Survival lags of `r paste(CFG$fitting$survival_lags, collapse = " and ")` years were
+fitted separately, because adult survival responds to contemporaneous or
+prior-year conditions rather than to conditions three years earlier; the selected
+lag was `r Vi(S[[paste0("survival_lag_", CFG$sites$active[[1]])]])` and its
+permutation $p$-value is Bonferroni-adjusted for the number of lags examined.
+
+## A pre-registered confirmatory model
+
+Because a 365-point curve estimated from
+`r Vi(S[[paste0("n_years_", CFG$sites$active[[1]])]])` annual observations spends
+degrees of freedom on structure the data may not support, the same responses were
+also regressed on the mean standardized anomaly within four pre-registered
+calendar-year windows — autumn spawning, overwinter incubation, spring snowmelt,
+summer base flow (`r paste(sapply(CFG$windows, function(w) paste(w, collapse = "–")), collapse = "; ")`
+on the day of year). This four-parameter model is the powered
+confirmatory test of whether flow matters at all; $\beta(d)$ then describes when.
+Both were scored on identical folds against identical nulls.
+
+## Validation
+
+Predictive skill was assessed by **blocked** cross-validation holding out
+contiguous `r Vi(CFG$fitting$block_len)`-year runs. Leave-one-year-out validation
+is inappropriate here: interannual flow is autocorrelated, so a held-out
+hydrograph is closely approximated by retained neighbours and the fold measures
+interpolation rather than prediction. Both are reported so the magnitude of that
+inflation is visible.
+
+Because the null sampling distribution of cross-validated $R^2$ at this sample
+size is neither centred at zero nor symmetric, skill was referred to a permutation
+null formed by circularly shifting the response against the hydrograph series,
+preserving the autocorrelation of both series and breaking only their alignment.
+Random shuffling would destroy the autocorrelation and return anticonservative
+$p$-values. With
+`r Vi(S[[paste0("n_years_", CFG$sites$active[[1]])]])` years the finest resolvable
+$p$-value is approximately
+`r V(1/(as.numeric(S[[paste0("n_years_", CFG$sites$active[[1]])]]) %||% NA), 3)`.
+
+```{r gate-verdict, results='asis'}
+`%||%` <- function(a,b) if (is.null(a)) b else a
+if (is.null(GATE)) cat("*[PENDING — run `05_validate.R`.]*\n") else {
+  ok_b <- GATE_OK("recruitment","beta"); ok_s <- GATE_OK("recruitment","seasonal")
+  if (isTRUE(ok_b) && isTRUE(ok_s))
+    cat("Both specifications cleared the gate, and daily-resolution results are reported.\n")
+  else if (isTRUE(ok_s))
+    cat("The confirmatory four-window model cleared the gate while the daily curve did not. We therefore report that seasonal streamflow affects recruitment but that **its daily timing is not resolvable in this record**, and give guidance at seasonal resolution.\n")
+  else
+    cat("Neither specification improved on the series mean out of sample. We report the null: seasonal hydrograph structure has no detectable effect on the vital rates at this site over the available record. Curves are presented for completeness and are labelled unsupported.\n")
+}
+```
+
+## From β(d) to management guidance
+
+β(d) is the effect of a one-standard-deviation standardized log anomaly. Water is
+released in cfs. Adding $\Delta Q$ on day $d$ changes the flow signal by
+
+$$\Delta\eta(d) = \frac{\beta(d)}{\sigma}\log\!\left(1 + \frac{\Delta Q}{\bar{Q}(d)}\right),$$
+
+where $\bar{Q}(d)$ is the geometric-mean baseline discharge on that day, so the
+benefit per unit of water is approximately $\beta(d)/[\sigma\bar{Q}(d)]$. Because
+baseline discharge spans more than an order of magnitude across the calendar year, this
+**reshapes** the curve: identical water is a large proportional change at base flow
+and a negligible one at the snowmelt peak. We therefore distinguish throughout
+between β(d), the ecological sensitivity, and $s(d)$, the management sensitivity.
+The logarithm also encodes diminishing returns, so the model implies that
+distributing a fixed volume over a longer window outperforms a short pulse.
+
+For a leased volume $V$ released evenly over a window $W$, total benefit is
+$\sigma^{-1}\sum_{d\in W}\beta(d)\log(1 + \kappa V/[|W|\bar Q(d)])$, maximised over
+window start and length.
+
+The unconstrained optimum is of limited operational use, because water cannot be
+moved at arbitrary times of year. We therefore repeated the optimisation
+restricted to the season in which allocation decisions are actually made
+(`r if (!is.null(DW)) DW$window$label else "the irrigation season"`,
+`r if (!is.null(DW)) paste(doy_date(DW$window$start), "to", doy_date(DW$window$end)) else "May to October"`).
+This is a constrained optimisation rather than a restricted plot: the best
+feasible day is an argmax over a subset and may differ from the global optimum;
+its credible interval is recomputed within the subset rather than truncated,
+because a simulation whose global peak falls outside the season relocates to its
+best feasible day rather than dropping out; and only release windows lying wholly
+inside the season are admitted.
+
+We report the resulting **cost of the constraint** — the benefit at the best
+feasible day as a fraction of the benefit at the unconstrained optimum. A low
+value indicates that the biologically most valuable timing lies outside any window
+the allocation system can reach, which is a statement about institutional timing
+rather than about water volume.
+
+## Resolution
+
+The location of a maximum was **not** read from the fitted curve. Whole curves were
+simulated `r Vi(SE$settings$n_sim)` times from the combined
+distribution — a posterior draw for abundance uncertainty plus a multivariate
+normal deviate using the full covariance for regression uncertainty — and the
+day maximising $s(d)$ recorded for each. The
+`r Vi(100 * (SE$settings$cred_level %||% 0.8))`% interval of that distribution is
+reported as the resolvable window. Its width is a property of the record rather
+than a modelling choice. Simultaneous confidence bands were obtained from the same
+simulations as the 95th percentile of the maximum standardized deviation, giving a
+critical value of `r V(SE$simultaneous$c_simultaneous[1], 2)` rather than 1.96
+(Ruppert, Wand & Carroll 2003 §6.5).
+
+## Total production
+
+Production is a consequence of recruitment and survival rather than a directly
+observed response, so it was not regressed on flow. Instead, flow perturbations
+were propagated through the age-structured model. Total biomass follows the exact
+identity $B_t = B_{t-1} + I_t + G_t - M_t$, partitioning annual change into
+recruitment input, somatic growth, and mortality loss, with the age-4-plus group
+valued at its abundance-weighted mean mass. There is no harvest term in this model,
+so surplus production equals the change in biomass. The identity residual is
+computed for every draw and year and is zero to machine precision by construction.
+
+Sensitivity was computed as a paired numerical derivative: for each
+`r Vi(PR$settings$block_days)`-day block the projection was run with and without a
+`r Vi(PR$settings$delta_cfs)` cfs release under **common random numbers**, so the
+difference reflects the release rather than Monte Carlo noise. Runs with each
+pathway enabled separately, and both together, isolate the interaction — the
+compounding of a survival gain into future spawning stock, which summing the two
+curves would miss. Mean mass at age is held at its launch value, so results capture
+the flow-on-abundance pathway and **not** temperature-mediated changes in growth.
+
+## Scenario projections
+
+Bureau of Reclamation downscaled daily discharge was standardized against the
+**training** climatology and scale, so projected and observed hydrographs share an
+axis; standardizing each scenario against itself would re-centre a uniformly drier
+future to appear average and eliminate the effect. Scenario effects are
+$\eta = \sum_d \beta(d)[x_{\text{scen}}(d) - \bar{x}_{\text{hist}}(d)]$, and are
+additionally decomposed by day to identify *which* days drive a scenario's effect —
+a scenario may act because flow changes on days the population is sensitive to, or
+because it changes greatly on days it is not. The fraction of scenario days falling
+outside the training range is reported per scenario.
+
+*[VERIFY: the calendar-year alignment. Recruit year $t$ is paired with calendar year
+$t-\ell+1$, on the reasoning that October–November spawning begins a calendar year. A
+one-year error shifts β(d) by a full year and remains invisible in the output.]*
+
+## Equilibrium carrying capacity under sustained flow change
+
+The preceding analyses treat flow as a perturbation and ask when it is most
+valuable. A separate question, and the one most often asked of reservoir
+operations, is where the population settles if summer flow shifts and stays
+shifted. We addressed this with a rule-curve analysis, run as an independent arm.
+
+Recruitment and survival were evaluated on a stable-age mapping from spawning
+stock to standing abundance,
+$X = S/[s(1-s)]$ and $\mathrm{SSB} = S\,w(s)$, giving a closed-form replacement
+curve
+
+$$Y(X) = \frac{\exp\!\left(\alpha_0 + \log \mathrm{SSB} - b\,\mathrm{SSB} + \beta_1 z + \beta_2 z^2\right)}{1 - \mathrm{logit}^{-1}\!\left(\phi_0 + \phi_1 z + \phi_2 z^2 + \phi_N X/100\right)},$$
+
+where $z$ is the standardized mean summer discharge. Because survival does not
+depend on recruitment, $Y$ is available in closed form and needs no simulation.
+Carrying capacity $K$ is the descending intersection of $Y(X)$ with the
+replacement line $Y = X$, located by linear interpolation; maximum surplus
+production is $\max_X\,[Y(X) - X]$, refined parabolically. Both were computed for
+every posterior draw on a common deterministic grid, so that a scenario contrast
+reflects flow rather than resampling.
+
+Two features of this arm differ from the rest of the analysis and are deliberate.
+First, it uses the **flow-informed** integrated population model rather than the
+null fit, because it propagates the flow response that model estimated rather than
+estimating a new one; the circularity concern that motivates the null fit
+elsewhere does not arise. Second, its covariate is the standardized *annual mean*
+summer discharge on the scale the integrated model was fitted with, verified to
+reproduce that model's own covariate to within $10^{-10}$; the daily
+standardization used for $\beta(d)$ would place the recruitment and survival
+coefficients off-scale.
+
+We report the fraction of scenario-years falling outside the calibration range of
+$z$, and the location of the vertex of each quadratic flow response. A vertex
+inside the observed range with downward curvature implies that the fitted response
+already peaks within the historical record.
+
+*[VERIFY before submission: the stable-age weighting $w(s)$ has two conventions in
+the source implementation — standing spawning biomass, $w = w_3 + [s/(1-s)]w_4$,
+and the alternative that weights deaths, $w = (1-s)w_3 + s\,w_4$. The analysis
+selects between them by which reproduces the posterior's own biomass series, not
+by preference. State which was used and the agreement obtained.]*
+
+## Data and code availability
+
+All code, standardization constants, and the scripts regenerating every figure and
+quoted value are archived at *[REPOSITORY DOI]*. Daily discharge is available from
+the USGS National Water Information System (gage 06041000).
+
+---
+
+# SI Appendix
+
+**S1. Circularity guard.** Why the flow-naive posterior is required.
+
+**S2. Estimator comparison.** Daily β(d) against the four-window model on identical
+folds and nulls, with leave-one-out values shown alongside and labelled as
+interpolation skill.
+
+**S3. Resolution.** Full argmax distributions; the effective-degrees-of-freedom
+heuristic against the simulation-based window width.
+
+**S4. Contrasts.** Pairwise $P[s(d_1) > s(d_2)]$ using the full covariance, with the
+independence-assuming version for comparison.
+
+**S5. Survival lag sweep.** All lags with unadjusted and adjusted $p$-values.
+
+**S6. Production budget verification.** Maximum relative identity residual across
+all draws, years, and scenarios.
+
+**S6b. Allocation-season constraint.** Best feasible release day and its interval
+recomputed within the season, against the unconstrained optimum; the fraction of
+achievable benefit retained; and the flatness of the benefit surface across
+feasible start dates, which determines whether timing is worth negotiating over.
+
+**S6c. Rule-curve arm.** Verification that the summer-mean covariate reproduces the
+integrated model's own covariate; agreement between the stable-age geometry and the
+posterior biomass series under both weighting conventions; $K$ and $MS$ by
+scenario-year with the fraction of draws in which the replacement curve fails to
+cross the 1:1 line; quadratic vertex locations relative to the calibration range.
+
+**S7. Sensitivity analyses.** Estimator (penalized versus functional principal
+components) and, for the latter, the component-selection rule and threshold
+(`fpc_diagnostics_rules.csv`); basis dimension; smoothing parameter fixed versus
+per-draw; **the calendar-year domain against a water-year domain**, which bears on
+whether an incubation signal spanning the year boundary is being split; stock
+covariate retained versus dropped; release size; and for the rule curve, clamped
+versus unclamped scenario $z$.
+
+## SI Figures
+
+Standardization (Fig. 2a); baseline discharge and per-cfs leverage (Fig. 2b);
+between-year flow variation by day (Fig. 2d); variance decomposition of β(d)
+(Fig. 3c); permutation nulls (Fig. 5b); resolution diagnostics (Fig. 5c);
+simultaneous versus pointwise bands (Fig. 6a–b); pathway interaction (Fig. 7c);
+scenario day attribution (Fig. 8b–c).
+
+## References
+
+Marra & Wood (2012) *Scand. J. Stat.* 39:53–74 · Reiss et al. (2017) *Int. Stat.
+Rev.* 85:228–249 · Roberts et al. (2017) *Ecography* 40:913–929 · Ruppert, Wand &
+Carroll (2003) *Semiparametric Regression* · Wood (2017) *Generalized Additive
+Models*, 2nd ed.
