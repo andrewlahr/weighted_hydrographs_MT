@@ -13,7 +13,7 @@
 
 set -euo pipefail
 
-REPO_NAME="${1:-WH}"
+REPO_NAME="${1:-weighted_hydrographs_MT}"
 BRANCH="main"
 
 echo "=============================================================="
