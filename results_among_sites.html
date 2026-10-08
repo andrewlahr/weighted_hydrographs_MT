@@ -1,0 +1,4088 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Among sites</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Weighted hydrographs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="results.html">Results by site</a>
+</li>
+<li>
+  <a href="results_among_sites.html">Among sites</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Among sites</h1>
+<h3 class="subtitle">What the daily curves say about Montana brown
+trout, taken together</h3>
+
+</div>
+
+
+<blockquote>
+<p><strong>One active site.</strong> This page compares populations, so
+it has nothing to work with. Add sites to <code>CFG$sites$active</code>
+in <code>config_local.R</code> and re-run.</p>
+</blockquote>
+<div id="which-sites-carry-a-signal-at-all" class="section level2">
+<h2>1. Which sites carry a signal at all</h2>
+<p>A cross-site synthesis that pools validated and unvalidated curves is
+a synthesis of arithmetic. This table comes first for that reason.</p>
+<table>
+<caption>One row per site and process. Everything below is restricted to
+the rows that pass.</caption>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="left">process</th>
+<th align="right">n_years</th>
+<th align="right">r2_blocked</th>
+<th align="right">p_value</th>
+<th align="left">passes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">recruitment</td>
+<td align="right">33</td>
+<td align="right">-0.259</td>
+<td align="right">0.394</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">survival</td>
+<td align="right">32</td>
+<td align="right">0.421</td>
+<td align="right">0.031</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<p>0 of 1 population pass the recruitment gate. A failure is a statement
+about the resolution of that site’s record, not a null effect of
+flow.</p>
+</div>
+<div id="do-the-curves-agree-on-timing" class="section level2">
+<h2>2. Do the curves agree on timing?</h2>
+<blockquote>
+<p><strong>FIGURE NOT AVAILABLE</strong> - <code>09_f9a</code> was not
+produced for this site.</p>
+</blockquote>
+<blockquote>
+<p><strong>FIGURE NOT AVAILABLE</strong> - <code>09_f9b</code> was not
+produced for this site.</p>
+</blockquote>
+<blockquote>
+<p><strong>Read timing comparisons carefully.</strong> Sites do not
+share a flow lag - it comes from each IPM’s own model selection. Two
+curves plotted on one day-of-year axis may refer to different calendar
+years relative to the cohort, so a difference in apparent timing can be
+a difference in lag rather than in biology.</p>
+</blockquote>
+</div>
+<div id="can-a-day-be-named-anywhere" class="section level2">
+<h2>3. Can a day be named, anywhere?</h2>
+<table style="width:100%;">
+<caption>Width of the best-day interval. FALSE in
+<code>resolvable</code> means a season is the finest honest
+claim.</caption>
+<colgroup>
+<col width="19%" />
+<col width="14%" />
+<col width="11%" />
+<col width="16%" />
+<col width="11%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="left">process</th>
+<th align="left">lo_month</th>
+<th align="left">median_month</th>
+<th align="left">hi_month</th>
+<th align="right">width_days</th>
+<th align="left">resolvable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">survival</td>
+<td align="left">Jan</td>
+<td align="left">Jan</td>
+<td align="left">Nov</td>
+<td align="right">303</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">recruitment</td>
+<td align="left">Jan</td>
+<td align="left">Sep</td>
+<td align="left">Dec</td>
+<td align="right">324</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>0 of 2 site-process combinations resolve to a window narrower than 90
+days. Where they do not, the deliverable is a season and a statement
+that the record cannot do better - which is itself a finding about
+Montana flow records.</p>
+</div>
+<div id="the-management-view" class="section level2">
+<h2>4. The management view</h2>
+<div class="float">
+<img src="figures/09_f9c_management.png"
+alt="Benefit per cfs across sites." />
+<div class="figcaption">Benefit per cfs across sites.</div>
+</div>
+<div class="float">
+<img src="figures/09_f9d_production.png"
+alt="Whole-population production response." />
+<div class="figcaption">Whole-population production response.</div>
+</div>
+<table>
+<caption>Each site’s best feasible release, among the volumes and
+durations evaluated.</caption>
+<colgroup>
+<col width="16%" />
+<col width="10%" />
+<col width="12%" />
+<col width="14%" />
+<col width="11%" />
+<col width="9%" />
+<col width="7%" />
+<col width="11%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="right">volume_af</th>
+<th align="right">window_days</th>
+<th align="right">sustained_cfs</th>
+<th align="left">start_date</th>
+<th align="left">end_date</th>
+<th align="right">effect</th>
+<th align="right">p_positive</th>
+<th align="left">passes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="right">5000</td>
+<td align="right">7</td>
+<td align="right">360.121</td>
+<td align="left">12 Jun</td>
+<td align="left">18 Jun</td>
+<td align="right">3.758</td>
+<td align="right">0.988</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="reclamation-scenarios-across-sites" class="section level2">
+<h2>5. Reclamation scenarios, across sites</h2>
+<table style="width:100%;">
+<caption>Every scenario at every site with a forecast, worst
+first.</caption>
+<colgroup>
+<col width="12%" />
+<col width="6%" />
+<col width="8%" />
+<col width="21%" />
+<col width="9%" />
+<col width="6%" />
+<col width="8%" />
+<col width="9%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="left">Scenario</th>
+<th align="left">Period</th>
+<th align="left">Type</th>
+<th align="left">process</th>
+<th align="right">effect</th>
+<th align="right">p_negative</th>
+<th align="right">frac_extrap</th>
+<th align="left">status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-62.050</td>
+<td align="right">0.887</td>
+<td align="right">0.121</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-60.239</td>
+<td align="right">0.893</td>
+<td align="right">0.101</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-55.412</td>
+<td align="right">0.858</td>
+<td align="right">0.109</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-54.971</td>
+<td align="right">0.867</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-54.772</td>
+<td align="right">0.861</td>
+<td align="right">0.103</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-53.832</td>
+<td align="right">0.842</td>
+<td align="right">0.133</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-53.384</td>
+<td align="right">0.844</td>
+<td align="right">0.091</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-52.433</td>
+<td align="right">0.854</td>
+<td align="right">0.087</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-52.433</td>
+<td align="right">0.854</td>
+<td align="right">0.087</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-52.219</td>
+<td align="right">0.860</td>
+<td align="right">0.078</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-52.219</td>
+<td align="right">0.860</td>
+<td align="right">0.078</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-49.525</td>
+<td align="right">0.822</td>
+<td align="right">0.096</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-48.870</td>
+<td align="right">0.823</td>
+<td align="right">0.095</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-48.870</td>
+<td align="right">0.823</td>
+<td align="right">0.095</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-48.120</td>
+<td align="right">0.811</td>
+<td align="right">0.121</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-48.120</td>
+<td align="right">0.811</td>
+<td align="right">0.121</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-48.104</td>
+<td align="right">0.805</td>
+<td align="right">0.125</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-48.104</td>
+<td align="right">0.805</td>
+<td align="right">0.125</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-47.951</td>
+<td align="right">0.830</td>
+<td align="right">0.064</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-45.833</td>
+<td align="right">0.822</td>
+<td align="right">0.065</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-45.572</td>
+<td align="right">0.814</td>
+<td align="right">0.073</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-44.778</td>
+<td align="right">0.795</td>
+<td align="right">0.098</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-44.778</td>
+<td align="right">0.795</td>
+<td align="right">0.098</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-43.662</td>
+<td align="right">0.807</td>
+<td align="right">0.076</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-43.662</td>
+<td align="right">0.807</td>
+<td align="right">0.076</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-43.390</td>
+<td align="right">0.808</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-43.390</td>
+<td align="right">0.808</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.612</td>
+<td align="right">0.806</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.485</td>
+<td align="right">0.806</td>
+<td align="right">0.062</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.485</td>
+<td align="right">0.806</td>
+<td align="right">0.062</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-42.326</td>
+<td align="right">0.797</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-41.803</td>
+<td align="right">0.791</td>
+<td align="right">0.066</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-41.478</td>
+<td align="right">0.795</td>
+<td align="right">0.052</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-41.075</td>
+<td align="right">0.777</td>
+<td align="right">0.080</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-40.602</td>
+<td align="right">0.786</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-40.602</td>
+<td align="right">0.786</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-39.899</td>
+<td align="right">0.766</td>
+<td align="right">0.095</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-39.060</td>
+<td align="right">0.764</td>
+<td align="right">0.087</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-38.946</td>
+<td align="right">0.767</td>
+<td align="right">0.097</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-38.670</td>
+<td align="right">0.776</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-38.540</td>
+<td align="right">0.776</td>
+<td align="right">0.065</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-37.536</td>
+<td align="right">0.786</td>
+<td align="right">0.057</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-37.534</td>
+<td align="right">0.760</td>
+<td align="right">0.082</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-37.361</td>
+<td align="right">0.761</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-37.361</td>
+<td align="right">0.761</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-37.361</td>
+<td align="right">0.761</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-37.361</td>
+<td align="right">0.761</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-37.361</td>
+<td align="right">0.761</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-37.244</td>
+<td align="right">0.769</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-37.104</td>
+<td align="right">0.764</td>
+<td align="right">0.065</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-37.036</td>
+<td align="right">0.756</td>
+<td align="right">0.078</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-36.754</td>
+<td align="right">0.764</td>
+<td align="right">0.058</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.762</td>
+<td align="right">0.756</td>
+<td align="right">0.126</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.664</td>
+<td align="right">0.761</td>
+<td align="right">0.057</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.664</td>
+<td align="right">0.761</td>
+<td align="right">0.057</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.269</td>
+<td align="right">0.739</td>
+<td align="right">0.112</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-35.269</td>
+<td align="right">0.739</td>
+<td align="right">0.112</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-34.795</td>
+<td align="right">0.752</td>
+<td align="right">0.072</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-34.322</td>
+<td align="right">0.752</td>
+<td align="right">0.057</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-34.317</td>
+<td align="right">0.743</td>
+<td align="right">0.075</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-34.258</td>
+<td align="right">0.744</td>
+<td align="right">0.068</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-33.864</td>
+<td align="right">0.744</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">-33.561</td>
+<td align="right">0.728</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-32.470</td>
+<td align="right">0.725</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-31.464</td>
+<td align="right">0.731</td>
+<td align="right">0.059</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-30.995</td>
+<td align="right">0.719</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-30.320</td>
+<td align="right">0.715</td>
+<td align="right">0.087</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-28.335</td>
+<td align="right">0.698</td>
+<td align="right">0.113</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">-27.892</td>
+<td align="right">0.696</td>
+<td align="right">0.105</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-27.090</td>
+<td align="right">0.712</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-27.090</td>
+<td align="right">0.712</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-26.753</td>
+<td align="right">0.693</td>
+<td align="right">0.082</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-26.514</td>
+<td align="right">0.698</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-26.514</td>
+<td align="right">0.698</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-26.304</td>
+<td align="right">0.696</td>
+<td align="right">0.063</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-26.304</td>
+<td align="right">0.696</td>
+<td align="right">0.063</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-25.662</td>
+<td align="right">0.676</td>
+<td align="right">0.148</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-25.662</td>
+<td align="right">0.676</td>
+<td align="right">0.148</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-25.420</td>
+<td align="right">0.682</td>
+<td align="right">0.138</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-25.420</td>
+<td align="right">0.682</td>
+<td align="right">0.138</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-25.085</td>
+<td align="right">0.684</td>
+<td align="right">0.127</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">-21.889</td>
+<td align="right">0.663</td>
+<td align="right">0.097</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-20.331</td>
+<td align="right">0.855</td>
+<td align="right">0.112</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-20.331</td>
+<td align="right">0.855</td>
+<td align="right">0.112</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-19.146</td>
+<td align="right">0.809</td>
+<td align="right">0.125</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-19.146</td>
+<td align="right">0.809</td>
+<td align="right">0.125</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-18.294</td>
+<td align="right">0.785</td>
+<td align="right">0.133</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-17.785</td>
+<td align="right">0.818</td>
+<td align="right">0.148</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-17.785</td>
+<td align="right">0.818</td>
+<td align="right">0.148</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-16.883</td>
+<td align="right">0.776</td>
+<td align="right">0.087</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-16.587</td>
+<td align="right">0.799</td>
+<td align="right">0.076</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-16.587</td>
+<td align="right">0.799</td>
+<td align="right">0.076</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-16.488</td>
+<td align="right">0.798</td>
+<td align="right">0.138</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-16.488</td>
+<td align="right">0.798</td>
+<td align="right">0.138</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-16.261</td>
+<td align="right">0.760</td>
+<td align="right">0.096</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-15.018</td>
+<td align="right">0.787</td>
+<td align="right">0.063</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-15.018</td>
+<td align="right">0.787</td>
+<td align="right">0.063</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-14.545</td>
+<td align="right">0.786</td>
+<td align="right">0.086</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-14.545</td>
+<td align="right">0.786</td>
+<td align="right">0.086</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-13.765</td>
+<td align="right">0.731</td>
+<td align="right">0.103</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-13.650</td>
+<td align="right">0.764</td>
+<td align="right">0.097</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-13.313</td>
+<td align="right">0.746</td>
+<td align="right">0.082</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-13.095</td>
+<td align="right">0.711</td>
+<td align="right">0.091</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-12.973</td>
+<td align="right">0.723</td>
+<td align="right">0.113</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-12.769</td>
+<td align="right">0.764</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-12.769</td>
+<td align="right">0.764</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-12.534</td>
+<td align="right">0.734</td>
+<td align="right">0.108</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-12.138</td>
+<td align="right">0.697</td>
+<td align="right">0.109</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-11.989</td>
+<td align="right">0.714</td>
+<td align="right">0.087</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-11.861</td>
+<td align="right">0.716</td>
+<td align="right">0.105</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-11.785</td>
+<td align="right">0.711</td>
+<td align="right">0.073</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-11.316</td>
+<td align="right">0.697</td>
+<td align="right">0.079</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-11.291</td>
+<td align="right">0.721</td>
+<td align="right">0.127</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-10.918</td>
+<td align="right">0.725</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-10.716</td>
+<td align="right">0.694</td>
+<td align="right">0.064</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-10.396</td>
+<td align="right">0.694</td>
+<td align="right">0.065</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-10.318</td>
+<td align="right">0.689</td>
+<td align="right">0.108</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-10.069</td>
+<td align="right">0.687</td>
+<td align="right">0.074</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-9.959</td>
+<td align="right">0.685</td>
+<td align="right">0.058</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-9.567</td>
+<td align="right">0.682</td>
+<td align="right">0.080</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-9.509</td>
+<td align="right">0.673</td>
+<td align="right">0.082</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-9.462</td>
+<td align="right">0.685</td>
+<td align="right">0.066</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.385</td>
+<td align="right">0.687</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.385</td>
+<td align="right">0.687</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-9.177</td>
+<td align="right">0.674</td>
+<td align="right">0.126</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-8.890</td>
+<td align="right">0.663</td>
+<td align="right">0.078</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-8.226</td>
+<td align="right">0.670</td>
+<td align="right">0.059</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-8.197</td>
+<td align="right">0.652</td>
+<td align="right">0.097</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-7.975</td>
+<td align="right">0.679</td>
+<td align="right">0.057</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-7.419</td>
+<td align="right">0.635</td>
+<td align="right">0.108</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-7.419</td>
+<td align="right">0.635</td>
+<td align="right">0.108</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-7.419</td>
+<td align="right">0.635</td>
+<td align="right">0.108</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-7.419</td>
+<td align="right">0.635</td>
+<td align="right">0.108</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-7.419</td>
+<td align="right">0.635</td>
+<td align="right">0.108</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-7.109</td>
+<td align="right">0.637</td>
+<td align="right">0.079</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-6.788</td>
+<td align="right">0.631</td>
+<td align="right">0.065</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-6.708</td>
+<td align="right">0.640</td>
+<td align="right">0.068</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-6.658</td>
+<td align="right">0.643</td>
+<td align="right">0.065</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-6.251</td>
+<td align="right">0.611</td>
+<td align="right">0.095</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-6.200</td>
+<td align="right">0.620</td>
+<td align="right">0.072</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">-6.173</td>
+<td align="right">0.632</td>
+<td align="right">0.057</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-6.119</td>
+<td align="right">0.624</td>
+<td align="right">0.075</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-6.081</td>
+<td align="right">0.639</td>
+<td align="right">0.057</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-6.081</td>
+<td align="right">0.639</td>
+<td align="right">0.057</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">-5.966</td>
+<td align="right">0.628</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-5.254</td>
+<td align="right">0.603</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-5.072</td>
+<td align="right">0.585</td>
+<td align="right">0.101</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-4.987</td>
+<td align="right">0.597</td>
+<td align="right">0.078</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-4.987</td>
+<td align="right">0.597</td>
+<td align="right">0.078</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-4.337</td>
+<td align="right">0.595</td>
+<td align="right">0.052</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-3.761</td>
+<td align="right">0.572</td>
+<td align="right">0.087</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-3.761</td>
+<td align="right">0.572</td>
+<td align="right">0.087</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-3.052</td>
+<td align="right">0.559</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-3.052</td>
+<td align="right">0.559</td>
+<td align="right">0.069</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-2.621</td>
+<td align="right">0.557</td>
+<td align="right">0.062</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-2.621</td>
+<td align="right">0.557</td>
+<td align="right">0.062</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-1.256</td>
+<td align="right">0.512</td>
+<td align="right">0.121</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.522</td>
+<td align="right">0.515</td>
+<td align="right">0.095</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.522</td>
+<td align="right">0.515</td>
+<td align="right">0.095</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">-0.485</td>
+<td align="right">0.509</td>
+<td align="right">0.081</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">2.033</td>
+<td align="right">0.457</td>
+<td align="right">0.098</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">2.033</td>
+<td align="right">0.457</td>
+<td align="right">0.098</td>
+<td align="left">supported</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">2.390</td>
+<td align="right">0.448</td>
+<td align="right">0.121</td>
+<td align="left">supported</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">2.390</td>
+<td align="right">0.448</td>
+<td align="right">0.121</td>
+<td align="left">supported</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="figures/09_f9e_scenarios.png"
+alt="Scenario effects across sites." />
+<div class="figcaption">Scenario effects across sites.</div>
+</div>
+</div>
+<div id="equilibrium-across-sites" class="section level2">
+<h2>6. Equilibrium, across sites</h2>
+<table style="width:100%;">
+<caption>Percent change in equilibrium abundance and maximum surplus
+production, worst first.</caption>
+<colgroup>
+<col width="13%" />
+<col width="7%" />
+<col width="9%" />
+<col width="23%" />
+<col width="7%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="7%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="left">Scenario</th>
+<th align="left">Period</th>
+<th align="left">Type</th>
+<th align="right">mean_Q</th>
+<th align="right">K</th>
+<th align="right">dK_pct</th>
+<th align="right">MS</th>
+<th align="right">dMS_pct</th>
+<th align="right">frac_K_finite</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">517.121</td>
+<td align="right">349.923</td>
+<td align="right">32.835</td>
+<td align="right">0.000</td>
+<td align="right">95.589</td>
+<td align="right">0.157</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">525.367</td>
+<td align="right">356.214</td>
+<td align="right">34.593</td>
+<td align="right">0.000</td>
+<td align="right">111.704</td>
+<td align="right">0.163</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">586.449</td>
+<td align="right">381.567</td>
+<td align="right">48.471</td>
+<td align="right">0.000</td>
+<td align="right">534.513</td>
+<td align="right">0.209</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">586.449</td>
+<td align="right">381.567</td>
+<td align="right">48.471</td>
+<td align="right">0.000</td>
+<td align="right">534.513</td>
+<td align="right">0.209</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">642.746</td>
+<td align="right">410.003</td>
+<td align="right">57.291</td>
+<td align="right">0.000</td>
+<td align="right">2294.654</td>
+<td align="right">0.246</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">642.746</td>
+<td align="right">410.003</td>
+<td align="right">57.291</td>
+<td align="right">0.000</td>
+<td align="right">2294.654</td>
+<td align="right">0.246</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">621.545</td>
+<td align="right">415.666</td>
+<td align="right">58.881</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.235</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">621.545</td>
+<td align="right">415.666</td>
+<td align="right">58.881</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.235</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">584.159</td>
+<td align="right">418.920</td>
+<td align="right">60.224</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.208</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">591.514</td>
+<td align="right">423.184</td>
+<td align="right">62.358</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.213</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">617.114</td>
+<td align="right">432.763</td>
+<td align="right">70.220</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.233</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">700.922</td>
+<td align="right">440.826</td>
+<td align="right">73.464</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.289</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">700.922</td>
+<td align="right">440.826</td>
+<td align="right">73.464</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.289</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">667.241</td>
+<td align="right">442.996</td>
+<td align="right">74.396</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.269</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">693.049</td>
+<td align="right">446.256</td>
+<td align="right">75.660</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.285</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">693.049</td>
+<td align="right">446.256</td>
+<td align="right">75.660</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.285</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">707.256</td>
+<td align="right">449.158</td>
+<td align="right">77.122</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.294</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">690.673</td>
+<td align="right">450.930</td>
+<td align="right">78.487</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.285</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">743.939</td>
+<td align="right">473.936</td>
+<td align="right">85.144</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.317</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">743.939</td>
+<td align="right">473.936</td>
+<td align="right">85.144</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.317</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">671.529</td>
+<td align="right">475.724</td>
+<td align="right">85.650</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.270</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">679.919</td>
+<td align="right">476.272</td>
+<td align="right">85.794</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.277</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">679.919</td>
+<td align="right">476.272</td>
+<td align="right">85.794</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.277</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">699.866</td>
+<td align="right">482.694</td>
+<td align="right">88.135</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.290</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">721.280</td>
+<td align="right">496.527</td>
+<td align="right">92.587</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.307</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">807.480</td>
+<td align="right">496.593</td>
+<td align="right">92.605</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.358</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">807.480</td>
+<td align="right">496.593</td>
+<td align="right">92.605</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.358</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">779.480</td>
+<td align="right">501.584</td>
+<td align="right">94.858</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.345</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">808.788</td>
+<td align="right">503.682</td>
+<td align="right">95.295</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.361</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">731.612</td>
+<td align="right">505.134</td>
+<td align="right">95.587</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.309</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">763.782</td>
+<td align="right">519.573</td>
+<td align="right">98.759</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.336</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">763.782</td>
+<td align="right">519.573</td>
+<td align="right">98.759</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.336</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">784.169</td>
+<td align="right">532.021</td>
+<td align="right">102.081</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.341</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">777.722</td>
+<td align="right">537.279</td>
+<td align="right">103.085</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.345</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">777.722</td>
+<td align="right">537.279</td>
+<td align="right">103.085</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.345</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">785.220</td>
+<td align="right">547.351</td>
+<td align="right">106.393</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.345</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">916.743</td>
+<td align="right">549.501</td>
+<td align="right">107.915</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.419</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">794.335</td>
+<td align="right">553.554</td>
+<td align="right">108.701</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.349</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">812.105</td>
+<td align="right">576.310</td>
+<td align="right">111.549</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.358</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">838.021</td>
+<td align="right">583.092</td>
+<td align="right">113.162</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.376</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">860.959</td>
+<td align="right">585.467</td>
+<td align="right">113.763</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.386</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">841.275</td>
+<td align="right">599.739</td>
+<td align="right">115.241</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.379</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">841.275</td>
+<td align="right">599.739</td>
+<td align="right">115.241</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.379</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">973.016</td>
+<td align="right">611.408</td>
+<td align="right">117.579</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.445</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">1028.087</td>
+<td align="right">613.957</td>
+<td align="right">118.218</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.466</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">886.287</td>
+<td align="right">626.961</td>
+<td align="right">121.781</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.411</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">886.287</td>
+<td align="right">626.961</td>
+<td align="right">121.781</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.411</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">871.858</td>
+<td align="right">631.942</td>
+<td align="right">123.132</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.401</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">973.569</td>
+<td align="right">634.393</td>
+<td align="right">123.489</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.450</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">940.789</td>
+<td align="right">636.992</td>
+<td align="right">124.143</td>
+<td align="right">0.000</td>
+<td align="right">Inf</td>
+<td align="right">0.430</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">944.862</td>
+<td align="right">640.185</td>
+<td align="right">124.778</td>
+<td align="right">4.077</td>
+<td align="right">Inf</td>
+<td align="right">0.433</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">944.862</td>
+<td align="right">640.185</td>
+<td align="right">124.778</td>
+<td align="right">4.077</td>
+<td align="right">Inf</td>
+<td align="right">0.433</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">939.460</td>
+<td align="right">644.780</td>
+<td align="right">125.976</td>
+<td align="right">9.077</td>
+<td align="right">Inf</td>
+<td align="right">0.425</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">1023.069</td>
+<td align="right">650.111</td>
+<td align="right">128.005</td>
+<td align="right">11.861</td>
+<td align="right">Inf</td>
+<td align="right">0.473</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">922.885</td>
+<td align="right">652.535</td>
+<td align="right">128.320</td>
+<td align="right">12.191</td>
+<td align="right">Inf</td>
+<td align="right">0.419</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">952.950</td>
+<td align="right">655.306</td>
+<td align="right">129.659</td>
+<td align="right">13.567</td>
+<td align="right">Inf</td>
+<td align="right">0.435</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">928.977</td>
+<td align="right">656.857</td>
+<td align="right">130.078</td>
+<td align="right">14.018</td>
+<td align="right">Inf</td>
+<td align="right">0.435</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">928.977</td>
+<td align="right">656.857</td>
+<td align="right">130.078</td>
+<td align="right">14.018</td>
+<td align="right">Inf</td>
+<td align="right">0.435</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">954.858</td>
+<td align="right">675.325</td>
+<td align="right">133.528</td>
+<td align="right">18.020</td>
+<td align="right">Inf</td>
+<td align="right">0.437</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">958.848</td>
+<td align="right">695.666</td>
+<td align="right">136.671</td>
+<td align="right">21.887</td>
+<td align="right">Inf</td>
+<td align="right">0.437</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">1021.190</td>
+<td align="right">717.211</td>
+<td align="right">141.867</td>
+<td align="right">28.209</td>
+<td align="right">Inf</td>
+<td align="right">0.464</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1016.255</td>
+<td align="right">745.093</td>
+<td align="right">144.978</td>
+<td align="right">33.588</td>
+<td align="right">Inf</td>
+<td align="right">0.470</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1105.720</td>
+<td align="right">766.176</td>
+<td align="right">149.570</td>
+<td align="right">41.845</td>
+<td align="right">Inf</td>
+<td align="right">0.514</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1105.720</td>
+<td align="right">766.176</td>
+<td align="right">149.570</td>
+<td align="right">41.845</td>
+<td align="right">Inf</td>
+<td align="right">0.514</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">1080.656</td>
+<td align="right">767.676</td>
+<td align="right">150.369</td>
+<td align="right">43.235</td>
+<td align="right">Inf</td>
+<td align="right">0.485</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1059.843</td>
+<td align="right">768.796</td>
+<td align="right">150.465</td>
+<td align="right">43.416</td>
+<td align="right">Inf</td>
+<td align="right">0.494</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1072.077</td>
+<td align="right">780.070</td>
+<td align="right">152.868</td>
+<td align="right">47.080</td>
+<td align="right">Inf</td>
+<td align="right">0.492</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1125.596</td>
+<td align="right">783.943</td>
+<td align="right">154.682</td>
+<td align="right">50.409</td>
+<td align="right">Inf</td>
+<td align="right">0.521</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1160.486</td>
+<td align="right">791.130</td>
+<td align="right">158.272</td>
+<td align="right">55.268</td>
+<td align="right">Inf</td>
+<td align="right">0.532</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1160.486</td>
+<td align="right">791.130</td>
+<td align="right">158.272</td>
+<td align="right">55.268</td>
+<td align="right">Inf</td>
+<td align="right">0.532</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1147.660</td>
+<td align="right">797.012</td>
+<td align="right">159.438</td>
+<td align="right">57.157</td>
+<td align="right">Inf</td>
+<td align="right">0.516</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1147.660</td>
+<td align="right">797.012</td>
+<td align="right">159.438</td>
+<td align="right">57.157</td>
+<td align="right">Inf</td>
+<td align="right">0.516</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1147.660</td>
+<td align="right">797.012</td>
+<td align="right">159.438</td>
+<td align="right">57.157</td>
+<td align="right">Inf</td>
+<td align="right">0.516</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1147.660</td>
+<td align="right">797.012</td>
+<td align="right">159.438</td>
+<td align="right">57.157</td>
+<td align="right">Inf</td>
+<td align="right">0.516</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1147.660</td>
+<td align="right">797.012</td>
+<td align="right">159.438</td>
+<td align="right">57.157</td>
+<td align="right">Inf</td>
+<td align="right">0.516</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1132.288</td>
+<td align="right">799.063</td>
+<td align="right">159.802</td>
+<td align="right">57.874</td>
+<td align="right">Inf</td>
+<td align="right">0.516</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">1155.096</td>
+<td align="right">819.877</td>
+<td align="right">163.616</td>
+<td align="right">64.242</td>
+<td align="right">Inf</td>
+<td align="right">0.519</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1199.436</td>
+<td align="right">842.743</td>
+<td align="right">167.182</td>
+<td align="right">71.926</td>
+<td align="right">Inf</td>
+<td align="right">0.543</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1238.675</td>
+<td align="right">844.643</td>
+<td align="right">167.483</td>
+<td align="right">72.833</td>
+<td align="right">Inf</td>
+<td align="right">0.557</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1238.675</td>
+<td align="right">844.643</td>
+<td align="right">167.483</td>
+<td align="right">72.833</td>
+<td align="right">Inf</td>
+<td align="right">0.557</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1324.062</td>
+<td align="right">887.095</td>
+<td align="right">175.500</td>
+<td align="right">91.705</td>
+<td align="right">Inf</td>
+<td align="right">0.577</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">1310.634</td>
+<td align="right">888.495</td>
+<td align="right">175.830</td>
+<td align="right">92.297</td>
+<td align="right">Inf</td>
+<td align="right">0.574</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="what-generalizes-and-what-does-not" class="section level2">
+<h2>7. What generalizes, and what does not</h2>
+<p>Three things this page is <em>for</em>, and they are claims to be
+argued rather than read off a table:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Whether the timing is shared.</strong> If validated sites
+concentrate benefit in the same part of the year, that is a Montana-wide
+statement with a mechanism behind it. If they do not, the honest
+conclusion is that timing is local and each population needs its own
+curve.</li>
+<li><strong>Whether regulated and unregulated rivers differ.</strong>
+The management value of the whole analysis rests on flow being movable,
+so a systematic difference between them is the most policy-relevant
+pattern available here.</li>
+<li><strong>Whether the sites that fail the gate share anything</strong>
+- record length, gage quality, degree of regulation. A failure explained
+is more useful than a site quietly dropped.</li>
+</ol>
+<p>Every number quoted in the manuscript is in
+<code>output/tables/derived_stats.csv</code>, regenerated on each run so
+the text and the figures cannot drift apart.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Methods</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Weighted hydrographs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="results.html">Results by site</a>
+</li>
+<li>
+  <a href="results_among_sites.html">Among sites</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Methods</h1>
+<h3 class="subtitle">How beta(t) is estimated, validated, and turned
+into cfs</h3>
+
+</div>
+
+
+<div id="the-response-comes-from-the-null-ipm" class="section level2">
+<h2>1. The response comes from the null IPM</h2>
+<p>Recruitment is <code>log(recruits / spawner)</code>, taken from the
+posterior of the <strong>flow-naive</strong> integrated population
+model, with a recruit lag from spawning to the age at which fish are
+counted.</p>
+<p>That “flow-naive” is not a detail. Using the flow-informed IPM’s
+abundances as the response would put flow on both sides of the
+regression: the response would already contain the flow effect the
+regression is trying to estimate, and the result would be biased toward
+finding one. Survival is modelled on the logit scale, because a
+multiplier on a probability is meaningless at 0.95 and trivial at
+0.05.</p>
+<table>
+<caption>As built.</caption>
+<thead>
+<tr class="header">
+<th align="left">Setting</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">recruit lag (years)</td>
+<td align="left">3</td>
+</tr>
+<tr class="even">
+<td align="left">stock node</td>
+<td align="left">NAdults</td>
+</tr>
+<tr class="odd">
+<td align="left">sites built</td>
+<td align="left">BigHole.Melrose</td>
+</tr>
+</tbody>
+</table>
+<p>Two lags are easy to confuse and they mean different things. The
+<strong>recruit lag</strong> is biology: fish counted at age 2-3 were
+spawned three years earlier, so they pair with that year’s stock. The
+<strong>flow lag</strong> is statistics: which calendar year’s
+hydrograph the IPM’s own model selection chose. When the flow lag equals
+the recruit lag, the mechanism sits in the spawning year - adult access,
+redd site selection, incubation. One less, and it sits in the age-0
+rearing year - emergence timing, displacement, first-summer rearing.
+Different hypotheses, and a wrong value shifts everything by a year
+while still producing a plausible curve.</p>
+</div>
+<div id="standardizing-the-hydrograph" class="section level2">
+<h2>2. Standardizing the hydrograph</h2>
+<p>Three steps, in this order, and the order matters.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Logs.</strong> Discharge is multiplicative; 50 cfs means
+something different in April and September.</li>
+<li><strong>Subtract the day’s mean across years.</strong> Now a
+positive value means “wetter than this date usually is”, not “it is
+June”. Without this, beta(t) spends itself fighting the seasonal cycle,
+which dwarfs any anomaly.</li>
+<li><strong>Divide by one global standard deviation</strong> - not by
+each day’s own. Per-day standardization would make a 2% wobble in a
+stable January week and a doubling in June both equal “one SD”, erasing
+exactly the difference beta(t) is meant to weigh.</li>
+</ol>
+<p>The geometric-mean discharge on each day, <code>Qbar(t)</code>, is
+kept, because it is the bridge from beta(t) to cfs (section 5).</p>
+</div>
+<div id="estimating-betat" class="section level2">
+<h2>3. Estimating beta(t)</h2>
+<p>365 unknown coefficients from roughly 40 years cannot be fitted
+directly. The hydrographs themselves supply the constraint: they are
+smooth and highly autocorrelated, so a handful of <strong>modes of
+variation</strong> describe nearly all of how years differ. beta(t) is
+estimated inside the span of those modes and rotated back onto the day
+axis.</p>
+<pre><code>## Components retained: 20.</code></pre>
+<table>
+<caption>Retained flow modes and the variance each explains.</caption>
+<colgroup>
+<col width="23%" />
+<col width="4%" />
+<col width="13%" />
+<col width="17%" />
+<col width="8%" />
+<col width="8%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="right">k</th>
+<th align="right">flow_var</th>
+<th align="right">recruit_var</th>
+<th align="right">p_dir</th>
+<th align="right">coef</th>
+<th align="left">consistent_sign</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="right">1</td>
+<td align="right">46.929</td>
+<td align="right">16.124</td>
+<td align="right">1</td>
+<td align="right">0.026</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The objection, stated plainly.</strong> The modes are ranked
+by variance in the <em>predictor</em>, without reference to the
+response. A low-variance flow mode that carries the real biological
+signal is discarded before it is ever tested - the standard critique of
+principal-component regression (Jolliffe 1982, <em>Applied
+Statistics</em> 31:300-303). beta(t) cannot show structure the retained
+modes cannot build. Changing the retention threshold swaps one arbitrary
+number for another; it does not answer the objection, and it belongs in
+the paper rather than a footnote.</p>
+</div>
+<div id="the-gate" class="section level2">
+<h2>4. The gate</h2>
+<p>beta(t) always comes out of the arithmetic. The gate decides whether
+it means anything, and it is the most important output in the
+project.</p>
+<table style="width:100%;">
+<caption>Every site and process. r2_blocked and p_value are the two that
+decide.</caption>
+<colgroup>
+<col width="15%" />
+<col width="11%" />
+<col width="8%" />
+<col width="7%" />
+<col width="3%" />
+<col width="11%" />
+<col width="6%" />
+<col width="10%" />
+<col width="7%" />
+<col width="8%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="left">process</th>
+<th align="left">form</th>
+<th align="right">n_years</th>
+<th align="right">edf</th>
+<th align="right">r2_insample</th>
+<th align="right">r2_loo</th>
+<th align="right">r2_blocked</th>
+<th align="right">p_value</th>
+<th align="right">finest_p</th>
+<th align="left">passes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">recruitment</td>
+<td align="left">beta:fpc</td>
+<td align="right">33</td>
+<td align="right">12</td>
+<td align="right">0.449</td>
+<td align="right">-0.366</td>
+<td align="right">-0.259</td>
+<td align="right">0.394</td>
+<td align="right">0.030</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">survival</td>
+<td align="left">beta:fpc</td>
+<td align="right">32</td>
+<td align="right">12</td>
+<td align="right">0.800</td>
+<td align="right">0.486</td>
+<td align="right">0.421</td>
+<td align="right">0.031</td>
+<td align="right">0.031</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<p><strong><code>r2_insample</code></strong> is optimistic by
+construction: the model has seen these years and spent <code>edf</code>
+degrees of freedom on about forty of them. Context only.</p>
+<p><strong><code>r2_loo</code> versus <code>r2_blocked</code>.</strong>
+Leave-one-out leaves a held-out year’s immediate neighbours in the
+training set, and both hydrographs and responses are autocorrelated
+between adjacent years, so the model can half-recognize the test year
+from its neighbours. The gap between the two is that leak, made visible.
+Blocked cross-validation holds out contiguous runs of years instead, and
+<strong>can be negative</strong> - meaning worse than predicting the
+long-run mean, which is the honest verdict when a model has learned
+noise. That is why the threshold is “greater than zero” rather than
+something comfortable.</p>
+<p><strong><code>p_value</code></strong> comes from permuting the
+alignment between response and flow while preserving each series’ own
+autocorrelation. The null is not “flow is noise”; it is “this response,
+paired with the wrong years of this flow record”. Its smallest
+attainable value is <code>finest_p</code>. A p equal to that floor means
+no permutation matched the true alignment, not that p is precisely that
+number.</p>
+<p>Both conditions must hold. Where two estimator arms were run,
+agreement between them is a further requirement: if they disagree, the
+daily structure is coming from the estimator rather than the data, and
+no daily recommendation is defensible.</p>
+</div>
+<div id="from-betat-to-cfs" class="section level2">
+<h2>5. From beta(t) to cfs</h2>
+<p>beta(t) is per standard deviation of log anomaly. A manager releases
+cfs. Adding <code>dQ</code> on day <em>t</em> changes the standardized
+anomaly by <code>log(1 + dQ/Q)/sigma</code>, so at that day’s baseline
+discharge the benefit per cfs is approximately</p>
+<p><span class="math display">\[ \frac{\partial \eta}{\partial Q}(t)
+\;\approx\; \frac{\beta(t)}{\sigma\,\bar{Q}(t)} \]</span></p>
+<p>Because discharge spans more than an order of magnitude across the
+year, dividing by <code>Qbar(t)</code> <strong>reshapes</strong> the
+curve. The best day to release water is often not the day with the
+largest beta(t), and half the management answer lives in that
+division.</p>
+</div>
+<div id="the-two-reclamation-questions" class="section level2">
+<h2>6. The two Reclamation questions</h2>
+<p><strong>One year at a time (script 08).</strong> Each scenario-year’s
+hydrograph is scored with beta(t), standardized against the
+<em>training</em> climatology - never against the scenario’s own, which
+would re-centre a uniformly drier future to look average and make the
+effect vanish. The day-by-day attribution then separates two cases a
+single number cannot: flow dropping on days that matter, and flow
+dropping a lot on days that do not.</p>
+<p><strong>Sustained, at equilibrium (script 10).</strong> The same
+forecasts held indefinitely, propagated through the population model to
+equilibrium abundance and maximum surplus production. It can point the
+other way from the annual view, because equilibrium compounds.</p>
+<blockquote>
+<p>The current exports build each future period by shifting the
+1950-1999 sequence forward by 45, 75 and 105 years. Every 29 February
+then lands on 28 February of a non-leap year and collides with it, and
+the reverse case empties 29 February in the target leap years. Both are
+handled explicitly. A consequence for interpretation: all three periods
+share one historical weather sequence, so the across-year spread within
+a scenario is that record’s own variability and the period contrasts are
+paired by construction.</p>
+</blockquote>
+</div>
+<div id="what-this-does-not-establish" class="section level2">
+<h2>7. What this does not establish</h2>
+<p>The gate tests prediction, not causation. A validated beta(t)
+predicts years the model has not seen; it does not identify the
+mechanism, say whether the relation holds outside the observed flow
+range, or confirm that the retained modes were the right ones. Flow
+recommendations ultimately rest on mechanism, and this analysis
+constrains it rather than supplying it.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

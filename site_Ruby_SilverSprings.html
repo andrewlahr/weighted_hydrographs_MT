@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Ruby.SilverSprings</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Weighted hydrographs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="results.html">Results by site</a>
+</li>
+<li>
+  <a href="results_among_sites.html">Among sites</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Ruby.SilverSprings</h1>
+<h3 class="subtitle">Daily flow effects, scenarios, and equilibrium</h3>
+
+</div>
+
+
+<div class="site-picker"
+style="margin:1em 0;padding:.6em .8em;border:1px solid #ddd;border-radius:6px;">
+<p><label for="sitePicker"><strong>Site:</strong></label>
+<select id="sitePicker" style="margin-left:.5em;padding:.3em;"
+ onchange="if(this.value){window.location.href=this.value;}">
+<option value="site_Beaverhead_FishAndGame.html">Beaverhead.FishAndGame</option>
+<option value="site_Beaverhead_Hildreth.html">Beaverhead.Hildreth</option>
+<option value="site_BigHole_HogBack.html">BigHole.HogBack</option>
+<option value="site_BigHole_Melrose.html">BigHole.Melrose</option>
+<option value="site_Bighorn_Bighorn.html">Bighorn.Bighorn</option>
+<option value="site_Bighorn_MallardsLanding.html">Bighorn.MallardsLanding</option>
+<option value="site_Bitterroot_BellCrossing.html">Bitterroot.BellCrossing</option>
+<option value="site_Bitterroot_Darby.html">Bitterroot.Darby</option>
+<option value="site_Blackfoot_Johnsrud.html">Blackfoot.Johnsrud</option>
+<option value="site_Blackfoot_ScottyBrown.html">Blackfoot.ScottyBrown</option>
+<option value="site_Boulder_B2.html">Boulder.B2</option>
+<option value="site_Madison_Norris.html">Madison.Norris</option>
+<option value="site_Madison_PineButte.html">Madison.PineButte</option>
+<option value="site_Madison_Varney.html">Madison.Varney</option>
+<option value="site_Missouri_Cascade.html">Missouri.Cascade</option>
+<option value="site_Missouri_Craig.html">Missouri.Craig</option>
+<option value="site_RockCreek_FishAndGame.html">RockCreek.FishAndGame</option>
+<option value="site_Ruby_SilverSprings.html" selected>Ruby.SilverSprings</option>
+<option value="site_Ruby_Vigilante.html">Ruby.Vigilante</option>
+<option value="site_Shields_ConvictGrade.html">Shields.ConvictGrade</option>
+<option value="site_Smith_EagleCreek.html">Smith.EagleCreek</option>
+<option value="site_Yellowstone_CorwinSprings.html">Yellowstone.CorwinSprings</option>
+<option value="site_Yellowstone_MillCreek.html">Yellowstone.MillCreek</option>
+<option value="site_ClarkFork_Phshack.html">ClarkFork.Phshack</option>
+<option value="site_ClarkFork_WilliamsTavenner.html">ClarkFork.WilliamsTavenner</option>
+<option value="site_Jefferson_Waterloo.html">Jefferson.Waterloo</option>
+</select> <span style="margin-left:1em;color:#666;font-size:90%;">26
+site(s); BoR scenarios for 8</span></p>
+</div>
+<blockquote>
+<p><strong>NO GATE ROW.</strong> Validation has not been run for this
+site, so nothing below has a warrant. Run
+<code>R/05_validate.R</code>.</p>
+</blockquote>
+<div id="the-response-and-the-flow-record" class="section level2">
+<h2>1. The response, and the flow record</h2>
+<blockquote>
+<p><strong>NOT AVAILABLE</strong> - site Ruby.SilverSprings is not in
+response.rds. Run <code>R/01_build_response.R</code> to produce it.</p>
+</blockquote>
+<div class="float">
+<img src="figures/01_f1a__Ruby_SilverSprings.png"
+alt="Response series with posterior uncertainty." />
+<div class="figcaption">Response series with posterior
+uncertainty.</div>
+</div>
+<div class="float">
+<img src="figures/02_f2a_Ruby.SilverSprings.png"
+alt="Daily discharge, standardized to log anomalies." />
+<div class="figcaption">Daily discharge, standardized to log
+anomalies.</div>
+</div>
+<p>Flow is standardized in three steps, in this order: logs, because
+discharge is multiplicative; minus each day’s mean across years, so a
+positive value means wetter <em>than that date usually is</em>; then
+divided by <strong>one</strong> global standard deviation. Dividing each
+day by its own SD would make a small wobble in a stable week count the
+same as a doubling in June.</p>
+</div>
+<div id="the-weighted-hydrograph-betat" class="section level2">
+<h2>2. The weighted hydrograph, beta(t)</h2>
+<p>beta(t) is a weight for every day of the year. Score a hydrograph
+with it and the sum is the predicted change in the response.</p>
+<div class="float">
+<img src="figures/03_f3a.png" alt="beta(t) for recruitment." />
+<div class="figcaption">beta(t) for recruitment.</div>
+</div>
+<div class="float">
+<img src="figures/03_f3b.png"
+alt="Probability that beta(t) is positive, by day." />
+<div class="figcaption">Probability that beta(t) is positive, by
+day.</div>
+</div>
+<div class="float">
+<img src="figures/04_f4a.png" alt="beta(t) for survival." />
+<div class="figcaption">beta(t) for survival.</div>
+</div>
+<blockquote>
+<p><strong>NOT AVAILABLE</strong> - beta(t) has not been fitted for this
+site. Run <code>R/03_fit_beta_recruitment.R</code> to produce it.</p>
+</blockquote>
+</div>
+<div id="validation-is-this-a-finding" class="section level2">
+<h2>3. Validation: is this a finding?</h2>
+<blockquote>
+<p><strong>NOT AVAILABLE</strong> - validation has not been run for this
+site. Run <code>R/05_validate.R</code> to produce it.</p>
+</blockquote>
+<p>Three numbers, failing in different ways. <code>r2_insample</code> is
+optimistic by construction - the model has seen these years and spent
+<code>edf</code> degrees of freedom on them. <code>r2_blocked</code>
+holds out contiguous blocks of years, so a test year’s neighbours are
+not in the training set; it can be negative, which means worse than
+predicting the long-run mean. The gap between <code>r2_loo</code> and
+<code>r2_blocked</code> is the autocorrelation leak that leave-one-out
+was flattering. <code>p_value</code> is a permutation test whose
+smallest attainable value is <code>finest_p</code>; a p equal to that
+floor means no permutation did as well, not that p is precisely
+that.</p>
+<div class="float">
+<img src="figures/05_f5a.png"
+alt="Cross-validated skill against the permutation null." />
+<div class="figcaption">Cross-validated skill against the permutation
+null.</div>
+</div>
+</div>
+<div id="when-does-water-help" class="section level2">
+<h2>4. When does water help?</h2>
+<div class="float">
+<img src="figures/06_f6b.png"
+alt="Where the benefit is concentrated." />
+<div class="figcaption">Where the benefit is concentrated.</div>
+</div>
+<p>beta(t) is per standard deviation of log anomaly; a manager releases
+cfs. Dividing by that day’s baseline discharge <strong>reshapes</strong>
+the curve, because discharge spans more than an order of magnitude
+across the year. The best day to release water is often not the day with
+the largest beta(t).</p>
+<div id="can-a-single-day-honestly-be-named" class="section level3">
+<h3>Can a single day honestly be named?</h3>
+<blockquote>
+<p><strong>NOT AVAILABLE</strong> - no interval rows for this site. Run
+<code>R/06_daily_sensitivity.R</code> to produce it.</p>
+</blockquote>
+</div>
+<div id="the-volume-constrained-answer" class="section level3">
+<h3>The volume-constrained answer</h3>
+<blockquote>
+<p><strong>NOT AVAILABLE</strong> - no schedule rows for this site. Run
+<code>R/06b_decision_window.R</code> to produce it.</p>
+</blockquote>
+<div class="float">
+<img src="figures/06b_h.png" alt="Every feasible schedule, scored." />
+<div class="figcaption">Every feasible schedule, scored.</div>
+</div>
+</div>
+</div>
+<div id="what-it-does-to-the-population" class="section level2">
+<h2>5. What it does to the population</h2>
+</div>
+<div id="bureau-of-reclamation-scenarios" class="section level2">
+<h2>6. Bureau of Reclamation scenarios</h2>
+<blockquote>
+<p><strong>DATA NOT AVAILABLE</strong> - there is no BoR forecast
+hydrograph for this site. That is different from finding no effect: the
+question was not asked here.</p>
+</blockquote>
+</div>
+<div id="b.-equilibrium-under-a-sustained-scenario"
+class="section level2">
+<h2>6b. Equilibrium under a sustained scenario</h2>
+<blockquote>
+<p><strong>NOT AVAILABLE</strong> - the rule-curve arm has not been run
+for this site. Run <code>R/10_rulecurve.R</code> to produce it.</p>
+</blockquote>
+</div>
+<div id="what-was-produced-for-this-site" class="section level2">
+<h2>7. What was produced for this site</h2>
+<table>
+<caption>Figure files found for this site. MISSING means that script has
+not run here, or wrote the figure under a name the template cannot
+find.</caption>
+<thead>
+<tr class="header">
+<th align="left">figure</th>
+<th align="left">file</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01_f1a</td>
+<td align="left">01_f1a__Ruby_SilverSprings.png</td>
+</tr>
+<tr class="even">
+<td align="left">02_f2a</td>
+<td align="left">02_f2a_Ruby.SilverSprings.png</td>
+</tr>
+<tr class="odd">
+<td align="left">03_f3a</td>
+<td align="left">03_f3a.png</td>
+</tr>
+<tr class="even">
+<td align="left">03_f3b</td>
+<td align="left">03_f3b.png</td>
+</tr>
+<tr class="odd">
+<td align="left">04_f4a</td>
+<td align="left">04_f4a.png</td>
+</tr>
+<tr class="even">
+<td align="left">05_f5a</td>
+<td align="left">05_f5a.png</td>
+</tr>
+<tr class="odd">
+<td align="left">06_f6a</td>
+<td align="left">06_f6a.png</td>
+</tr>
+<tr class="even">
+<td align="left">06_f6b</td>
+<td align="left">06_f6b.png</td>
+</tr>
+<tr class="odd">
+<td align="left">06b_f</td>
+<td align="left">06b_f.png</td>
+</tr>
+<tr class="even">
+<td align="left">06b_h</td>
+<td align="left">06b_h.png</td>
+</tr>
+<tr class="odd">
+<td align="left">07_f7a</td>
+<td align="left">07_f7a.png</td>
+</tr>
+<tr class="even">
+<td align="left">08_f8a</td>
+<td align="left">08_f8a.png</td>
+</tr>
+<tr class="odd">
+<td align="left">08_f8b</td>
+<td align="left">08_f8b.png</td>
+</tr>
+<tr class="even">
+<td align="left">10_a</td>
+<td align="left">10_a.png</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
