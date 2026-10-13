@@ -1,0 +1,4825 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Ruby.Vigilante</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Weighted hydrographs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="results.html">Results by site</a>
+</li>
+<li>
+  <a href="results_among_sites.html">Among sites</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Ruby.Vigilante</h1>
+<h3 class="subtitle">Daily flow effects, scenarios, and equilibrium</h3>
+
+</div>
+
+
+<div class="site-picker"
+style="margin:1em 0;padding:.6em .8em;border:1px solid #ddd;border-radius:6px;">
+<p><label for="sitePicker"><strong>Site:</strong></label>
+<select id="sitePicker" style="margin-left:.5em;padding:.3em;"
+ onchange="if(this.value){window.location.href=this.value;}">
+<option value="site_Beaverhead_FishAndGame.html">Beaverhead.FishAndGame</option>
+<option value="site_Beaverhead_Hildreth.html">Beaverhead.Hildreth</option>
+<option value="site_BigHole_HogBack.html">BigHole.HogBack</option>
+<option value="site_BigHole_Melrose.html">BigHole.Melrose</option>
+<option value="site_Bighorn_Bighorn.html">Bighorn.Bighorn</option>
+<option value="site_Bighorn_MallardsLanding.html">Bighorn.MallardsLanding</option>
+<option value="site_Bitterroot_BellCrossing.html">Bitterroot.BellCrossing</option>
+<option value="site_Bitterroot_Darby.html">Bitterroot.Darby</option>
+<option value="site_Blackfoot_Johnsrud.html">Blackfoot.Johnsrud</option>
+<option value="site_Blackfoot_ScottyBrown.html">Blackfoot.ScottyBrown</option>
+<option value="site_Boulder_B2.html">Boulder.B2</option>
+<option value="site_Madison_Norris.html">Madison.Norris</option>
+<option value="site_Madison_PineButte.html">Madison.PineButte</option>
+<option value="site_Madison_Varney.html">Madison.Varney</option>
+<option value="site_Missouri_Cascade.html">Missouri.Cascade</option>
+<option value="site_Missouri_Craig.html">Missouri.Craig</option>
+<option value="site_RockCreek_FishAndGame.html">RockCreek.FishAndGame</option>
+<option value="site_Ruby_SilverSprings.html">Ruby.SilverSprings</option>
+<option value="site_Ruby_Vigilante.html" selected>Ruby.Vigilante</option>
+<option value="site_Shields_ConvictGrade.html">Shields.ConvictGrade</option>
+<option value="site_Smith_EagleCreek.html">Smith.EagleCreek</option>
+<option value="site_Yellowstone_CorwinSprings.html">Yellowstone.CorwinSprings</option>
+<option value="site_Yellowstone_MillCreek.html">Yellowstone.MillCreek</option>
+</select> <span style="margin-left:1em;color:#666;font-size:90%;">23
+site(s); BoR scenarios for 8</span></p>
+</div>
+<blockquote>
+<p><strong>NOT VALIDATED.</strong> Blocked CV R-squared -0.187,
+permutation p 0.136. Everything below is arithmetic, not a finding. Do
+not brief it. A site where the record cannot resolve a daily signal is a
+result about Montana flow records, not a failure of the analysis.</p>
+</blockquote>
+<div id="the-response-and-the-flow-record" class="section level2">
+<h2>1. The response, and the flow record</h2>
+<p>Recruitment is modelled as log(recruits / spawner) with a 3-year
+recruit lag against the <code>NAdults</code> node of the
+<strong>null</strong> (flow-naive) IPM posterior. Using the
+flow-informed fit here would make the flow-recruitment regression
+circular.</p>
+<div class="float">
+<img src="figures/01_f1a__Ruby_Vigilante.png"
+alt="Response series with posterior uncertainty." />
+<div class="figcaption">Response series with posterior
+uncertainty.</div>
+</div>
+<div class="float">
+<img src="figures/02_f2a_Ruby.Vigilante.png"
+alt="Daily discharge, standardized to log anomalies." />
+<div class="figcaption">Daily discharge, standardized to log
+anomalies.</div>
+</div>
+<p>Flow is standardized in three steps, in this order: logs, because
+discharge is multiplicative; minus each day’s mean across years, so a
+positive value means wetter <em>than that date usually is</em>; then
+divided by <strong>one</strong> global standard deviation. Dividing each
+day by its own SD would make a small wobble in a stable week count the
+same as a doubling in June.</p>
+</div>
+<div id="the-weighted-hydrograph-betat" class="section level2">
+<h2>2. The weighted hydrograph, beta(t)</h2>
+<p>beta(t) is a weight for every day of the year. Score a hydrograph
+with it and the sum is the predicted change in the response.</p>
+<div class="float">
+<img src="figures/03_f3a__Ruby_Vigilante.png"
+alt="beta(t) for recruitment." />
+<div class="figcaption">beta(t) for recruitment.</div>
+</div>
+<div class="float">
+<img src="figures/03_f3b__Ruby_Vigilante.png"
+alt="Probability that beta(t) is positive, by day." />
+<div class="figcaption">Probability that beta(t) is positive, by
+day.</div>
+</div>
+<div class="float">
+<img src="figures/04_f4a__Ruby_Vigilante.png"
+alt="beta(t) for survival." />
+<div class="figcaption">beta(t) for survival.</div>
+</div>
+</div>
+<div id="validation-is-this-a-finding" class="section level2">
+<h2>3. Validation: is this a finding?</h2>
+<table style="width:100%;">
+<caption>The gate. r2_blocked is the number that matters.</caption>
+<colgroup>
+<col width="13%" />
+<col width="10%" />
+<col width="9%" />
+<col width="4%" />
+<col width="13%" />
+<col width="8%" />
+<col width="12%" />
+<col width="9%" />
+<col width="10%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">process</th>
+<th align="left">form</th>
+<th align="right">n_years</th>
+<th align="right">edf</th>
+<th align="right">r2_insample</th>
+<th align="right">r2_loo</th>
+<th align="right">r2_blocked</th>
+<th align="right">p_value</th>
+<th align="right">finest_p</th>
+<th align="left">passes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="left">beta:fpc</td>
+<td align="right">23</td>
+<td align="right">9</td>
+<td align="right">0.400</td>
+<td align="right">-0.540</td>
+<td align="right">-0.780</td>
+<td align="right">0.696</td>
+<td align="right">0.043</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="left">beta:fpc</td>
+<td align="right">22</td>
+<td align="right">9</td>
+<td align="right">0.423</td>
+<td align="right">-0.374</td>
+<td align="right">-0.187</td>
+<td align="right">0.136</td>
+<td align="right">0.045</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>Three numbers, failing in different ways. <code>r2_insample</code> is
+optimistic by construction - the model has seen these years and spent
+<code>edf</code> degrees of freedom on them. <code>r2_blocked</code>
+holds out contiguous blocks of years, so a test year’s neighbours are
+not in the training set; it can be negative, which means worse than
+predicting the long-run mean. The gap between <code>r2_loo</code> and
+<code>r2_blocked</code> is the autocorrelation leak that leave-one-out
+was flattering. <code>p_value</code> is a permutation test whose
+smallest attainable value is <code>finest_p</code>; a p equal to that
+floor means no permutation did as well, not that p is precisely
+that.</p>
+<div class="float">
+<img src="figures/05_f5a__Ruby_Vigilante.png"
+alt="Cross-validated skill against the permutation null." />
+<div class="figcaption">Cross-validated skill against the permutation
+null.</div>
+</div>
+</div>
+<div id="when-does-water-help" class="section level2">
+<h2>4. When does water help?</h2>
+<div class="float">
+<img src="figures/06_f6b__Ruby_Vigilante.png"
+alt="Where the benefit is concentrated." />
+<div class="figcaption">Where the benefit is concentrated.</div>
+</div>
+<p>beta(t) is per standard deviation of log anomaly; a manager releases
+cfs. Dividing by that day’s baseline discharge <strong>reshapes</strong>
+the curve, because discharge spans more than an order of magnitude
+across the year. The best day to release water is often not the day with
+the largest beta(t).</p>
+<div id="can-a-single-day-honestly-be-named" class="section level3">
+<h3>Can a single day honestly be named?</h3>
+<table>
+<caption>If <code>resolvable</code> is FALSE, report a season. That is a
+property of the record.</caption>
+<colgroup>
+<col width="12%" />
+<col width="20%" />
+<col width="9%" />
+<col width="13%" />
+<col width="9%" />
+<col width="11%" />
+<col width="11%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">process</th>
+<th align="left">which</th>
+<th align="left">lo_month</th>
+<th align="left">median_month</th>
+<th align="left">hi_month</th>
+<th align="right">width_days</th>
+<th align="right">cred_level</th>
+<th align="left">resolvable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="left">most beneficial day</td>
+<td align="left">Jan</td>
+<td align="left">Apr</td>
+<td align="left">Oct</td>
+<td align="right">275</td>
+<td align="right">0.8</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">recruitment</td>
+<td align="left">most harmful day</td>
+<td align="left">Mar</td>
+<td align="left">Apr</td>
+<td align="left">Apr</td>
+<td align="right">34</td>
+<td align="right">0.8</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">survival</td>
+<td align="left">most beneficial day</td>
+<td align="left">Mar</td>
+<td align="left">Apr</td>
+<td align="left">Apr</td>
+<td align="right">32</td>
+<td align="right">0.8</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="left">most harmful day</td>
+<td align="left">Jan</td>
+<td align="left">Apr</td>
+<td align="left">Oct</td>
+<td align="right">275</td>
+<td align="right">0.8</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="the-volume-constrained-answer" class="section level3">
+<h3>The volume-constrained answer</h3>
+<table style="width:100%;">
+<caption>For a given volume and duration: when to start releasing, and
+what it buys.</caption>
+<colgroup>
+<col width="10%" />
+<col width="9%" />
+<col width="10%" />
+<col width="12%" />
+<col width="10%" />
+<col width="8%" />
+<col width="15%" />
+<col width="6%" />
+<col width="10%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">process</th>
+<th align="right">volume_af</th>
+<th align="right">window_days</th>
+<th align="right">sustained_cfs</th>
+<th align="left">start_date</th>
+<th align="left">end_date</th>
+<th align="right">start_width_days</th>
+<th align="right">effect</th>
+<th align="right">p_positive</th>
+<th align="left">passes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="right">200</td>
+<td align="right">7</td>
+<td align="right">14.405</td>
+<td align="left">25 Sep</td>
+<td align="left">01 Oct</td>
+<td align="right">130.0</td>
+<td align="right">3.975</td>
+<td align="right">0.928</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">recruitment</td>
+<td align="right">200</td>
+<td align="right">14</td>
+<td align="right">7.202</td>
+<td align="left">25 Sep</td>
+<td align="left">08 Oct</td>
+<td align="right">8.0</td>
+<td align="right">3.857</td>
+<td align="right">0.943</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="right">200</td>
+<td align="right">30</td>
+<td align="right">3.361</td>
+<td align="left">18 Sep</td>
+<td align="left">17 Oct</td>
+<td align="right">14.0</td>
+<td align="right">2.871</td>
+<td align="right">0.935</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">recruitment</td>
+<td align="right">200</td>
+<td align="right">60</td>
+<td align="right">1.681</td>
+<td align="left">22 Aug</td>
+<td align="left">20 Oct</td>
+<td align="right">30.0</td>
+<td align="right">1.556</td>
+<td align="right">0.929</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="right">1000</td>
+<td align="right">7</td>
+<td align="right">72.024</td>
+<td align="left">25 Sep</td>
+<td align="left">01 Oct</td>
+<td align="right">134.1</td>
+<td align="right">18.151</td>
+<td align="right">0.928</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">recruitment</td>
+<td align="right">1000</td>
+<td align="right">14</td>
+<td align="right">36.012</td>
+<td align="left">25 Sep</td>
+<td align="left">08 Oct</td>
+<td align="right">34.0</td>
+<td align="right">18.492</td>
+<td align="right">0.943</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="right">1000</td>
+<td align="right">30</td>
+<td align="right">16.806</td>
+<td align="left">18 Sep</td>
+<td align="left">17 Oct</td>
+<td align="right">14.0</td>
+<td align="right">14.308</td>
+<td align="right">0.936</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">recruitment</td>
+<td align="right">1000</td>
+<td align="right">60</td>
+<td align="right">8.403</td>
+<td align="left">22 Aug</td>
+<td align="left">20 Oct</td>
+<td align="right">38.0</td>
+<td align="right">7.786</td>
+<td align="right">0.929</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="right">5000</td>
+<td align="right">7</td>
+<td align="right">360.121</td>
+<td align="left">25 Sep</td>
+<td align="left">01 Oct</td>
+<td align="right">145.0</td>
+<td align="right">68.531</td>
+<td align="right">0.927</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">recruitment</td>
+<td align="right">5000</td>
+<td align="right">14</td>
+<td align="right">180.061</td>
+<td align="left">24 Sep</td>
+<td align="left">07 Oct</td>
+<td align="right">100.0</td>
+<td align="right">81.436</td>
+<td align="right">0.940</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">recruitment</td>
+<td align="right">5000</td>
+<td align="right">30</td>
+<td align="right">84.028</td>
+<td align="left">17 Sep</td>
+<td align="left">16 Oct</td>
+<td align="right">31.0</td>
+<td align="right">71.105</td>
+<td align="right">0.937</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">recruitment</td>
+<td align="right">5000</td>
+<td align="right">60</td>
+<td align="right">42.014</td>
+<td align="left">22 Aug</td>
+<td align="left">20 Oct</td>
+<td align="right">42.0</td>
+<td align="right">39.155</td>
+<td align="right">0.930</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">survival</td>
+<td align="right">200</td>
+<td align="right">7</td>
+<td align="right">14.405</td>
+<td align="left">12 Jun</td>
+<td align="left">18 Jun</td>
+<td align="right">175.0</td>
+<td align="right">0.122</td>
+<td align="right">0.898</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="right">200</td>
+<td align="right">14</td>
+<td align="right">7.202</td>
+<td align="left">06 Jun</td>
+<td align="left">19 Jun</td>
+<td align="right">143.0</td>
+<td align="right">0.094</td>
+<td align="right">0.884</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">survival</td>
+<td align="right">200</td>
+<td align="right">30</td>
+<td align="right">3.361</td>
+<td align="left">06 Jun</td>
+<td align="left">05 Jul</td>
+<td align="right">126.0</td>
+<td align="right">0.058</td>
+<td align="right">0.790</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="right">200</td>
+<td align="right">60</td>
+<td align="right">1.681</td>
+<td align="left">04 Jun</td>
+<td align="left">02 Aug</td>
+<td align="right">81.0</td>
+<td align="right">0.023</td>
+<td align="right">0.653</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">survival</td>
+<td align="right">1000</td>
+<td align="right">7</td>
+<td align="right">72.024</td>
+<td align="left">12 Jun</td>
+<td align="left">18 Jun</td>
+<td align="right">175.0</td>
+<td align="right">0.573</td>
+<td align="right">0.898</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="right">1000</td>
+<td align="right">14</td>
+<td align="right">36.012</td>
+<td align="left">06 Jun</td>
+<td align="left">19 Jun</td>
+<td align="right">145.0</td>
+<td align="right">0.455</td>
+<td align="right">0.884</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">survival</td>
+<td align="right">1000</td>
+<td align="right">30</td>
+<td align="right">16.806</td>
+<td align="left">06 Jun</td>
+<td align="left">05 Jul</td>
+<td align="right">126.0</td>
+<td align="right">0.284</td>
+<td align="right">0.790</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="right">1000</td>
+<td align="right">60</td>
+<td align="right">8.403</td>
+<td align="left">04 Jun</td>
+<td align="left">02 Aug</td>
+<td align="right">80.0</td>
+<td align="right">0.114</td>
+<td align="right">0.653</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">survival</td>
+<td align="right">5000</td>
+<td align="right">7</td>
+<td align="right">360.121</td>
+<td align="left">12 Jun</td>
+<td align="left">18 Jun</td>
+<td align="right">174.0</td>
+<td align="right">2.275</td>
+<td align="right">0.899</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="right">5000</td>
+<td align="right">14</td>
+<td align="right">180.061</td>
+<td align="left">06 Jun</td>
+<td align="left">19 Jun</td>
+<td align="right">146.0</td>
+<td align="right">1.993</td>
+<td align="right">0.884</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">survival</td>
+<td align="right">5000</td>
+<td align="right">30</td>
+<td align="right">84.028</td>
+<td align="left">06 Jun</td>
+<td align="left">05 Jul</td>
+<td align="right">112.0</td>
+<td align="right">1.324</td>
+<td align="right">0.791</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">survival</td>
+<td align="right">5000</td>
+<td align="right">60</td>
+<td align="right">42.014</td>
+<td align="left">04 Jun</td>
+<td align="left">02 Aug</td>
+<td align="right">78.0</td>
+<td align="right">0.553</td>
+<td align="right">0.656</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="figures/06b_h__Ruby_Vigilante.png"
+alt="Every feasible schedule, scored." />
+<div class="figcaption">Every feasible schedule, scored.</div>
+</div>
+</div>
+</div>
+<div id="what-it-does-to-the-population" class="section level2">
+<h2>5. What it does to the population</h2>
+<table>
+<caption>The six most productive blocks, whole-population.</caption>
+<thead>
+<tr class="header">
+<th align="left">month</th>
+<th align="right">block_start</th>
+<th align="right">block_end</th>
+<th align="right">d_prod_pct</th>
+<th align="right">d_biomass</th>
+<th align="right">p_positive</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Oct</td>
+<td align="right">276</td>
+<td align="right">280</td>
+<td align="right">0.262</td>
+<td align="right">3318.368</td>
+<td align="right">0.511</td>
+</tr>
+<tr class="even">
+<td align="left">Jan</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">0.167</td>
+<td align="right">4530.672</td>
+<td align="right">0.510</td>
+</tr>
+<tr class="odd">
+<td align="left">Sep</td>
+<td align="right">271</td>
+<td align="right">275</td>
+<td align="right">0.159</td>
+<td align="right">6811.602</td>
+<td align="right">0.511</td>
+</tr>
+<tr class="even">
+<td align="left">Jan</td>
+<td align="right">6</td>
+<td align="right">10</td>
+<td align="right">0.137</td>
+<td align="right">3403.146</td>
+<td align="right">0.507</td>
+</tr>
+<tr class="odd">
+<td align="left">Oct</td>
+<td align="right">281</td>
+<td align="right">285</td>
+<td align="right">0.128</td>
+<td align="right">1822.066</td>
+<td align="right">0.508</td>
+</tr>
+<tr class="even">
+<td align="left">Jan</td>
+<td align="right">11</td>
+<td align="right">15</td>
+<td align="right">0.126</td>
+<td align="right">1395.021</td>
+<td align="right">0.509</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="bureau-of-reclamation-scenarios" class="section level2">
+<h2>6. Bureau of Reclamation scenarios</h2>
+<table>
+<caption>Effect of each scenario relative to the historical mean
+hydrograph.</caption>
+<colgroup>
+<col width="7%" />
+<col width="8%" />
+<col width="22%" />
+<col width="9%" />
+<col width="6%" />
+<col width="6%" />
+<col width="8%" />
+<col width="9%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Scenario</th>
+<th align="left">Period</th>
+<th align="left">Type</th>
+<th align="left">process</th>
+<th align="right">n_years</th>
+<th align="right">effect</th>
+<th align="right">p_negative</th>
+<th align="right">frac_extrap</th>
+<th align="left">status</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-71.328</td>
+<td align="right">0.869</td>
+<td align="right">0.209</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-71.328</td>
+<td align="right">0.869</td>
+<td align="right">0.209</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-69.107</td>
+<td align="right">0.862</td>
+<td align="right">0.220</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-69.107</td>
+<td align="right">0.862</td>
+<td align="right">0.220</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-66.602</td>
+<td align="right">0.872</td>
+<td align="right">0.082</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-66.279</td>
+<td align="right">0.834</td>
+<td align="right">0.251</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-66.279</td>
+<td align="right">0.834</td>
+<td align="right">0.251</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-65.814</td>
+<td align="right">0.857</td>
+<td align="right">0.107</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-65.612</td>
+<td align="right">0.855</td>
+<td align="right">0.142</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-63.566</td>
+<td align="right">0.847</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-63.563</td>
+<td align="right">0.846</td>
+<td align="right">0.109</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-63.563</td>
+<td align="right">0.846</td>
+<td align="right">0.109</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-63.441</td>
+<td align="right">0.842</td>
+<td align="right">0.157</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-63.441</td>
+<td align="right">0.842</td>
+<td align="right">0.157</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.622</td>
+<td align="right">0.838</td>
+<td align="right">0.103</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.575</td>
+<td align="right">0.849</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.432</td>
+<td align="right">0.845</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-61.432</td>
+<td align="right">0.845</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-60.369</td>
+<td align="right">0.850</td>
+<td align="right">0.111</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-60.369</td>
+<td align="right">0.850</td>
+<td align="right">0.111</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-59.777</td>
+<td align="right">0.819</td>
+<td align="right">0.153</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-58.904</td>
+<td align="right">0.810</td>
+<td align="right">0.163</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-58.271</td>
+<td align="right">0.831</td>
+<td align="right">0.096</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-55.399</td>
+<td align="right">0.813</td>
+<td align="right">0.084</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-55.399</td>
+<td align="right">0.813</td>
+<td align="right">0.084</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-53.388</td>
+<td align="right">0.795</td>
+<td align="right">0.096</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-52.162</td>
+<td align="right">0.796</td>
+<td align="right">0.119</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-51.123</td>
+<td align="right">0.796</td>
+<td align="right">0.107</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-50.529</td>
+<td align="right">0.787</td>
+<td align="right">0.130</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-50.062</td>
+<td align="right">0.784</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-50.062</td>
+<td align="right">0.784</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-50.062</td>
+<td align="right">0.784</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-50.062</td>
+<td align="right">0.784</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-50.062</td>
+<td align="right">0.784</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-49.404</td>
+<td align="right">0.770</td>
+<td align="right">0.175</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-47.971</td>
+<td align="right">0.773</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-47.227</td>
+<td align="right">0.769</td>
+<td align="right">0.097</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-47.010</td>
+<td align="right">0.768</td>
+<td align="right">0.148</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-46.404</td>
+<td align="right">0.771</td>
+<td align="right">0.089</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.270</td>
+<td align="right">0.758</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-44.086</td>
+<td align="right">0.743</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-40.951</td>
+<td align="right">0.724</td>
+<td align="right">0.099</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-40.610</td>
+<td align="right">0.721</td>
+<td align="right">0.084</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-40.371</td>
+<td align="right">0.749</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-40.131</td>
+<td align="right">0.744</td>
+<td align="right">0.070</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-39.043</td>
+<td align="right">0.717</td>
+<td align="right">0.083</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-38.571</td>
+<td align="right">0.733</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-36.662</td>
+<td align="right">0.738</td>
+<td align="right">0.070</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-31.184</td>
+<td align="right">0.697</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-31.184</td>
+<td align="right">0.697</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-31.179</td>
+<td align="right">0.703</td>
+<td align="right">0.080</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-29.868</td>
+<td align="right">0.690</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-29.200</td>
+<td align="right">0.706</td>
+<td align="right">0.082</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-28.386</td>
+<td align="right">0.679</td>
+<td align="right">0.090</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-28.241</td>
+<td align="right">0.671</td>
+<td align="right">0.101</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-27.945</td>
+<td align="right">0.675</td>
+<td align="right">0.094</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-26.521</td>
+<td align="right">0.688</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-22.816</td>
+<td align="right">0.673</td>
+<td align="right">0.083</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-18.531</td>
+<td align="right">0.630</td>
+<td align="right">0.076</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-18.325</td>
+<td align="right">0.634</td>
+<td align="right">0.078</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-18.325</td>
+<td align="right">0.634</td>
+<td align="right">0.078</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-16.374</td>
+<td align="right">0.631</td>
+<td align="right">0.068</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-16.374</td>
+<td align="right">0.631</td>
+<td align="right">0.068</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-16.219</td>
+<td align="right">0.628</td>
+<td align="right">0.064</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-15.989</td>
+<td align="right">0.653</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-13.326</td>
+<td align="right">0.615</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-13.326</td>
+<td align="right">0.615</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-11.758</td>
+<td align="right">0.625</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-9.784</td>
+<td align="right">0.587</td>
+<td align="right">0.075</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-9.784</td>
+<td align="right">0.587</td>
+<td align="right">0.075</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-8.557</td>
+<td align="right">0.584</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-7.371</td>
+<td align="right">0.594</td>
+<td align="right">0.099</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-6.863</td>
+<td align="right">0.575</td>
+<td align="right">0.094</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-6.863</td>
+<td align="right">0.575</td>
+<td align="right">0.094</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-6.127</td>
+<td align="right">0.582</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-6.127</td>
+<td align="right">0.582</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-4.969</td>
+<td align="right">0.559</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-4.969</td>
+<td align="right">0.559</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-4.051</td>
+<td align="right">0.572</td>
+<td align="right">0.110</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-4.051</td>
+<td align="right">0.572</td>
+<td align="right">0.110</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">-2.576</td>
+<td align="right">0.565</td>
+<td align="right">0.102</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">recruitment</td>
+<td align="right">48</td>
+<td align="right">2.453</td>
+<td align="right">0.528</td>
+<td align="right">0.091</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-4.807</td>
+<td align="right">0.670</td>
+<td align="right">0.091</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-2.790</td>
+<td align="right">0.603</td>
+<td align="right">0.102</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-2.328</td>
+<td align="right">0.584</td>
+<td align="right">0.110</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-2.328</td>
+<td align="right">0.584</td>
+<td align="right">0.110</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-0.981</td>
+<td align="right">0.554</td>
+<td align="right">0.094</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-0.981</td>
+<td align="right">0.554</td>
+<td align="right">0.094</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-0.548</td>
+<td align="right">0.558</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">-0.548</td>
+<td align="right">0.558</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">0.269</td>
+<td align="right">0.532</td>
+<td align="right">0.075</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">0.269</td>
+<td align="right">0.532</td>
+<td align="right">0.075</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">0.604</td>
+<td align="right">0.519</td>
+<td align="right">0.068</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">0.604</td>
+<td align="right">0.519</td>
+<td align="right">0.068</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">0.975</td>
+<td align="right">0.504</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">1.163</td>
+<td align="right">0.509</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">1.163</td>
+<td align="right">0.509</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">2.159</td>
+<td align="right">0.469</td>
+<td align="right">0.064</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">2.232</td>
+<td align="right">0.486</td>
+<td align="right">0.099</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">2.673</td>
+<td align="right">0.466</td>
+<td align="right">0.076</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">2.971</td>
+<td align="right">0.469</td>
+<td align="right">0.078</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">2.971</td>
+<td align="right">0.469</td>
+<td align="right">0.078</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">3.469</td>
+<td align="right">0.465</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">3.739</td>
+<td align="right">0.428</td>
+<td align="right">0.081</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">4.037</td>
+<td align="right">0.420</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">4.178</td>
+<td align="right">0.433</td>
+<td align="right">0.094</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">4.666</td>
+<td align="right">0.426</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">4.666</td>
+<td align="right">0.426</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">5.169</td>
+<td align="right">0.391</td>
+<td align="right">0.083</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">5.368</td>
+<td align="right">0.400</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">5.368</td>
+<td align="right">0.400</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">5.717</td>
+<td align="right">0.387</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">6.468</td>
+<td align="right">0.370</td>
+<td align="right">0.090</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">6.557</td>
+<td align="right">0.372</td>
+<td align="right">0.083</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">6.745</td>
+<td align="right">0.369</td>
+<td align="right">0.070</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">6.933</td>
+<td align="right">0.375</td>
+<td align="right">0.069</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.289</td>
+<td align="right">0.354</td>
+<td align="right">0.080</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.763</td>
+<td align="right">0.345</td>
+<td align="right">0.084</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.840</td>
+<td align="right">0.331</td>
+<td align="right">0.082</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">7.994</td>
+<td align="right">0.344</td>
+<td align="right">0.086</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">8.124</td>
+<td align="right">0.337</td>
+<td align="right">0.101</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">9.012</td>
+<td align="right">0.318</td>
+<td align="right">0.070</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">9.043</td>
+<td align="right">0.333</td>
+<td align="right">0.099</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">9.887</td>
+<td align="right">0.284</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.007</td>
+<td align="right">0.295</td>
+<td align="right">0.108</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.600</td>
+<td align="right">0.282</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.600</td>
+<td align="right">0.282</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.600</td>
+<td align="right">0.282</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.600</td>
+<td align="right">0.282</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.600</td>
+<td align="right">0.282</td>
+<td align="right">0.079</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.744</td>
+<td align="right">0.271</td>
+<td align="right">0.089</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">10.987</td>
+<td align="right">0.264</td>
+<td align="right">0.130</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">11.112</td>
+<td align="right">0.248</td>
+<td align="right">0.097</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">11.659</td>
+<td align="right">0.258</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">11.713</td>
+<td align="right">0.244</td>
+<td align="right">0.107</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">11.996</td>
+<td align="right">0.225</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">11.996</td>
+<td align="right">0.225</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">12.180</td>
+<td align="right">0.227</td>
+<td align="right">0.084</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">12.180</td>
+<td align="right">0.227</td>
+<td align="right">0.084</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">12.430</td>
+<td align="right">0.227</td>
+<td align="right">0.096</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">12.536</td>
+<td align="right">0.229</td>
+<td align="right">0.096</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">12.565</td>
+<td align="right">0.235</td>
+<td align="right">0.111</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">12.565</td>
+<td align="right">0.235</td>
+<td align="right">0.111</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">12.748</td>
+<td align="right">0.228</td>
+<td align="right">0.119</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.013</td>
+<td align="right">0.222</td>
+<td align="right">0.109</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.013</td>
+<td align="right">0.222</td>
+<td align="right">0.109</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.347</td>
+<td align="right">0.199</td>
+<td align="right">0.074</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.665</td>
+<td align="right">0.209</td>
+<td align="right">0.085</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">13.792</td>
+<td align="right">0.212</td>
+<td align="right">0.163</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.257</td>
+<td align="right">0.188</td>
+<td align="right">0.103</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.272</td>
+<td align="right">0.191</td>
+<td align="right">0.157</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.272</td>
+<td align="right">0.191</td>
+<td align="right">0.157</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.357</td>
+<td align="right">0.215</td>
+<td align="right">0.153</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.406</td>
+<td align="right">0.192</td>
+<td align="right">0.148</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.458</td>
+<td align="right">0.187</td>
+<td align="right">0.082</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.709</td>
+<td align="right">0.222</td>
+<td align="right">0.175</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">14.941</td>
+<td align="right">0.189</td>
+<td align="right">0.107</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">15.678</td>
+<td align="right">0.164</td>
+<td align="right">0.142</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">15.710</td>
+<td align="right">0.181</td>
+<td align="right">0.220</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">15.710</td>
+<td align="right">0.181</td>
+<td align="right">0.220</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">17.271</td>
+<td align="right">0.163</td>
+<td align="right">0.209</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">17.271</td>
+<td align="right">0.163</td>
+<td align="right">0.209</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">18.214</td>
+<td align="right">0.166</td>
+<td align="right">0.251</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="left">survival</td>
+<td align="right">48</td>
+<td align="right">18.214</td>
+<td align="right">0.166</td>
+<td align="right">0.251</td>
+<td align="left">UNSUPPORTED - gate failed</td>
+</tr>
+</tbody>
+</table>
+<p>The day-by-day attribution is the more useful panel. A scenario can
+hurt because flow drops on days the fish care about, or because it drops
+a lot on days they do not - and those call for different responses. The
+single number cannot tell them apart.</p>
+<blockquote>
+<p><strong>Extrapolation.</strong> Some scenario-years sit outside
+anything in the training record on more than 10% of days. beta(t) is
+unconstrained there. Read those rows as projections, not
+predictions.</p>
+</blockquote>
+</div>
+<div id="b.-equilibrium-under-a-sustained-scenario"
+class="section level2">
+<h2>6b. Equilibrium under a sustained scenario</h2>
+<table>
+<caption>Equilibrium abundance K and maximum surplus production, held at
+each scenario’s flow.</caption>
+<colgroup>
+<col width="6%" />
+<col width="7%" />
+<col width="20%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="6%" />
+<col width="5%" />
+<col width="6%" />
+<col width="6%" />
+<col width="13%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Scenario</th>
+<th align="left">Period</th>
+<th align="left">Type</th>
+<th align="right">n_years</th>
+<th align="right">mean_Q</th>
+<th align="right">mean_z</th>
+<th align="right">K</th>
+<th align="right">dK_pct</th>
+<th align="right">MS</th>
+<th align="right">dMS_pct</th>
+<th align="right">frac_extrapolating</th>
+<th align="right">frac_K_finite</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">178.808</td>
+<td align="right">-4.058</td>
+<td align="right">462.357</td>
+<td align="right">-63.568</td>
+<td align="right">-142.096</td>
+<td align="right">-111.136</td>
+<td align="right">0.796</td>
+<td align="right">0.252</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">188.177</td>
+<td align="right">-3.535</td>
+<td align="right">461.866</td>
+<td align="right">-63.349</td>
+<td align="right">-130.332</td>
+<td align="right">-109.602</td>
+<td align="right">0.653</td>
+<td align="right">0.317</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">188.177</td>
+<td align="right">-3.535</td>
+<td align="right">461.866</td>
+<td align="right">-63.349</td>
+<td align="right">-130.332</td>
+<td align="right">-109.602</td>
+<td align="right">0.653</td>
+<td align="right">0.317</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">207.218</td>
+<td align="right">-2.669</td>
+<td align="right">500.808</td>
+<td align="right">-61.577</td>
+<td align="right">-71.435</td>
+<td align="right">-102.394</td>
+<td align="right">0.551</td>
+<td align="right">0.415</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">207.218</td>
+<td align="right">-2.669</td>
+<td align="right">500.808</td>
+<td align="right">-61.577</td>
+<td align="right">-71.435</td>
+<td align="right">-102.394</td>
+<td align="right">0.551</td>
+<td align="right">0.415</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">205.562</td>
+<td align="right">-2.778</td>
+<td align="right">503.312</td>
+<td align="right">-61.017</td>
+<td align="right">-71.955</td>
+<td align="right">-102.450</td>
+<td align="right">0.531</td>
+<td align="right">0.415</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">205.562</td>
+<td align="right">-2.778</td>
+<td align="right">503.312</td>
+<td align="right">-61.017</td>
+<td align="right">-71.955</td>
+<td align="right">-102.450</td>
+<td align="right">0.531</td>
+<td align="right">0.415</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">221.395</td>
+<td align="right">-2.241</td>
+<td align="right">577.268</td>
+<td align="right">-52.127</td>
+<td align="right">1.815</td>
+<td align="right">-92.717</td>
+<td align="right">0.367</td>
+<td align="right">0.528</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">221.395</td>
+<td align="right">-2.241</td>
+<td align="right">577.268</td>
+<td align="right">-52.127</td>
+<td align="right">1.815</td>
+<td align="right">-92.717</td>
+<td align="right">0.367</td>
+<td align="right">0.528</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">186.540</td>
+<td align="right">-3.889</td>
+<td align="right">587.919</td>
+<td align="right">-51.114</td>
+<td align="right">-140.458</td>
+<td align="right">-110.817</td>
+<td align="right">0.653</td>
+<td align="right">0.349</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">219.455</td>
+<td align="right">-2.321</td>
+<td align="right">591.247</td>
+<td align="right">-50.302</td>
+<td align="right">-2.080</td>
+<td align="right">-93.235</td>
+<td align="right">0.388</td>
+<td align="right">0.524</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">219.455</td>
+<td align="right">-2.321</td>
+<td align="right">591.247</td>
+<td align="right">-50.302</td>
+<td align="right">-2.080</td>
+<td align="right">-93.235</td>
+<td align="right">0.388</td>
+<td align="right">0.524</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">209.567</td>
+<td align="right">-2.748</td>
+<td align="right">593.150</td>
+<td align="right">-49.553</td>
+<td align="right">-48.577</td>
+<td align="right">-99.667</td>
+<td align="right">0.469</td>
+<td align="right">0.470</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">209.567</td>
+<td align="right">-2.748</td>
+<td align="right">593.150</td>
+<td align="right">-49.553</td>
+<td align="right">-48.577</td>
+<td align="right">-99.667</td>
+<td align="right">0.469</td>
+<td align="right">0.470</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">182.931</td>
+<td align="right">-4.057</td>
+<td align="right">593.409</td>
+<td align="right">-48.196</td>
+<td align="right">-137.671</td>
+<td align="right">-110.371</td>
+<td align="right">0.612</td>
+<td align="right">0.353</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">182.931</td>
+<td align="right">-4.057</td>
+<td align="right">593.409</td>
+<td align="right">-48.196</td>
+<td align="right">-137.671</td>
+<td align="right">-110.371</td>
+<td align="right">0.612</td>
+<td align="right">0.353</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">225.375</td>
+<td align="right">-2.011</td>
+<td align="right">641.573</td>
+<td align="right">-46.370</td>
+<td align="right">71.011</td>
+<td align="right">-82.324</td>
+<td align="right">0.265</td>
+<td align="right">0.572</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">241.991</td>
+<td align="right">-1.491</td>
+<td align="right">653.415</td>
+<td align="right">-45.128</td>
+<td align="right">82.113</td>
+<td align="right">-80.871</td>
+<td align="right">0.245</td>
+<td align="right">0.631</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">237.742</td>
+<td align="right">-1.725</td>
+<td align="right">761.549</td>
+<td align="right">-34.695</td>
+<td align="right">180.888</td>
+<td align="right">-62.361</td>
+<td align="right">0.306</td>
+<td align="right">0.596</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">247.514</td>
+<td align="right">-1.306</td>
+<td align="right">778.308</td>
+<td align="right">-32.942</td>
+<td align="right">201.534</td>
+<td align="right">-59.825</td>
+<td align="right">0.286</td>
+<td align="right">0.648</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">240.039</td>
+<td align="right">-1.727</td>
+<td align="right">792.141</td>
+<td align="right">-31.714</td>
+<td align="right">220.321</td>
+<td align="right">-57.326</td>
+<td align="right">0.306</td>
+<td align="right">0.607</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">238.818</td>
+<td align="right">-1.765</td>
+<td align="right">814.075</td>
+<td align="right">-29.677</td>
+<td align="right">244.528</td>
+<td align="right">-53.736</td>
+<td align="right">0.327</td>
+<td align="right">0.599</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">252.508</td>
+<td align="right">-1.069</td>
+<td align="right">822.915</td>
+<td align="right">-28.666</td>
+<td align="right">257.182</td>
+<td align="right">-52.072</td>
+<td align="right">0.143</td>
+<td align="right">0.697</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">243.986</td>
+<td align="right">-1.469</td>
+<td align="right">823.565</td>
+<td align="right">-28.594</td>
+<td align="right">258.194</td>
+<td align="right">-51.914</td>
+<td align="right">0.224</td>
+<td align="right">0.642</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">252.040</td>
+<td align="right">-1.184</td>
+<td align="right">841.266</td>
+<td align="right">-26.375</td>
+<td align="right">286.234</td>
+<td align="right">-47.954</td>
+<td align="right">0.245</td>
+<td align="right">0.662</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">252.543</td>
+<td align="right">-1.148</td>
+<td align="right">872.982</td>
+<td align="right">-23.516</td>
+<td align="right">322.974</td>
+<td align="right">-42.925</td>
+<td align="right">0.204</td>
+<td align="right">0.671</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">254.690</td>
+<td align="right">-1.028</td>
+<td align="right">914.004</td>
+<td align="right">-19.773</td>
+<td align="right">363.949</td>
+<td align="right">-36.565</td>
+<td align="right">0.204</td>
+<td align="right">0.693</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">263.007</td>
+<td align="right">-0.726</td>
+<td align="right">991.314</td>
+<td align="right">-12.199</td>
+<td align="right">461.612</td>
+<td align="right">-24.328</td>
+<td align="right">0.184</td>
+<td align="right">0.755</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">260.544</td>
+<td align="right">-0.829</td>
+<td align="right">991.481</td>
+<td align="right">-12.181</td>
+<td align="right">461.942</td>
+<td align="right">-24.294</td>
+<td align="right">0.143</td>
+<td align="right">0.742</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">260.206</td>
+<td align="right">-0.783</td>
+<td align="right">1002.658</td>
+<td align="right">-10.976</td>
+<td align="right">476.525</td>
+<td align="right">-22.396</td>
+<td align="right">0.122</td>
+<td align="right">0.772</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">262.311</td>
+<td align="right">-0.839</td>
+<td align="right">1009.030</td>
+<td align="right">-9.983</td>
+<td align="right">489.053</td>
+<td align="right">-20.806</td>
+<td align="right">0.184</td>
+<td align="right">0.709</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">257.141</td>
+<td align="right">-0.998</td>
+<td align="right">1016.085</td>
+<td align="right">-9.255</td>
+<td align="right">498.331</td>
+<td align="right">-19.529</td>
+<td align="right">0.265</td>
+<td align="right">0.689</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">264.560</td>
+<td align="right">-0.720</td>
+<td align="right">1033.202</td>
+<td align="right">-7.767</td>
+<td align="right">516.957</td>
+<td align="right">-16.757</td>
+<td align="right">0.204</td>
+<td align="right">0.725</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">264.560</td>
+<td align="right">-0.720</td>
+<td align="right">1033.202</td>
+<td align="right">-7.767</td>
+<td align="right">516.957</td>
+<td align="right">-16.757</td>
+<td align="right">0.204</td>
+<td align="right">0.725</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">264.560</td>
+<td align="right">-0.720</td>
+<td align="right">1033.202</td>
+<td align="right">-7.767</td>
+<td align="right">516.957</td>
+<td align="right">-16.757</td>
+<td align="right">0.204</td>
+<td align="right">0.725</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">264.560</td>
+<td align="right">-0.720</td>
+<td align="right">1033.202</td>
+<td align="right">-7.767</td>
+<td align="right">516.957</td>
+<td align="right">-16.757</td>
+<td align="right">0.204</td>
+<td align="right">0.725</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">264.560</td>
+<td align="right">-0.720</td>
+<td align="right">1033.202</td>
+<td align="right">-7.767</td>
+<td align="right">516.957</td>
+<td align="right">-16.757</td>
+<td align="right">0.204</td>
+<td align="right">0.725</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">270.301</td>
+<td align="right">-0.495</td>
+<td align="right">1034.327</td>
+<td align="right">-7.701</td>
+<td align="right">517.865</td>
+<td align="right">-16.621</td>
+<td align="right">0.204</td>
+<td align="right">0.768</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">262.275</td>
+<td align="right">-0.833</td>
+<td align="right">1046.473</td>
+<td align="right">-6.539</td>
+<td align="right">532.941</td>
+<td align="right">-14.278</td>
+<td align="right">0.204</td>
+<td align="right">0.710</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">262.055</td>
+<td align="right">-0.931</td>
+<td align="right">1057.518</td>
+<td align="right">-5.421</td>
+<td align="right">544.745</td>
+<td align="right">-12.019</td>
+<td align="right">0.265</td>
+<td align="right">0.695</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">262.055</td>
+<td align="right">-0.931</td>
+<td align="right">1057.518</td>
+<td align="right">-5.421</td>
+<td align="right">544.745</td>
+<td align="right">-12.019</td>
+<td align="right">0.265</td>
+<td align="right">0.695</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">282.120</td>
+<td align="right">-0.151</td>
+<td align="right">1069.465</td>
+<td align="right">-4.051</td>
+<td align="right">556.724</td>
+<td align="right">-13.256</td>
+<td align="right">0.184</td>
+<td align="right">0.807</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">262.546</td>
+<td align="right">-0.759</td>
+<td align="right">1076.367</td>
+<td align="right">-3.321</td>
+<td align="right">567.172</td>
+<td align="right">-7.645</td>
+<td align="right">0.245</td>
+<td align="right">0.724</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">264.448</td>
+<td align="right">-0.723</td>
+<td align="right">1081.002</td>
+<td align="right">-2.938</td>
+<td align="right">571.621</td>
+<td align="right">-6.911</td>
+<td align="right">0.143</td>
+<td align="right">0.755</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">266.842</td>
+<td align="right">-0.659</td>
+<td align="right">1083.592</td>
+<td align="right">-2.736</td>
+<td align="right">573.861</td>
+<td align="right">-5.766</td>
+<td align="right">0.204</td>
+<td align="right">0.725</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">266.842</td>
+<td align="right">-0.659</td>
+<td align="right">1083.592</td>
+<td align="right">-2.736</td>
+<td align="right">573.861</td>
+<td align="right">-5.766</td>
+<td align="right">0.204</td>
+<td align="right">0.725</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">261.433</td>
+<td align="right">-0.948</td>
+<td align="right">1085.628</td>
+<td align="right">-2.553</td>
+<td align="right">576.024</td>
+<td align="right">-5.385</td>
+<td align="right">0.265</td>
+<td align="right">0.695</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">270.967</td>
+<td align="right">-0.465</td>
+<td align="right">1089.062</td>
+<td align="right">-2.172</td>
+<td align="right">582.434</td>
+<td align="right">-4.589</td>
+<td align="right">0.082</td>
+<td align="right">0.779</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">266.437</td>
+<td align="right">-0.724</td>
+<td align="right">1093.402</td>
+<td align="right">-1.720</td>
+<td align="right">589.466</td>
+<td align="right">-3.624</td>
+<td align="right">0.184</td>
+<td align="right">0.727</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">283.976</td>
+<td align="right">-0.151</td>
+<td align="right">1102.240</td>
+<td align="right">-1.035</td>
+<td align="right">519.971</td>
+<td align="right">-16.286</td>
+<td align="right">0.184</td>
+<td align="right">0.781</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Drought Period</td>
+<td align="right">49</td>
+<td align="right">267.308</td>
+<td align="right">-0.546</td>
+<td align="right">1106.946</td>
+<td align="right">-0.500</td>
+<td align="right">608.262</td>
+<td align="right">-1.053</td>
+<td align="right">0.163</td>
+<td align="right">0.774</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">270.505</td>
+<td align="right">-0.498</td>
+<td align="right">1119.944</td>
+<td align="right">0.664</td>
+<td align="right">624.447</td>
+<td align="right">1.402</td>
+<td align="right">0.163</td>
+<td align="right">0.767</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">287.565</td>
+<td align="right">0.062</td>
+<td align="right">1130.340</td>
+<td align="right">1.861</td>
+<td align="right">639.360</td>
+<td align="right">-1.100</td>
+<td align="right">0.020</td>
+<td align="right">0.848</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">291.815</td>
+<td align="right">0.096</td>
+<td align="right">1168.192</td>
+<td align="right">5.674</td>
+<td align="right">603.354</td>
+<td align="right">-1.769</td>
+<td align="right">0.143</td>
+<td align="right">0.820</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">301.879</td>
+<td align="right">0.398</td>
+<td align="right">1174.916</td>
+<td align="right">6.116</td>
+<td align="right">615.316</td>
+<td align="right">-0.352</td>
+<td align="right">0.122</td>
+<td align="right">0.850</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">291.683</td>
+<td align="right">0.083</td>
+<td align="right">1176.433</td>
+<td align="right">6.228</td>
+<td align="right">624.088</td>
+<td align="right">-6.765</td>
+<td align="right">0.184</td>
+<td align="right">0.814</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">279.384</td>
+<td align="right">-0.209</td>
+<td align="right">1181.971</td>
+<td align="right">6.779</td>
+<td align="right">728.394</td>
+<td align="right">14.495</td>
+<td align="right">0.061</td>
+<td align="right">0.871</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">279.384</td>
+<td align="right">-0.209</td>
+<td align="right">1181.971</td>
+<td align="right">6.779</td>
+<td align="right">728.394</td>
+<td align="right">14.495</td>
+<td align="right">0.061</td>
+<td align="right">0.871</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="even">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="odd">
+<td align="left">HD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">Historical</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">286.483</td>
+<td align="right">0.024</td>
+<td align="right">1184.492</td>
+<td align="right">7.078</td>
+<td align="right">733.363</td>
+<td align="right">12.663</td>
+<td align="right">0.122</td>
+<td align="right">0.852</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">302.562</td>
+<td align="right">0.387</td>
+<td align="right">1184.971</td>
+<td align="right">7.097</td>
+<td align="right">675.160</td>
+<td align="right">-0.514</td>
+<td align="right">0.184</td>
+<td align="right">0.842</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">282.236</td>
+<td align="right">-0.127</td>
+<td align="right">1187.562</td>
+<td align="right">7.372</td>
+<td align="right">741.166</td>
+<td align="right">15.788</td>
+<td align="right">0.102</td>
+<td align="right">0.824</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">289.160</td>
+<td align="right">0.075</td>
+<td align="right">1201.377</td>
+<td align="right">8.524</td>
+<td align="right">761.154</td>
+<td align="right">18.345</td>
+<td align="right">0.061</td>
+<td align="right">0.888</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">289.160</td>
+<td align="right">0.075</td>
+<td align="right">1201.377</td>
+<td align="right">8.524</td>
+<td align="right">761.154</td>
+<td align="right">18.345</td>
+<td align="right">0.061</td>
+<td align="right">0.888</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">295.825</td>
+<td align="right">0.235</td>
+<td align="right">1208.906</td>
+<td align="right">9.317</td>
+<td align="right">589.771</td>
+<td align="right">-3.578</td>
+<td align="right">0.143</td>
+<td align="right">0.855</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">293.186</td>
+<td align="right">0.185</td>
+<td align="right">1214.270</td>
+<td align="right">9.915</td>
+<td align="right">765.937</td>
+<td align="right">11.916</td>
+<td align="right">0.082</td>
+<td align="right">0.857</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Drought Period</td>
+<td align="right">49</td>
+<td align="right">287.909</td>
+<td align="right">0.073</td>
+<td align="right">1219.416</td>
+<td align="right">10.254</td>
+<td align="right">786.511</td>
+<td align="right">21.430</td>
+<td align="right">0.041</td>
+<td align="right">0.862</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Climate Change Only</td>
+<td align="right">49</td>
+<td align="right">311.627</td>
+<td align="right">0.624</td>
+<td align="right">1226.684</td>
+<td align="right">10.869</td>
+<td align="right">620.398</td>
+<td align="right">0.532</td>
+<td align="right">0.204</td>
+<td align="right">0.855</td>
+</tr>
+<tr class="even">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">294.362</td>
+<td align="right">0.206</td>
+<td align="right">1234.006</td>
+<td align="right">11.512</td>
+<td align="right">816.037</td>
+<td align="right">23.804</td>
+<td align="right">0.041</td>
+<td align="right">0.901</td>
+</tr>
+<tr class="odd">
+<td align="left">CT</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">294.362</td>
+<td align="right">0.206</td>
+<td align="right">1234.006</td>
+<td align="right">11.512</td>
+<td align="right">816.037</td>
+<td align="right">23.804</td>
+<td align="right">0.041</td>
+<td align="right">0.901</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">296.920</td>
+<td align="right">0.341</td>
+<td align="right">1234.336</td>
+<td align="right">11.544</td>
+<td align="right">782.377</td>
+<td align="right">20.950</td>
+<td align="right">0.061</td>
+<td align="right">0.888</td>
+</tr>
+<tr class="odd">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">289.051</td>
+<td align="right">0.065</td>
+<td align="right">1234.850</td>
+<td align="right">11.586</td>
+<td align="right">817.227</td>
+<td align="right">23.567</td>
+<td align="right">0.061</td>
+<td align="right">0.884</td>
+</tr>
+<tr class="even">
+<td align="left">WD</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">289.051</td>
+<td align="right">0.065</td>
+<td align="right">1234.850</td>
+<td align="right">11.586</td>
+<td align="right">817.227</td>
+<td align="right">23.567</td>
+<td align="right">0.061</td>
+<td align="right">0.884</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">307.700</td>
+<td align="right">0.558</td>
+<td align="right">1312.639</td>
+<td align="right">17.707</td>
+<td align="right">878.172</td>
+<td align="right">25.800</td>
+<td align="right">0.184</td>
+<td align="right">0.854</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2020s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">317.631</td>
+<td align="right">0.875</td>
+<td align="right">1307.790</td>
+<td align="right">17.878</td>
+<td align="right">829.534</td>
+<td align="right">25.423</td>
+<td align="right">0.122</td>
+<td align="right">0.903</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">318.208</td>
+<td align="right">0.909</td>
+<td align="right">1320.211</td>
+<td align="right">17.938</td>
+<td align="right">879.557</td>
+<td align="right">30.320</td>
+<td align="right">0.061</td>
+<td align="right">0.919</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">318.208</td>
+<td align="right">0.909</td>
+<td align="right">1320.211</td>
+<td align="right">17.938</td>
+<td align="right">879.557</td>
+<td align="right">30.320</td>
+<td align="right">0.061</td>
+<td align="right">0.919</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">330.732</td>
+<td align="right">1.174</td>
+<td align="right">1320.280</td>
+<td align="right">18.381</td>
+<td align="right">837.632</td>
+<td align="right">21.553</td>
+<td align="right">0.143</td>
+<td align="right">0.898</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2050s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">330.732</td>
+<td align="right">1.174</td>
+<td align="right">1320.280</td>
+<td align="right">18.381</td>
+<td align="right">837.632</td>
+<td align="right">21.553</td>
+<td align="right">0.143</td>
+<td align="right">0.898</td>
+</tr>
+<tr class="odd">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">315.773</td>
+<td align="right">0.870</td>
+<td align="right">1313.414</td>
+<td align="right">18.418</td>
+<td align="right">892.083</td>
+<td align="right">31.721</td>
+<td align="right">0.000</td>
+<td align="right">0.931</td>
+</tr>
+<tr class="even">
+<td align="left">HW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">315.773</td>
+<td align="right">0.870</td>
+<td align="right">1313.414</td>
+<td align="right">18.418</td>
+<td align="right">892.083</td>
+<td align="right">31.721</td>
+<td align="right">0.000</td>
+<td align="right">0.931</td>
+</tr>
+<tr class="odd">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Longest Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">342.549</td>
+<td align="right">1.466</td>
+<td align="right">1325.811</td>
+<td align="right">18.754</td>
+<td align="right">835.366</td>
+<td align="right">16.940</td>
+<td align="right">0.184</td>
+<td align="right">0.901</td>
+</tr>
+<tr class="even">
+<td align="left">WW</td>
+<td align="left">2080s</td>
+<td align="left">Most Intense Pluvial Period</td>
+<td align="right">49</td>
+<td align="right">342.549</td>
+<td align="right">1.466</td>
+<td align="right">1325.811</td>
+<td align="right">18.754</td>
+<td align="right">835.366</td>
+<td align="right">16.940</td>
+<td align="right">0.184</td>
+<td align="right">0.901</td>
+</tr>
+</tbody>
+</table>
+<p>Section 6 asks what a year like this does. This section asks what
+this flow regime does if held indefinitely, which is a different
+question and can point the other way: a scenario that is mildly bad
+every year compounds at equilibrium.</p>
+<blockquote>
+<p><strong>K undefined in more than 10% of draws for at least one
+scenario.</strong> The replacement curve does not cross the 1:1 line
+there, so the LEVEL of K is not trustworthy. The change may still
+be.</p>
+</blockquote>
+</div>
+<div id="what-was-produced-for-this-site" class="section level2">
+<h2>7. What was produced for this site</h2>
+<table>
+<caption>Figure files found for this site. MISSING means that script has
+not run here, or wrote the figure under a name the template cannot
+find.</caption>
+<thead>
+<tr class="header">
+<th align="left">figure</th>
+<th align="left">file</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01_f1a</td>
+<td align="left">01_f1a__Ruby_Vigilante.png</td>
+</tr>
+<tr class="even">
+<td align="left">02_f2a</td>
+<td align="left">02_f2a_Ruby.Vigilante.png</td>
+</tr>
+<tr class="odd">
+<td align="left">03_f3a</td>
+<td align="left">03_f3a__Ruby_Vigilante.png</td>
+</tr>
+<tr class="even">
+<td align="left">03_f3b</td>
+<td align="left">03_f3b__Ruby_Vigilante.png</td>
+</tr>
+<tr class="odd">
+<td align="left">04_f4a</td>
+<td align="left">04_f4a__Ruby_Vigilante.png</td>
+</tr>
+<tr class="even">
+<td align="left">05_f5a</td>
+<td align="left">05_f5a__Ruby_Vigilante.png</td>
+</tr>
+<tr class="odd">
+<td align="left">06_f6a</td>
+<td align="left">06_f6a__Ruby_Vigilante.png</td>
+</tr>
+<tr class="even">
+<td align="left">06_f6b</td>
+<td align="left">06_f6b__Ruby_Vigilante.png</td>
+</tr>
+<tr class="odd">
+<td align="left">06b_f</td>
+<td align="left">06b_f__Ruby_Vigilante.png</td>
+</tr>
+<tr class="even">
+<td align="left">06b_h</td>
+<td align="left">06b_h__Ruby_Vigilante.png</td>
+</tr>
+<tr class="odd">
+<td align="left">07_f7a</td>
+<td align="left">07_f7a__Ruby_Vigilante.png</td>
+</tr>
+<tr class="even">
+<td align="left">08_f8a</td>
+<td align="left">08_f8a__Ruby_Vigilante.png</td>
+</tr>
+<tr class="odd">
+<td align="left">08_f8b</td>
+<td align="left">08_f8b__Ruby_Vigilante.png</td>
+</tr>
+<tr class="even">
+<td align="left">10_a</td>
+<td align="left">10_a__Ruby_Vigilante.png</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
