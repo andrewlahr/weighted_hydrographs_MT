@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Among sites</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Weighted hydrographs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="results.html">Results by site</a>
+</li>
+<li>
+  <a href="results_among_sites.html">Among sites</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Among sites</h1>
+<h3 class="subtitle">When in a cohort’s life flow matters, across
+Montana brown trout populations</h3>
+
+</div>
+
+
+<div id="which-life-stages-carry-a-signal-and-where"
+class="section level2">
+<h2>1. Which life stages carry a signal, and where</h2>
+<p>Each population is fitted alone, at each of three hydrograph years of
+a cohort: the year its parents spawned, its age-0 year and its age-1
+year. This table is first because pooling validated and unvalidated
+curves without saying so would be a synthesis of arithmetic.</p>
+<table>
+<caption>CV gain over spawner abundance alone, per stage. Bold = passes
+the gate; * = the lag the IPM selected.</caption>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="left">spawning year</th>
+<th align="left">age-0 year</th>
+<th align="left">age-1 year</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Beaverhead.FishAndGame</td>
+<td align="left">-0.22</td>
+<td align="left">+0.02</td>
+<td align="left">+0.54</td>
+</tr>
+<tr class="even">
+<td align="left">Beaverhead.Hildreth</td>
+<td align="left">-0.15</td>
+<td align="left">-0.08</td>
+<td align="left">-0.01</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.HogBack</td>
+<td align="left">-0.03</td>
+<td align="left">+0.16</td>
+<td align="left">-0.03</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">-0.24</td>
+<td align="left">-0.00 *</td>
+<td align="left">+0.04</td>
+</tr>
+<tr class="odd">
+<td align="left">Bighorn.Bighorn</td>
+<td align="left">+0.08</td>
+<td align="left">-0.13</td>
+<td align="left">-0.19</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.MallardsLanding</td>
+<td align="left">-0.01</td>
+<td align="left">-0.06</td>
+<td align="left">-0.20</td>
+</tr>
+<tr class="odd">
+<td align="left">Bitterroot.BellCrossing</td>
+<td align="left">-0.07</td>
+<td align="left">+0.02</td>
+<td align="left">-0.04</td>
+</tr>
+<tr class="even">
+<td align="left">Bitterroot.Darby</td>
+<td align="left">-0.01</td>
+<td align="left">-0.02</td>
+<td align="left"><strong>+0.03</strong></td>
+</tr>
+<tr class="odd">
+<td align="left">Blackfoot.Johnsrud</td>
+<td align="left">-0.06</td>
+<td align="left"><strong>+0.19</strong></td>
+<td align="left">-0.07</td>
+</tr>
+<tr class="even">
+<td align="left">Blackfoot.ScottyBrown</td>
+<td align="left">-0.01</td>
+<td align="left">-0.01</td>
+<td align="left">-0.00</td>
+</tr>
+<tr class="odd">
+<td align="left">Boulder.B2</td>
+<td align="left">-0.23</td>
+<td align="left">-0.12</td>
+<td align="left">+0.04</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.Norris</td>
+<td align="left">-0.02 *</td>
+<td align="left">-0.17</td>
+<td align="left">-0.05</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.PineButte</td>
+<td align="left">-0.07</td>
+<td align="left">-0.16</td>
+<td align="left">-0.08</td>
+</tr>
+<tr class="even">
+<td align="left">Missouri.Cascade</td>
+<td align="left">-0.07</td>
+<td align="left">-0.14</td>
+<td align="left">-0.20</td>
+</tr>
+<tr class="odd">
+<td align="left">Missouri.Craig</td>
+<td align="left">-0.29</td>
+<td align="left">-0.01</td>
+<td align="left">-0.03</td>
+</tr>
+<tr class="even">
+<td align="left">RockCreek.FishAndGame</td>
+<td align="left">-0.10</td>
+<td align="left">+0.00</td>
+<td align="left">-0.01</td>
+</tr>
+<tr class="odd">
+<td align="left">Ruby.Vigilante</td>
+<td align="left">-0.07</td>
+<td align="left">-0.08</td>
+<td align="left">-0.06</td>
+</tr>
+<tr class="even">
+<td align="left">Shields.ConvictGrade</td>
+<td align="left">-0.04</td>
+<td align="left">-0.04</td>
+<td align="left">-0.09</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith.EagleCreek</td>
+<td align="left">-0.24</td>
+<td align="left">-0.06</td>
+<td align="left">-0.09</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.CorwinSprings</td>
+<td align="left"><strong>+0.20</strong></td>
+<td align="left">+0.12</td>
+<td align="left">-0.05</td>
+</tr>
+<tr class="odd">
+<td align="left">Yellowstone.MillCreek</td>
+<td align="left"><strong>+0.33</strong></td>
+<td align="left">-0.09</td>
+<td align="left">+0.03</td>
+</tr>
+</tbody>
+</table>
+<p><strong>spawning year</strong>: 2 of 21 populations pass;
+<strong>age-0 year</strong>: 1 of 21 populations pass; <strong>age-1
+year</strong>: 1 of 21 populations pass.</p>
+<p>A stage that fails at a site is a statement about how much that
+record can resolve, not a demonstration that flow does not matter at
+that stage. Counting passes understates a moderate effect that is real
+everywhere; section 2 is where the stages are compared.</p>
+<div class="float">
+<img src="figures/05_gate.png"
+alt="The gate, every site x stage x model form." />
+<div class="figcaption">The gate, every site x stage x model form.</div>
+</div>
+<div id="what-limits-each-populations-answer" class="section level3">
+<h3>What limits each population’s answer</h3>
+<p>Two ceilings sit under every result above, and they call for
+different remedies. If much of the year-to-year variation in log(R/S) is
+the IPM being unsure, no flow model can explain it, and the remedy is
+better fish data. If the IPM is sure but the regression is not, the
+remedy is more years.</p>
+<div class="float">
+<img src="figures/01_f1a.png"
+alt="Real between-year variation (blue) against posterior uncertainty (red), per population." />
+<div class="figcaption">Real between-year variation (blue) against
+posterior uncertainty (red), per population.</div>
+</div>
+<div class="float">
+<img src="figures/03_uncertainty_source.png"
+alt="Share of each beta(t)’s uncertainty that comes from the IPM rather than the regression." />
+<div class="figcaption">Share of each beta(t)’s uncertainty that comes
+from the IPM rather than the regression.</div>
+</div>
+</div>
+</div>
+<div id="the-montana-wide-life-cycle-curve" class="section level2">
+<h2>2. The Montana-wide life-cycle curve</h2>
+<p>All populations pooled, all three stages fitted
+<strong>jointly</strong>, so each stage’s curve is conditional on the
+other two – the comparison the single-site fits cannot make. Two
+estimators, built on different assumptions: the flow modes shared by
+every river with a random slope per population (black), and one smooth
+curve across the whole life cycle (gold).</p>
+<div class="float">
+<img src="figures/07_lifecycle_global.png"
+alt="Effect on log(R/S) of a 1-SD wetter-than-normal day, by day of the cohort’s life. 95% bands include IPM uncertainty." />
+<div class="figcaption">Effect on log(R/S) of a 1-SD wetter-than-normal
+day, by day of the cohort’s life. 95% bands include IPM
+uncertainty.</div>
+</div>
+<p>21 populations, 666 population-years. The two estimators agree with
+correlation 0.40 over the life cycle; the smooth curve used 8.4
+effective degrees of freedom. Where only one of them shows a feature, it
+belongs to that estimator.</p>
+<div class="float">
+<img src="figures/08_lifecycle.png"
+alt="Each population’s own life-cycle curve, fitted alone, on one axis." />
+<div class="figcaption">Each population’s own life-cycle curve, fitted
+alone, on one axis.</div>
+</div>
+<div id="by-life-history-window" class="section level3">
+<h3>By life-history window</h3>
+<table>
+<caption>Change in log(R/S) for a year whose flow over the window is 1
+SD above normal. A = common modes, B = life-cycle spline.</caption>
+<thead>
+<tr class="header">
+<th align="left">window</th>
+<th align="left">model</th>
+<th align="right">effect</th>
+<th align="right">lo 95</th>
+<th align="right">hi 95</th>
+<th align="right">P(direction)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">pre-spawn adults</td>
+<td align="left">A</td>
+<td align="right">-0.07</td>
+<td align="right">-0.15</td>
+<td align="right">0.02</td>
+<td align="right">0.94</td>
+</tr>
+<tr class="even">
+<td align="left">pre-spawn adults</td>
+<td align="left">B</td>
+<td align="right">-0.03</td>
+<td align="right">-0.10</td>
+<td align="right">0.04</td>
+<td align="right">0.76</td>
+</tr>
+<tr class="odd">
+<td align="left">spawning</td>
+<td align="left">A</td>
+<td align="right">0.11</td>
+<td align="right">0.03</td>
+<td align="right">0.18</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="even">
+<td align="left">spawning</td>
+<td align="left">B</td>
+<td align="right">0.06</td>
+<td align="right">0.03</td>
+<td align="right">0.09</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">incubation</td>
+<td align="left">A</td>
+<td align="right">-0.01</td>
+<td align="right">-0.10</td>
+<td align="right">0.09</td>
+<td align="right">0.56</td>
+</tr>
+<tr class="even">
+<td align="left">incubation</td>
+<td align="left">B</td>
+<td align="right">0.00</td>
+<td align="right">-0.06</td>
+<td align="right">0.05</td>
+<td align="right">0.52</td>
+</tr>
+<tr class="odd">
+<td align="left">emergence</td>
+<td align="left">A</td>
+<td align="right">-0.06</td>
+<td align="right">-0.16</td>
+<td align="right">0.05</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="even">
+<td align="left">emergence</td>
+<td align="left">B</td>
+<td align="right">-0.04</td>
+<td align="right">-0.08</td>
+<td align="right">0.00</td>
+<td align="right">0.96</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 summer</td>
+<td align="left">A</td>
+<td align="right">0.01</td>
+<td align="right">-0.09</td>
+<td align="right">0.12</td>
+<td align="right">0.58</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 summer</td>
+<td align="left">B</td>
+<td align="right">0.02</td>
+<td align="right">-0.02</td>
+<td align="right">0.07</td>
+<td align="right">0.84</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 autumn</td>
+<td align="left">A</td>
+<td align="right">0.03</td>
+<td align="right">-0.05</td>
+<td align="right">0.12</td>
+<td align="right">0.79</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 autumn</td>
+<td align="left">B</td>
+<td align="right">0.02</td>
+<td align="right">-0.01</td>
+<td align="right">0.05</td>
+<td align="right">0.91</td>
+</tr>
+<tr class="odd">
+<td align="left">first winter</td>
+<td align="left">A</td>
+<td align="right">0.00</td>
+<td align="right">-0.09</td>
+<td align="right">0.09</td>
+<td align="right">0.50</td>
+</tr>
+<tr class="even">
+<td align="left">first winter</td>
+<td align="left">B</td>
+<td align="right">0.02</td>
+<td align="right">-0.04</td>
+<td align="right">0.07</td>
+<td align="right">0.74</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 spring-summer</td>
+<td align="left">A</td>
+<td align="right">0.01</td>
+<td align="right">-0.10</td>
+<td align="right">0.12</td>
+<td align="right">0.54</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 spring-summer</td>
+<td align="left">B</td>
+<td align="right">0.02</td>
+<td align="right">-0.04</td>
+<td align="right">0.08</td>
+<td align="right">0.72</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 autumn</td>
+<td align="left">A</td>
+<td align="right">0.01</td>
+<td align="right">-0.08</td>
+<td align="right">0.10</td>
+<td align="right">0.58</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 autumn</td>
+<td align="left">B</td>
+<td align="right">-0.04</td>
+<td align="right">-0.11</td>
+<td align="right">0.02</td>
+<td align="right">0.89</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="figures/08_life_windows.png"
+alt="The same, with each population’s estimate in grey." />
+<div class="figcaption">The same, with each population’s estimate in
+grey.</div>
+</div>
+<blockquote>
+<p>Window dates are <strong>provisional</strong> until replaced with
+cited values.</p>
+</blockquote>
+</div>
+</div>
+<div id="season-by-life-stage" class="section level2">
+<h2>3. Season by life stage</h2>
+<p>The pre-registered, low-resolution version: four calendar seasons in
+each of the three hydrograph years, pooled with a random slope per
+population.</p>
+<table>
+<caption>Montana-wide effect on log(R/S) of a 1-SD wetter season. Twelve
+cells: about one reaches P &gt;= 0.95 by chance.</caption>
+<thead>
+<tr class="header">
+<th align="left">stage</th>
+<th align="left">season</th>
+<th align="right">effect</th>
+<th align="right">lo 95</th>
+<th align="right">hi 95</th>
+<th align="right">P(direction)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="left">winter</td>
+<td align="right">-0.05</td>
+<td align="right">-0.13</td>
+<td align="right">0.04</td>
+<td align="right">0.87</td>
+</tr>
+<tr class="even">
+<td align="left">spawning year</td>
+<td align="left">runoff</td>
+<td align="right">-0.11</td>
+<td align="right">-0.20</td>
+<td align="right">-0.02</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="left">summer</td>
+<td align="right">0.10</td>
+<td align="right">0.00</td>
+<td align="right">0.20</td>
+<td align="right">0.98</td>
+</tr>
+<tr class="even">
+<td align="left">spawning year</td>
+<td align="left">autumn</td>
+<td align="right">0.14</td>
+<td align="right">0.03</td>
+<td align="right">0.24</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="left">winter</td>
+<td align="right">-0.03</td>
+<td align="right">-0.13</td>
+<td align="right">0.06</td>
+<td align="right">0.73</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="left">runoff</td>
+<td align="right">-0.13</td>
+<td align="right">-0.23</td>
+<td align="right">-0.04</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="left">summer</td>
+<td align="right">0.08</td>
+<td align="right">-0.02</td>
+<td align="right">0.18</td>
+<td align="right">0.93</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="left">autumn</td>
+<td align="right">0.08</td>
+<td align="right">-0.04</td>
+<td align="right">0.19</td>
+<td align="right">0.90</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="left">winter</td>
+<td align="right">-0.03</td>
+<td align="right">-0.12</td>
+<td align="right">0.07</td>
+<td align="right">0.71</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="left">runoff</td>
+<td align="right">-0.01</td>
+<td align="right">-0.11</td>
+<td align="right">0.09</td>
+<td align="right">0.59</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="left">summer</td>
+<td align="right">0.01</td>
+<td align="right">-0.08</td>
+<td align="right">0.10</td>
+<td align="right">0.57</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="left">autumn</td>
+<td align="right">0.00</td>
+<td align="right">-0.11</td>
+<td align="right">0.12</td>
+<td align="right">0.52</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="figures/08_stage_season_map.png"
+alt="Season x stage, each population fitted alone, with the pooled row on top." />
+<div class="figcaption">Season x stage, each population fitted alone,
+with the pooled row on top.</div>
+</div>
+<div class="float">
+<img src="figures/07_seasonal.png"
+alt="Pooled effect (black) and every population’s estimate (blue)." />
+<div class="figcaption">Pooled effect (black) and every population’s
+estimate (blue).</div>
+</div>
+</div>
+<div id="do-populations-respond-alike" class="section level2">
+<h2>4. Do populations respond alike?</h2>
+<div class="float">
+<img src="figures/07_heterogeneity.png"
+alt="Size of the shared effect (black) against how far populations depart from it (gold)." />
+<div class="figcaption">Size of the shared effect (black) against how
+far populations depart from it (gold).</div>
+</div>
+<div class="float">
+<img src="figures/07_lifecycle_sites.png"
+alt="Every population’s partially pooled life-cycle curve: the Montana-wide curve plus its own shrunken departure." />
+<div class="figcaption">Every population’s partially pooled life-cycle
+curve: the Montana-wide curve plus its own shrunken departure.</div>
+</div>
+<p>Where the gold bar is near zero, one Montana-wide answer describes
+every population. Where it is comparable to the black bar, the answer
+depends on the river, and the natural next question is which rivers.</p>
+<div class="float">
+<img src="figures/07_response_pca.png"
+alt="Populations placed by how they respond, coloured by flow regime." />
+<div class="figcaption">Populations placed by how they respond, coloured
+by flow regime.</div>
+</div>
+<p>The first two axes hold 51% and 26% of the among-population variation
+in response. With this many populations, read clusters as hypotheses to
+test, not results.</p>
+</div>
+<div id="one-set-of-flow-modes-for-every-river" class="section level2">
+<h2>5. One set of flow modes for every river</h2>
+<p>Each river’s own flow modes are the right description of that river,
+but they are different shapes at different sites, so their coefficients
+cannot be compared or pooled. One analysis over every river’s
+standardized hydrographs gives modes all populations share; the cost is
+that some rivers are described less well by them, and the second figure
+says how much.</p>
+<div class="float">
+<img src="figures/06_common_modes.png" alt="The common flow modes." />
+<div class="figcaption">The common flow modes.</div>
+</div>
+<div class="float">
+<img src="figures/06_representation.png"
+alt="How much of each river’s flow variation the common modes carry." />
+<div class="figcaption">How much of each river’s flow variation the
+common modes carry.</div>
+</div>
+<div class="float">
+<img src="figures/06_effects_map.png"
+alt="Where in the life cycle each common mode matters, population by population (no pooling)." />
+<div class="figcaption">Where in the life cycle each common mode
+matters, population by population (no pooling).</div>
+</div>
+</div>
+<div id="what-flow-adds-out-of-sample" class="section level2">
+<h2>6. What flow adds, out of sample</h2>
+<p>Folds hold out the same block of calendar years at every population
+at once, so a shared wet or dry year cannot sit in training at one river
+and in test at another.</p>
+<table>
+<caption>Blocked cross-validation of the pooled models.</caption>
+<colgroup>
+<col width="41%" />
+<col width="29%" />
+<col width="29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">R2 (within-population)</th>
+<th align="right">gain over site + stock</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">null (site + stock)</td>
+<td align="right">0.011</td>
+<td align="right">0.000</td>
+</tr>
+<tr class="even">
+<td align="left">A0 common modes, global</td>
+<td align="right">0.004</td>
+<td align="right">-0.007</td>
+</tr>
+<tr class="odd">
+<td align="left">A common modes + site slopes</td>
+<td align="right">-0.009</td>
+<td align="right">-0.020</td>
+</tr>
+<tr class="even">
+<td align="left">B life-cycle spline</td>
+<td align="right">0.008</td>
+<td align="right">-0.003</td>
+</tr>
+<tr class="odd">
+<td align="left">C season x stage + site slopes</td>
+<td align="right">0.023</td>
+<td align="right">0.012</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="figures/07_cv.png"
+alt="The same, population by population." />
+<div class="figcaption">The same, population by population.</div>
+</div>
+</div>
+<div id="does-the-ipms-selected-lag-point-at-the-right-stage"
+class="section level2">
+<h2>7. Does the IPM’s selected lag point at the right stage?</h2>
+<table>
+<caption>The IPM chose one lag per site on summer flow alone; here every
+stage is tested on the whole hydrograph.</caption>
+<colgroup>
+<col width="30%" />
+<col width="9%" />
+<col width="19%" />
+<col width="13%" />
+<col width="19%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="right">IPM lag</th>
+<th align="right">best stage (lag)</th>
+<th align="right">its CV gain</th>
+<th align="left">stages that pass</th>
+<th align="left">agree</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Beaverhead.FishAndGame</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">0.54</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Beaverhead.Hildreth</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">-0.01</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.HogBack</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">0.16</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">0.04</td>
+<td align="left"></td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bighorn.Bighorn</td>
+<td align="right">NA</td>
+<td align="right">3</td>
+<td align="right">0.08</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.MallardsLanding</td>
+<td align="right">NA</td>
+<td align="right">3</td>
+<td align="right">-0.01</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Bitterroot.BellCrossing</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">0.02</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Bitterroot.Darby</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">0.03</td>
+<td align="left">age-1 year</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Blackfoot.Johnsrud</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">0.19</td>
+<td align="left">age-0 year</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Blackfoot.ScottyBrown</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">0.00</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Boulder.B2</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">0.04</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.Norris</td>
+<td align="right">3</td>
+<td align="right">3</td>
+<td align="right">-0.02</td>
+<td align="left"></td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.PineButte</td>
+<td align="right">NA</td>
+<td align="right">3</td>
+<td align="right">-0.07</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Missouri.Cascade</td>
+<td align="right">NA</td>
+<td align="right">3</td>
+<td align="right">-0.07</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Missouri.Craig</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">-0.01</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">RockCreek.FishAndGame</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">0.00</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Ruby.Vigilante</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">-0.06</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Shields.ConvictGrade</td>
+<td align="right">NA</td>
+<td align="right">3</td>
+<td align="right">-0.04</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith.EagleCreek</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">-0.06</td>
+<td align="left"></td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.CorwinSprings</td>
+<td align="right">NA</td>
+<td align="right">3</td>
+<td align="right">0.20</td>
+<td align="left">spawning year</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Yellowstone.MillCreek</td>
+<td align="right">NA</td>
+<td align="right">3</td>
+<td align="right">0.33</td>
+<td align="left">spawning year</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="what-generalizes-and-what-does-not" class="section level2">
+<h2>8. What generalizes, and what does not</h2>
+<p>Three questions this page is <em>for</em>. They are claims to be
+argued from the sections above, not read off a single table:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Whether the stage and season are shared.</strong> If
+populations put the effect in the same window of the same life stage,
+that is a Montana-wide statement with a mechanism behind it – and it
+tells a water manager which age class a given season’s flow is working
+on. If they do not, timing is local and each population needs its own
+curve.</li>
+<li><strong>Whether regulated and unregulated rivers differ.</strong>
+Flow can only be managed where it can be moved, so a systematic
+difference between tailwaters and freestones is the most useful pattern
+available here. Regulated rivers also vary little in autumn, which is
+exactly where the flow-mode estimator is weakest (see Methods).</li>
+<li><strong>Whether the populations that fail share anything</strong> –
+record length, gage, degree of regulation. A failure explained is more
+useful than a population quietly dropped.</li>
+</ol>
+<p>Every number quoted in the manuscript is in
+<code>output/tables/derived_stats.csv</code>, regenerated on each run so
+the text and the figures cannot drift apart.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

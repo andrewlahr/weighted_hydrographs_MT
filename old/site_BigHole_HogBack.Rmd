@@ -1,0 +1,45 @@
+---
+title: "BigHole.HogBack"
+subtitle: "Daily flow effects across the trout life cycle"
+---
+
+```{r include=FALSE}
+SITE_FOCUS <- "BigHole.HogBack"
+```
+
+<div class="site-picker" style="margin:1em 0;padding:.6em .8em;border:1px solid #ddd;border-radius:6px;">
+<label for="sitePicker"><strong>Site:</strong></label>
+<select id="sitePicker" style="margin-left:.5em;padding:.3em;"
+ onchange="if(this.value){window.location.href=this.value;}">
+  <option value="site_Beaverhead_FishAndGame.html">Beaverhead.FishAndGame</option>
+  <option value="site_Beaverhead_Hildreth.html">Beaverhead.Hildreth</option>
+  <option value="site_BigHole_HogBack.html" selected>BigHole.HogBack</option>
+  <option value="site_BigHole_Melrose.html">BigHole.Melrose</option>
+  <option value="site_Bighorn_Bighorn.html">Bighorn.Bighorn</option>
+  <option value="site_Bighorn_MallardsLanding.html">Bighorn.MallardsLanding</option>
+  <option value="site_Bitterroot_BellCrossing.html">Bitterroot.BellCrossing</option>
+  <option value="site_Bitterroot_Darby.html">Bitterroot.Darby</option>
+  <option value="site_Blackfoot_Johnsrud.html">Blackfoot.Johnsrud</option>
+  <option value="site_Blackfoot_ScottyBrown.html">Blackfoot.ScottyBrown</option>
+  <option value="site_Boulder_B2.html">Boulder.B2</option>
+  <option value="site_Madison_Norris.html">Madison.Norris</option>
+  <option value="site_Madison_PineButte.html">Madison.PineButte</option>
+  <option value="site_Madison_Varney.html">Madison.Varney</option>
+  <option value="site_Missouri_Cascade.html">Missouri.Cascade</option>
+  <option value="site_Missouri_Craig.html">Missouri.Craig</option>
+  <option value="site_RockCreek_FishAndGame.html">RockCreek.FishAndGame</option>
+  <option value="site_Ruby_SilverSprings.html">Ruby.SilverSprings</option>
+  <option value="site_Ruby_Vigilante.html">Ruby.Vigilante</option>
+  <option value="site_Shields_ConvictGrade.html">Shields.ConvictGrade</option>
+  <option value="site_Smith_EagleCreek.html">Smith.EagleCreek</option>
+  <option value="site_Yellowstone_CorwinSprings.html">Yellowstone.CorwinSprings</option>
+  <option value="site_Yellowstone_MillCreek.html">Yellowstone.MillCreek</option>
+  <option value="site_ClarkFork_Phshack.html">ClarkFork.Phshack</option>
+  <option value="site_ClarkFork_WilliamsTavenner.html">ClarkFork.WilliamsTavenner</option>
+  <option value="site_Jefferson_Waterloo.html">Jefferson.Waterloo</option>
+</select>
+<span style="margin-left:1em;color:#666;font-size:90%;">26 site(s)</span>
+</div>
+
+```{r child = "_site_template.Rmd"}
+```

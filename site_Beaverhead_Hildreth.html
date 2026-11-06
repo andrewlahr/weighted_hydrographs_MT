@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Beaverhead.Hildreth</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Weighted hydrographs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="results.html">Results by site</a>
+</li>
+<li>
+  <a href="results_among_sites.html">Among sites</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Beaverhead.Hildreth</h1>
+<h3 class="subtitle">Daily flow effects across the trout life cycle</h3>
+
+</div>
+
+
+<div class="site-picker"
+style="margin:1em 0;padding:.6em .8em;border:1px solid #ddd;border-radius:6px;">
+<p><label for="sitePicker"><strong>Site:</strong></label>
+<select id="sitePicker" style="margin-left:.5em;padding:.3em;"
+ onchange="if(this.value){window.location.href=this.value;}">
+<option value="site_Beaverhead_FishAndGame.html">Beaverhead.FishAndGame</option>
+<option value="site_Beaverhead_Hildreth.html" selected>Beaverhead.Hildreth</option>
+<option value="site_BigHole_HogBack.html">BigHole.HogBack</option>
+<option value="site_BigHole_Melrose.html">BigHole.Melrose</option>
+<option value="site_Bighorn_Bighorn.html">Bighorn.Bighorn</option>
+<option value="site_Bighorn_MallardsLanding.html">Bighorn.MallardsLanding</option>
+<option value="site_Bitterroot_BellCrossing.html">Bitterroot.BellCrossing</option>
+<option value="site_Bitterroot_Darby.html">Bitterroot.Darby</option>
+<option value="site_Blackfoot_Johnsrud.html">Blackfoot.Johnsrud</option>
+<option value="site_Blackfoot_ScottyBrown.html">Blackfoot.ScottyBrown</option>
+<option value="site_Boulder_B2.html">Boulder.B2</option>
+<option value="site_Madison_Norris.html">Madison.Norris</option>
+<option value="site_Madison_PineButte.html">Madison.PineButte</option>
+<option value="site_Madison_Varney.html">Madison.Varney</option>
+<option value="site_Missouri_Cascade.html">Missouri.Cascade</option>
+<option value="site_Missouri_Craig.html">Missouri.Craig</option>
+<option value="site_RockCreek_FishAndGame.html">RockCreek.FishAndGame</option>
+<option value="site_Ruby_SilverSprings.html">Ruby.SilverSprings</option>
+<option value="site_Ruby_Vigilante.html">Ruby.Vigilante</option>
+<option value="site_Shields_ConvictGrade.html">Shields.ConvictGrade</option>
+<option value="site_Smith_EagleCreek.html">Smith.EagleCreek</option>
+<option value="site_Yellowstone_CorwinSprings.html">Yellowstone.CorwinSprings</option>
+<option value="site_Yellowstone_MillCreek.html">Yellowstone.MillCreek</option>
+</select> <span style="margin-left:1em;color:#666;font-size:90%;">23
+site(s)</span></p>
+</div>
+<blockquote>
+<p><strong>Which life stages are findings at this site.</strong> A
+validated stage predicts recruit-years the model did not see, better
+than spawner abundance alone. Curves for the other stages are
+arithmetic, not findings.</p>
+<ul>
+<li><strong>spawning year</strong> (lag 3): not validated – CV gain over
+stock -0.15, adjusted p 0.659</li>
+<li><strong>age-0 year</strong> (lag 2): not validated – CV gain over
+stock -0.08, adjusted p 0.659</li>
+<li><strong>age-1 year</strong> (lag 1): not validated – CV gain over
+stock -0.01, adjusted p 0.256</li>
+</ul>
+</blockquote>
+<div id="the-response-and-the-flow-record" class="section level2">
+<h2>1. The response, and the flow record</h2>
+<p>Recruitment is log(recruits / spawners) with a 3-year recruit lag,
+against the <code>BAdults</code> node of the <strong>null</strong>
+(flow-naive) IPM posterior. Using the flow-informed fit would put flow
+on both sides of the regression.</p>
+<table>
+<caption>The record behind every curve on this page.</caption>
+<thead>
+<tr class="header">
+<th align="left">Item</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">recruit-years used (every stage)</td>
+<td align="left">41</td>
+</tr>
+<tr class="even">
+<td align="left">flow years</td>
+<td align="left">46 (1980-2025)</td>
+</tr>
+<tr class="odd">
+<td align="left">flow modes kept (K)</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">floor per mode</td>
+<td align="left">4.35%</td>
+</tr>
+<tr class="odd">
+<td align="left">flow variation the modes carry</td>
+<td align="left">86.6%</td>
+</tr>
+<tr class="even">
+<td align="left">IPM-selected flow lag</td>
+<td align="left"><em>not available</em></td>
+</tr>
+<tr class="odd">
+<td align="left">year-to-year carry-over of flow</td>
+<td align="left">0.81</td>
+</tr>
+<tr class="even">
+<td align="left">shares its hydrograph with</td>
+<td align="left">-</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="figures/01_f1a__Beaverhead_Hildreth.png"
+alt="How much of log(R/S) is real variation between years (blue), and how much is the IPM being unsure (red)." />
+<div class="figcaption">How much of log(R/S) is real variation between
+years (blue), and how much is the IPM being unsure (red).</div>
+</div>
+<div class="float">
+<img src="figures/01_f1b__Beaverhead_Hildreth.png"
+alt="The response through time, with posterior uncertainty." />
+<div class="figcaption">The response through time, with posterior
+uncertainty.</div>
+</div>
+<div class="float">
+<img src="figures/01_f1c__Beaverhead_Hildreth.png"
+alt="Stock and recruitment from the null IPM." />
+<div class="figcaption">Stock and recruitment from the null IPM.</div>
+</div>
+<div class="float">
+<img src="figures/02_f2a__Beaverhead_Hildreth.png"
+alt="Daily discharge, standardized to log anomalies." />
+<div class="figcaption">Daily discharge, standardized to log
+anomalies.</div>
+</div>
+<p>Flow is standardized in three steps, in this order: logs, because
+discharge is multiplicative; minus each day’s mean across years, so a
+positive value means wetter <em>than that date usually is</em>; then
+divided by <strong>one</strong> global standard deviation, so a wobble
+in a stable week is not made to count as much as a doubling in June.</p>
+</div>
+<div id="this-rivers-flow-modes" class="section level2">
+<h2>2. This river’s flow modes</h2>
+<p>The handful of shapes in which this river’s years differ from each
+other, found from flow alone, before any fish data are used. Each is
+drawn as the hydrograph of a year 2 SD high (blue) or low (red) on that
+mode. The same modes are used for every life stage on this page, so
+“mode 2 matters in the age-0 year but not the spawning year” is a
+statement about one thing.</p>
+<div class="float">
+<img src="figures/02_f2e_modes__Beaverhead_Hildreth.png"
+alt="The flow modes, drawn as hydrographs." />
+<div class="figcaption">The flow modes, drawn as hydrographs.</div>
+</div>
+<div class="float">
+<img src="figures/02_f2f_scores__Beaverhead_Hildreth.png"
+alt="Which years load on each mode." />
+<div class="figcaption">Which years load on each mode.</div>
+</div>
+<div class="float">
+<img src="figures/02_f2d__Beaverhead_Hildreth.png"
+alt="Where this river’s flow varies from year to year." />
+<div class="figcaption">Where this river’s flow varies from year to
+year.</div>
+</div>
+<p>The last figure is the limit on everything below it: beta(t) can only
+be learned on days when flow differs between years. Where that line sits
+well under 1 – autumn and winter on most regulated rivers – a flat curve
+means <em>no information</em>, not <em>no effect</em>.</p>
+</div>
+<div id="the-weighted-hydrograph-across-the-life-cycle"
+class="section level2">
+<h2>3. The weighted hydrograph across the life cycle</h2>
+<p>beta(t) is a weight for every day: the change in log(recruits /
+spawners) when that day is one standard deviation wetter than usual. It
+is estimated separately for three hydrograph years of the same cohort –
+the year its parents spawned, its age-0 year and its age-1 year – and
+laid end to end, so incubation (December to March) reads as one stretch
+instead of two halves in different calendar years.</p>
+<div class="float">
+<img src="figures/08_lifecycle__Beaverhead_Hildreth.png"
+alt="beta(t) across the life cycle. Black: this population alone. Blue: partially pooled with all populations. Gold dashed: penalized-spline estimator. Labels: the gate result per stage." />
+<div class="figcaption">beta(t) across the life cycle. Black: this
+population alone. Blue: partially pooled with all populations. Gold
+dashed: penalized-spline estimator. Labels: the gate result per
+stage.</div>
+</div>
+<blockquote>
+<p>Life-history windows are shaded with <strong>provisional</strong>
+dates until they are replaced with cited values. The stage curves are
+fitted one stage at a time here; where flow carries over from one year
+to the next (carry-over in the table above), neighbouring stages partly
+echo each other. The pooled model on the <a
+href="results_among_sites.html">Among sites</a> page fits the stages
+jointly.</p>
+</blockquote>
+</div>
+<div id="which-flow-modes-at-which-life-stage" class="section level2">
+<h2>4. Which flow modes, at which life stage</h2>
+<p>Each curve above is a weighted sum of this river’s flow modes. The
+weights are <strong>averaged over models</strong>: every subset of modes
+is fitted, models within 4 AICc of the best are kept, and each mode’s
+coefficient is averaged with Akaike weights, counting as zero in models
+that leave it out. A mode the data do not support is shrunk toward zero
+rather than kept at full size. <code>w</code> is a mode’s importance:
+the summed weight of the models that contain it.</p>
+<div class="float">
+<img src="figures/03_components__Beaverhead_Hildreth.png"
+alt="beta(t) for each stage (black) and each mode’s piece of it (colours)." />
+<div class="figcaption">beta(t) for each stage (black) and each mode’s
+piece of it (colours).</div>
+</div>
+<div class="float">
+<img src="figures/03_component_grid__Beaverhead_Hildreth.png"
+alt="Each mode’s piece, with its own 95% interval. Rows: modes; columns: stages." />
+<div class="figcaption">Each mode’s piece, with its own 95% interval.
+Rows: modes; columns: stages.</div>
+</div>
+<div class="float">
+<img src="figures/03_mode_effects__Beaverhead_Hildreth.png"
+alt="Effect on log(R/S) of a year 1 SD high on each mode, by stage." />
+<div class="figcaption">Effect on log(R/S) of a year 1 SD high on each
+mode, by stage.</div>
+</div>
+<table style="width:100%;">
+<caption>Modes with importance &gt;= 0.5. All modes are in
+output/tables/fpc_components.csv.</caption>
+<colgroup>
+<col width="12%" />
+<col width="5%" />
+<col width="22%" />
+<col width="15%" />
+<col width="6%" />
+<col width="6%" />
+<col width="14%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">stage</th>
+<th align="left">mode</th>
+<th align="right">% of flow variation</th>
+<th align="right">effect per SD</th>
+<th align="right">lo 95</th>
+<th align="right">hi 95</th>
+<th align="right">importance w</th>
+<th align="right">P(direction)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="left">FPC1</td>
+<td align="right">72.05</td>
+<td align="right">-0.08</td>
+<td align="right">-0.3</td>
+<td align="right">0.13</td>
+<td align="right">0.51</td>
+<td align="right">0.77</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="left">FPC1</td>
+<td align="right">72.05</td>
+<td align="right">-0.15</td>
+<td align="right">-0.4</td>
+<td align="right">0.10</td>
+<td align="right">0.73</td>
+<td align="right">0.88</td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary>
+The averaged models, top five per stage
+</summary>
+<table>
+<caption>Stock is in every model.</caption>
+<thead>
+<tr class="header">
+<th align="left">stage</th>
+<th align="right">rank</th>
+<th align="left">modes</th>
+<th align="right">AICc</th>
+<th align="right">delta</th>
+<th align="right">weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="right">1</td>
+<td align="left">(stock only)</td>
+<td align="right">86.54</td>
+<td align="right">0.00</td>
+<td align="right">0.42</td>
+</tr>
+<tr class="even">
+<td align="left">spawning year</td>
+<td align="right">2</td>
+<td align="left">FPC1</td>
+<td align="right">86.89</td>
+<td align="right">0.34</td>
+<td align="right">0.36</td>
+</tr>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="right">3</td>
+<td align="left">FPC2</td>
+<td align="right">88.98</td>
+<td align="right">2.43</td>
+<td align="right">0.13</td>
+</tr>
+<tr class="even">
+<td align="left">spawning year</td>
+<td align="right">4</td>
+<td align="left">FPC1 + FPC2</td>
+<td align="right">89.47</td>
+<td align="right">2.92</td>
+<td align="right">0.10</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="right">1</td>
+<td align="left">FPC1</td>
+<td align="right">86.40</td>
+<td align="right">0.00</td>
+<td align="right">0.40</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="right">2</td>
+<td align="left">(stock only)</td>
+<td align="right">86.54</td>
+<td align="right">0.14</td>
+<td align="right">0.37</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="right">3</td>
+<td align="left">FPC1 + FPC2</td>
+<td align="right">88.96</td>
+<td align="right">2.56</td>
+<td align="right">0.11</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="right">4</td>
+<td align="left">FPC2</td>
+<td align="right">88.97</td>
+<td align="right">2.57</td>
+<td align="right">0.11</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="right">1</td>
+<td align="left">FPC1</td>
+<td align="right">84.57</td>
+<td align="right">0.00</td>
+<td align="right">0.39</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="right">2</td>
+<td align="left">FPC1 + FPC2</td>
+<td align="right">84.84</td>
+<td align="right">0.27</td>
+<td align="right">0.34</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="right">3</td>
+<td align="left">(stock only)</td>
+<td align="right">86.54</td>
+<td align="right">1.98</td>
+<td align="right">0.15</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="right">4</td>
+<td align="left">FPC2</td>
+<td align="right">86.86</td>
+<td align="right">2.29</td>
+<td align="right">0.12</td>
+</tr>
+</tbody>
+</table>
+</details>
+</div>
+<div id="validation-which-stages-are-findings" class="section level2">
+<h2>5. Validation: which stages are findings?</h2>
+<table>
+<caption>The gate, per stage and model form. cv_gain and p_adj
+decide.</caption>
+<colgroup>
+<col width="10%" />
+<col width="2%" />
+<col width="11%" />
+<col width="5%" />
+<col width="8%" />
+<col width="8%" />
+<col width="12%" />
+<col width="5%" />
+<col width="5%" />
+<col width="4%" />
+<col width="5%" />
+<col width="5%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">stage</th>
+<th align="right">lag</th>
+<th align="left">form</th>
+<th align="right">n_years</th>
+<th align="right">r2_insample</th>
+<th align="right">r2_blocked</th>
+<th align="right">r2_blocked_stock</th>
+<th align="right">cv_gain</th>
+<th align="right">p_value</th>
+<th align="right">p_adj</th>
+<th align="right">p_floor</th>
+<th align="left">passes</th>
+<th align="right">cor_fpc_penalized</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="right">3</td>
+<td align="left">beta:fpc</td>
+<td align="right">41</td>
+<td align="right">0.270</td>
+<td align="right">-0.047</td>
+<td align="right">0.101</td>
+<td align="right">-0.147</td>
+<td align="right">0.415</td>
+<td align="right">0.659</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">-0.601</td>
+</tr>
+<tr class="even">
+<td align="left">spawning year</td>
+<td align="right">3</td>
+<td align="left">beta:penalized</td>
+<td align="right">41</td>
+<td align="right">0.451</td>
+<td align="right">-0.028</td>
+<td align="right">0.101</td>
+<td align="right">-0.129</td>
+<td align="right">0.085</td>
+<td align="right">0.256</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">-0.601</td>
+</tr>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="right">3</td>
+<td align="left">seasonal</td>
+<td align="right">41</td>
+<td align="right">0.383</td>
+<td align="right">0.012</td>
+<td align="right">0.101</td>
+<td align="right">-0.088</td>
+<td align="right">0.220</td>
+<td align="right">0.329</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">-0.601</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="right">2</td>
+<td align="left">beta:fpc</td>
+<td align="right">41</td>
+<td align="right">0.279</td>
+<td align="right">0.020</td>
+<td align="right">0.101</td>
+<td align="right">-0.081</td>
+<td align="right">0.329</td>
+<td align="right">0.659</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">-0.533</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="right">2</td>
+<td align="left">beta:penalized</td>
+<td align="right">41</td>
+<td align="right">0.446</td>
+<td align="right">0.076</td>
+<td align="right">0.101</td>
+<td align="right">-0.025</td>
+<td align="right">0.098</td>
+<td align="right">0.256</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">-0.533</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="right">2</td>
+<td align="left">seasonal</td>
+<td align="right">41</td>
+<td align="right">0.432</td>
+<td align="right">0.167</td>
+<td align="right">0.101</td>
+<td align="right">0.066</td>
+<td align="right">0.122</td>
+<td align="right">0.329</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">-0.533</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="right">1</td>
+<td align="left">beta:fpc</td>
+<td align="right">41</td>
+<td align="right">0.348</td>
+<td align="right">0.092</td>
+<td align="right">0.101</td>
+<td align="right">-0.009</td>
+<td align="right">0.085</td>
+<td align="right">0.256</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">0.563</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="right">1</td>
+<td align="left">beta:penalized</td>
+<td align="right">41</td>
+<td align="right">0.414</td>
+<td align="right">0.144</td>
+<td align="right">0.101</td>
+<td align="right">0.043</td>
+<td align="right">0.220</td>
+<td align="right">0.256</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">0.563</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="right">1</td>
+<td align="left">seasonal</td>
+<td align="right">41</td>
+<td align="right">0.445</td>
+<td align="right">0.161</td>
+<td align="right">0.101</td>
+<td align="right">0.060</td>
+<td align="right">0.110</td>
+<td align="right">0.329</td>
+<td align="right">0.037</td>
+<td align="left">FALSE</td>
+<td align="right">0.563</td>
+</tr>
+</tbody>
+</table>
+<p><code>cv_gain</code> is the blocked cross-validated R-squared of the
+flow model minus that of spawner abundance alone: what flow adds, out of
+sample, beyond density dependence. Folds hold out runs of 3 consecutive
+years, and for the flow-mode form the model averaging is redone inside
+every fold. <code>p_value</code> comes from rotating the response
+against the flow record (and the time-reversed record), which keeps each
+series’ own autocorrelation; <code>p_adj</code> is Holm-adjusted across
+the three stages, and <code>p_floor</code> is the smallest value it
+could reach with this many years. <code>cor_fpc_penalized</code> is the
+agreement in shape between the flow-mode curve and a penalized spline
+fitted to the same data: where it is low, the daily shape is coming from
+the estimator.</p>
+<div class="float">
+<img src="figures/05_estimator_agreement__Beaverhead_Hildreth.png"
+alt="Flow modes (black) and penalized spline (gold), same data." />
+<div class="figcaption">Flow modes (black) and penalized spline (gold),
+same data.</div>
+</div>
+<div class="float">
+<img src="figures/06_basis_check__Beaverhead_Hildreth.png"
+alt="This river’s own modes against the modes shared by all rivers." />
+<div class="figcaption">This river’s own modes against the modes shared
+by all rivers.</div>
+</div>
+</div>
+<div id="season-by-life-stage" class="section level2">
+<h2>6. Season by life stage</h2>
+<p>The pre-registered, low-resolution version of the same question: four
+calendar seasons in each of the three hydrograph years, nothing
+tuned.</p>
+<table>
+<caption>This population alone: effect on log(R/S) of a 1-SD wetter
+season.</caption>
+<thead>
+<tr class="header">
+<th align="left">stage</th>
+<th align="left">season</th>
+<th align="right">effect</th>
+<th align="right">lo 95</th>
+<th align="right">hi 95</th>
+<th align="right">P(direction)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="left">winter</td>
+<td align="right">0.53</td>
+<td align="right">-0.01</td>
+<td align="right">1.07</td>
+<td align="right">0.97</td>
+</tr>
+<tr class="even">
+<td align="left">spawning year</td>
+<td align="left">runoff</td>
+<td align="right">-0.64</td>
+<td align="right">-1.19</td>
+<td align="right">-0.09</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="left">summer</td>
+<td align="right">-0.01</td>
+<td align="right">-0.40</td>
+<td align="right">0.38</td>
+<td align="right">0.52</td>
+</tr>
+<tr class="even">
+<td align="left">spawning year</td>
+<td align="left">autumn</td>
+<td align="right">-0.08</td>
+<td align="right">-0.47</td>
+<td align="right">0.32</td>
+<td align="right">0.65</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="left">winter</td>
+<td align="right">0.62</td>
+<td align="right">0.10</td>
+<td align="right">1.13</td>
+<td align="right">0.99</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="left">runoff</td>
+<td align="right">-0.79</td>
+<td align="right">-1.31</td>
+<td align="right">-0.28</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">age-0 year</td>
+<td align="left">summer</td>
+<td align="right">0.19</td>
+<td align="right">-0.18</td>
+<td align="right">0.57</td>
+<td align="right">0.85</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="left">autumn</td>
+<td align="right">-0.21</td>
+<td align="right">-0.58</td>
+<td align="right">0.16</td>
+<td align="right">0.86</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="left">winter</td>
+<td align="right">-0.04</td>
+<td align="right">-0.55</td>
+<td align="right">0.48</td>
+<td align="right">0.56</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="left">runoff</td>
+<td align="right">0.07</td>
+<td align="right">-0.46</td>
+<td align="right">0.60</td>
+<td align="right">0.60</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="left">summer</td>
+<td align="right">0.35</td>
+<td align="right">-0.03</td>
+<td align="right">0.73</td>
+<td align="right">0.97</td>
+</tr>
+<tr class="even">
+<td align="left">age-1 year</td>
+<td align="left">autumn</td>
+<td align="right">-0.58</td>
+<td align="right">-0.96</td>
+<td align="right">-0.21</td>
+<td align="right">1.00</td>
+</tr>
+</tbody>
+</table>
+<div class="float">
+<img src="figures/07_seasonal__Beaverhead_Hildreth.png"
+alt="Pooled across all populations (black) with this population’s estimate (blue)." />
+<div class="figcaption">Pooled across all populations (black) with this
+population’s estimate (blue).</div>
+</div>
+<div class="float">
+<img src="figures/02_f2c__Beaverhead_Hildreth.png"
+alt="Correlation between the four seasons within a year. Above |0.7| the seasons cannot be separated." />
+<div class="figcaption">Correlation between the four seasons within a
+year. Above |0.7| the seasons cannot be separated.</div>
+</div>
+</div>
+<div id="under-partial-pooling" class="section level2">
+<h2>7. Under partial pooling</h2>
+<p>The same life-cycle curve when this population borrows strength from
+the others: the Montana-wide curve (grey) plus this river’s own
+departure from it, shrunk toward zero by as much as its data are
+uncertain.</p>
+<div class="float">
+<img src="figures/07_lifecycle_sites__Beaverhead_Hildreth.png"
+alt="Partially pooled life-cycle curve, 95%." />
+<div class="figcaption">Partially pooled life-cycle curve, 95%.</div>
+</div>
+</div>
+<div id="adult-survival" class="section level2">
+<h2>8. Adult survival</h2>
+<p>The survival process deviate (what the density-dependent null model
+leaves unexplained) against the hydrograph of the same year (lag 0) or
+the year before (lag 1); lag 1 fitted best here. Gate:
+<strong>validated</strong> (CV gain +0.11, adjusted p 0.050).</p>
+<div class="float">
+<img src="figures/04_f4b__Beaverhead_Hildreth.png"
+alt="Which year’s hydrograph: in-sample fit at each lag tried (05 adjusts for the choice)." />
+<div class="figcaption">Which year’s hydrograph: in-sample fit at each
+lag tried (05 adjusts for the choice).</div>
+</div>
+</div>
+<div id="what-was-produced-for-this-site" class="section level2">
+<h2>9. What was produced for this site</h2>
+<table>
+<caption>Figure files found for this site. MISSING means that script has
+not run here.</caption>
+<colgroup>
+<col width="32%" />
+<col width="67%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">figure</th>
+<th align="left">file</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">01_f1a</td>
+<td align="left">01_f1a__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">01_f1b</td>
+<td align="left">01_f1b__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">01_f1c</td>
+<td align="left">01_f1c__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">02_f2a</td>
+<td align="left">02_f2a__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">02_f2c</td>
+<td align="left">02_f2c__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">02_f2d</td>
+<td align="left">02_f2d__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">02_f2e_modes</td>
+<td align="left">02_f2e_modes__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">02_f2f_scores</td>
+<td align="left">02_f2f_scores__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">03_components</td>
+<td align="left">03_components__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">03_component_grid</td>
+<td align="left">03_component_grid__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">03_mode_effects</td>
+<td align="left">03_mode_effects__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">04_f4a</td>
+<td align="left">04_f4a__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">04_f4b</td>
+<td align="left">04_f4b__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">05_estimator_agreement</td>
+<td align="left">05_estimator_agreement__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">06_basis_check</td>
+<td align="left">06_basis_check__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">07_lifecycle_sites</td>
+<td align="left">07_lifecycle_sites__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="odd">
+<td align="left">07_seasonal</td>
+<td align="left">07_seasonal__Beaverhead_Hildreth.png</td>
+</tr>
+<tr class="even">
+<td align="left">08_lifecycle</td>
+<td align="left">08_lifecycle__Beaverhead_Hildreth.png</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

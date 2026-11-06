@@ -1,0 +1,165 @@
+---
+title: "Methods"
+subtitle: "How beta(t) is estimated, validated, and turned into cfs"
+---
+
+```{r setup, include=FALSE}
+source("_common.R")
+```
+
+## 1. The response comes from the null IPM
+
+Recruitment is `log(recruits / spawner)`, taken from the posterior of the
+**flow-naive** integrated population model, with a recruit lag from spawning to
+the age at which fish are counted.
+
+That "flow-naive" is not a detail. Using the flow-informed IPM's abundances as
+the response would put flow on both sides of the regression: the response would
+already contain the flow effect the regression is trying to estimate, and the
+result would be biased toward finding one. Survival is modelled on the logit
+scale, because a multiplier on a probability is meaningless at 0.95 and trivial
+at 0.05.
+
+```{r resp-set}
+if (is.null(RESP)) NA_("the response has not been built", "R/01_build_response.R") else
+  TBL(data.frame(Setting = c("recruit lag (years)", "stock node", "sites built"),
+                 Value = c(as.character(RESP$rec_lag %||% "?"),
+                           RESP$stock_node %||% "?",
+                           paste(names(RESP$sites), collapse = ", "))),
+      caption = "As built.")
+```
+
+Two lags are easy to confuse and they mean different things. The **recruit lag**
+is biology: fish counted at age 2-3 were spawned three years earlier, so they
+pair with that year's stock. The **flow lag** is statistics: which calendar
+year's hydrograph the IPM's own model selection chose. When the flow lag equals
+the recruit lag, the mechanism sits in the spawning year - adult access, redd
+site selection, incubation. One less, and it sits in the age-0 rearing year -
+emergence timing, displacement, first-summer rearing. Different hypotheses, and
+a wrong value shifts everything by a year while still producing a plausible
+curve.
+
+## 2. Standardizing the hydrograph
+
+Three steps, in this order, and the order matters.
+
+1. **Logs.** Discharge is multiplicative; 50 cfs means something different in
+   April and September.
+2. **Subtract the day's mean across years.** Now a positive value means "wetter
+   than this date usually is", not "it is June". Without this, beta(t) spends
+   itself fighting the seasonal cycle, which dwarfs any anomaly.
+3. **Divide by one global standard deviation** - not by each day's own. Per-day
+   standardization would make a 2% wobble in a stable January week and a doubling
+   in June both equal "one SD", erasing exactly the difference beta(t) is meant
+   to weigh.
+
+The geometric-mean discharge on each day, `Qbar(t)`, is kept, because it is the
+bridge from beta(t) to cfs (section 5).
+
+## 3. Estimating beta(t)
+
+365 unknown coefficients from roughly 40 years cannot be fitted directly. The
+hydrographs themselves supply the constraint: they are smooth and highly
+autocorrelated, so a handful of **modes of variation** describe nearly all of
+how years differ. beta(t) is estimated inside the span of those modes and rotated
+back onto the day axis.
+
+```{r fpc}
+if (is.null(BR)) NA_("beta(t) has not been fitted", "R/03_fit_beta_recruitment.R") else {
+  k <- BR$k_beta
+  cat(sprintf("Components retained: %s.\n\n",
+              if (is.null(k)) "see fpc_modes.csv" else paste(k, collapse = ", ")))
+  f <- file.path(TAB, "fpc_modes.csv")
+  if (file.exists(f)) TBL(utils::read.csv(f), caption = "Retained flow modes and the variance each explains.")
+}
+```
+
+**The objection, stated plainly.** The modes are ranked by variance in the
+*predictor*, without reference to the response. A low-variance flow mode that
+carries the real biological signal is discarded before it is ever tested - the
+standard critique of principal-component regression (Jolliffe 1982, *Applied
+Statistics* 31:300-303). beta(t) cannot show structure the retained modes cannot
+build. Changing the retention threshold swaps one arbitrary number for another;
+it does not answer the objection, and it belongs in the paper rather than a
+footnote.
+
+## 4. The gate
+
+beta(t) always comes out of the arithmetic. The gate decides whether it means
+anything, and it is the most important output in the project.
+
+```{r gate-all}
+if (is.null(GATE)) NA_("validation has not been run", "R/05_validate.R") else
+  TBL(GATE[grepl("^beta", GATE$form),
+           intersect(c("site","process","form","n_years","edf","r2_insample",
+                       "r2_loo","r2_blocked","p_value","finest_p","passes"), names(GATE))],
+      caption = "Every site and process. r2_blocked and p_value are the two that decide.")
+```
+
+**`r2_insample`** is optimistic by construction: the model has seen these years
+and spent `edf` degrees of freedom on about forty of them. Context only.
+
+**`r2_loo` versus `r2_blocked`.** Leave-one-out leaves a held-out year's
+immediate neighbours in the training set, and both hydrographs and responses are
+autocorrelated between adjacent years, so the model can half-recognize the test
+year from its neighbours. The gap between the two is that leak, made visible.
+Blocked cross-validation holds out contiguous runs of years instead, and
+**can be negative** - meaning worse than predicting the long-run mean, which is
+the honest verdict when a model has learned noise. That is why the threshold is
+"greater than zero" rather than something comfortable.
+
+**`p_value`** comes from permuting the alignment between response and flow while
+preserving each series' own autocorrelation. The null is not "flow is noise"; it
+is "this response, paired with the wrong years of this flow record". Its smallest
+attainable value is `finest_p`. A p equal to that floor means no permutation
+matched the true alignment, not that p is precisely that number.
+
+Both conditions must hold. Where two estimator arms were run, agreement between
+them is a further requirement: if they disagree, the daily structure is coming
+from the estimator rather than the data, and no daily recommendation is
+defensible.
+
+## 5. From beta(t) to cfs
+
+beta(t) is per standard deviation of log anomaly. A manager releases cfs. Adding
+`dQ` on day *t* changes the standardized anomaly by `log(1 + dQ/Q)/sigma`, so at
+that day's baseline discharge the benefit per cfs is approximately
+
+$$ \frac{\partial \eta}{\partial Q}(t) \;\approx\; \frac{\beta(t)}{\sigma\,\bar{Q}(t)} $$
+
+Because discharge spans more than an order of magnitude across the year,
+dividing by `Qbar(t)` **reshapes** the curve. The best day to release water is
+often not the day with the largest beta(t), and half the management answer lives
+in that division.
+
+## 6. The two Reclamation questions
+
+**One year at a time (script 08).** Each scenario-year's hydrograph is scored
+with beta(t), standardized against the *training* climatology - never against the
+scenario's own, which would re-centre a uniformly drier future to look average
+and make the effect vanish. The day-by-day attribution then separates two cases a
+single number cannot: flow dropping on days that matter, and flow dropping a lot
+on days that do not.
+
+**Sustained, at equilibrium (script 10).** The same forecasts held indefinitely,
+propagated through the population model to equilibrium abundance and maximum
+surplus production. It can point the other way from the annual view, because
+equilibrium compounds.
+
+```{r bor-caveat, results='asis'}
+cat("\n> The current exports build each future period by shifting the 1950-1999\n",
+    "> sequence forward by 45, 75 and 105 years. Every 29 February then lands on\n",
+    "> 28 February of a non-leap year and collides with it, and the reverse case\n",
+    "> empties 29 February in the target leap years. Both are handled explicitly.\n",
+    "> A consequence for interpretation: all three periods share one historical\n",
+    "> weather sequence, so the across-year spread within a scenario is that\n",
+    "> record's own variability and the period contrasts are paired by construction.\n\n", sep = "")
+```
+
+## 7. What this does not establish
+
+The gate tests prediction, not causation. A validated beta(t) predicts years the
+model has not seen; it does not identify the mechanism, say whether the relation
+holds outside the observed flow range, or confirm that the retained modes were
+the right ones. Flow recommendations ultimately rest on mechanism, and this
+analysis constrains it rather than supplying it.

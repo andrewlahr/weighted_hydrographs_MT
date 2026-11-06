@@ -1,0 +1,164 @@
+---
+title: "Among sites"
+subtitle: "What the daily curves say about Montana brown trout, taken together"
+---
+
+```{r setup, include=FALSE}
+source("_common.R")
+SITES <- CFG$sites$all
+BORS  <- intersect(SITES, CFG$sites$bor %||% character(0))
+```
+
+```{r one-site, results='asis'}
+if (length(SITES) < 2)
+  cat("\n> **One active site.** This page compares populations, so it has nothing to\n",
+      "> work with. Add sites to `CFG$sites$active` in `config_local.R` and re-run.\n\n", sep = "")
+```
+
+## 1. Which sites carry a signal at all
+
+A cross-site synthesis that pools validated and unvalidated curves is a synthesis
+of arithmetic. This table comes first for that reason.
+
+```{r gate-tbl}
+if (is.null(GATE)) NA_("validation has not been run", "R/05_validate.R") else {
+  g <- GATE[grepl("^beta", GATE$form) & GATE$site %in% SITES, , drop = FALSE]
+  s <- g %>% group_by(site, process) %>%
+    summarise(n_years = max(n_years), r2_blocked = max(r2_blocked),
+              p_value = min(p_value), passes = all(passes), .groups = "drop") %>%
+    arrange(process, desc(r2_blocked))
+  TBL(s, caption = "One row per site and process. Everything below is restricted to the rows that pass.")
+}
+```
+
+```{r gate-count, results='asis'}
+if (!is.null(GATE)) {
+  g <- GATE[grepl("^beta", GATE$form) & GATE$site %in% SITES & GATE$process == "recruitment", ]
+  p <- tapply(g$passes, g$site, all)
+  cat(sprintf(paste0("\n%d of %d population%s pass the recruitment gate. ",
+                     "A failure is a statement about the resolution of that site's ",
+                     "record, not a null effect of flow.\n\n"),
+              sum(p, na.rm = TRUE), length(p), if (length(p) == 1) "" else "s"))
+}
+```
+
+## 2. Do the curves agree on timing?
+
+```{r beta-overlay, results='asis'}
+FIG("09_f9a", NULL, "beta(t) across sites, on a common axis.")
+FIG("09_f9b", NULL, "Where each site's benefit is concentrated.")
+```
+
+```{r beta-lag-warning, results='asis'}
+cat("\n> **Read timing comparisons carefully.** Sites do not share a flow lag - it\n",
+    "> comes from each IPM's own model selection. Two curves plotted on one day-of-year\n",
+    "> axis may refer to different calendar years relative to the cohort, so a\n",
+    "> difference in apparent timing can be a difference in lag rather than in biology.\n\n", sep = "")
+```
+
+## 3. Can a day be named, anywhere?
+
+```{r resolution}
+if (is.null(SE)) NA_("best-day intervals have not been computed", "R/06_daily_sensitivity.R") else {
+  iv <- SE$intervals[SE$intervals$site %in% SITES &
+                     SE$intervals$which == "most beneficial day", , drop = FALSE]
+  if (!nrow(iv)) NA_("no interval rows", "R/06_daily_sensitivity.R") else
+    TBL(iv[order(iv$width_days),
+           intersect(c("site","process","lo_month","median_month","hi_month",
+                       "width_days","resolvable"), names(iv))],
+        caption = "Width of the best-day interval. FALSE in `resolvable` means a season is the finest honest claim.")
+}
+```
+
+```{r resolution-note, results='asis'}
+if (!is.null(SE)) {
+  iv <- SE$intervals[SE$intervals$site %in% SITES &
+                     SE$intervals$which == "most beneficial day", , drop = FALSE]
+  if (nrow(iv)) cat(sprintf(paste0("\n%d of %d site-process combinations resolve to a window ",
+                                   "narrower than 90 days. Where they do not, the deliverable ",
+                                   "is a season and a statement that the record cannot do better ",
+                                   "- which is itself a finding about Montana flow records.\n\n"),
+                            sum(iv$resolvable, na.rm = TRUE), nrow(iv)))
+}
+```
+
+## 4. The management view
+
+```{r mgmt, results='asis'}
+FIG("09_f9c_management", NULL, "Benefit per cfs across sites.")
+FIG("09_f9d_production", NULL, "Whole-population production response.")
+```
+
+```{r schedule-cross}
+if (is.null(DW)) NA_("the decision-window schedules have not been built", "R/06b_decision_window.R") else {
+  sc <- DW$schedule[DW$schedule$site %in% SITES & DW$schedule$process == "recruitment", , drop = FALSE]
+  if (!nrow(sc)) NA_("no schedule rows", "R/06b_decision_window.R") else {
+    best <- sc %>% group_by(site) %>% slice_max(effect, n = 1, with_ties = FALSE) %>% ungroup()
+    TBL(best[, intersect(c("site","volume_af","window_days","sustained_cfs",
+                           "start_date","end_date","effect","p_positive","passes"), names(best))],
+        caption = "Each site's best feasible release, among the volumes and durations evaluated.")
+  }
+}
+```
+
+## 5. Reclamation scenarios, across sites
+
+```{r scen-cross}
+if (!length(BORS)) NA_("no active site has a BoR forecast", "R/08_scenarios_bor.R") else {
+  eff <- bind_rows(lapply(BORS, function(s) {
+    x <- SCEN(s); if (is.null(x)) NULL else transform(x$effects, site = s) }))
+  if (is.null(eff) || !nrow(eff)) NA_("no scenario results on disk", "R/08_scenarios_bor.R") else
+    TBL(eff[order(eff$effect),
+            intersect(c("site","Scenario","Period","Type","process","effect",
+                        "p_negative","frac_extrap","status"), names(eff))],
+        caption = "Every scenario at every site with a forecast, worst first.")
+}
+```
+
+```{r scen-fig, results='asis'}
+FIG("09_f9e_scenarios", NULL, "Scenario effects across sites.")
+```
+
+```{r scen-missing, results='asis'}
+miss <- setdiff(SITES, BORS)
+if (length(miss))
+  cat(sprintf(paste0("\n> **No forecast hydrograph** for: %s. Those populations are absent\n",
+                     "> from this section because the question could not be asked, not\n",
+                     "> because no effect was found.\n\n"), paste(miss, collapse = ", ")))
+```
+
+## 6. Equilibrium, across sites
+
+```{r rule-cross}
+rc <- bind_rows(lapply(BORS, function(s) {
+  x <- RULE(s); if (is.null(x)) NULL else transform(x$summary, site = s) }))
+if (is.null(rc) || !nrow(rc)) NA_("the rule-curve arm has not been run", "R/10_rulecurve.R") else
+  TBL(rc[order(rc$dK_pct),
+         intersect(c("site","Scenario","Period","Type","mean_Q","K","dK_pct",
+                     "MS","dMS_pct","frac_K_finite"), names(rc))],
+      caption = "Percent change in equilibrium abundance and maximum surplus production, worst first.")
+```
+
+## 7. What generalizes, and what does not
+
+```{r synthesis, results='asis'}
+cat("\nThree things this page is *for*, and they are claims to be argued rather than",
+    "read off a table:\n\n",
+    "1. **Whether the timing is shared.** If validated sites concentrate benefit in",
+    "the same part of the year, that is a Montana-wide statement with a mechanism",
+    "behind it. If they do not, the honest conclusion is that timing is local and",
+    "each population needs its own curve.\n",
+    "2. **Whether regulated and unregulated rivers differ.** The management value of",
+    "the whole analysis rests on flow being movable, so a systematic difference",
+    "between them is the most policy-relevant pattern available here.\n",
+    "3. **Whether the sites that fail the gate share anything** - record length, gage",
+    "quality, degree of regulation. A failure explained is more useful than a site",
+    "quietly dropped.\n\n", sep = " ")
+```
+
+```{r derived, results='asis'}
+f <- file.path(TAB, "derived_stats.csv")
+if (file.exists(f))
+  cat("\nEvery number quoted in the manuscript is in `output/tables/derived_stats.csv`,",
+      "regenerated on each run so the text and the figures cannot drift apart.\n\n")
+```

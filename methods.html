@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Methods</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Weighted hydrographs</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="methods.html">Methods</a>
+</li>
+<li>
+  <a href="results.html">Results by site</a>
+</li>
+<li>
+  <a href="results_among_sites.html">Among sites</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Methods</h1>
+<h3 class="subtitle">How the weighted hydrographs are estimated,
+averaged, validated and pooled</h3>
+
+</div>
+
+
+<div id="the-response-comes-from-the-null-ipm" class="section level2">
+<h2>1. The response comes from the null IPM</h2>
+<p>Recruitment is <code>log(recruits / spawners)</code>, taken from the
+posterior of the <strong>flow-naive</strong> integrated population
+model, with a recruit lag from spawning to the age at which fish are
+counted.</p>
+<p>That “flow-naive” is not a detail. Using the flow-informed IPM’s
+abundances as the response would put flow on both sides of the
+regression: the response would already contain the flow effect the
+regression is trying to estimate, and the result would be biased toward
+finding one. Every posterior draw is carried through the regressions,
+not just the posterior mean, so IPM uncertainty is in every interval on
+this site.</p>
+<table>
+<caption>As built.</caption>
+<thead>
+<tr class="header">
+<th align="left">Setting</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">recruit lag (years)</td>
+<td align="left">3</td>
+</tr>
+<tr class="even">
+<td align="left">stock node</td>
+<td align="left">BAdults</td>
+</tr>
+<tr class="odd">
+<td align="left">posterior draws used (max)</td>
+<td align="left">20000</td>
+</tr>
+<tr class="even">
+<td align="left">sites built</td>
+<td align="left">23</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="three-hydrograph-years-per-cohort" class="section level2">
+<h2>2. Three hydrograph years per cohort</h2>
+<p>A cohort counted as recruits lived through several hydrographs before
+it was counted, and each touches a different part of its life. Every
+site is fitted at each of them:</p>
+<table>
+<caption>Life stages, as set by stage_lags in config.R.</caption>
+<colgroup>
+<col width="11%" />
+<col width="21%" />
+<col width="67%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">stage</th>
+<th align="right">years before recruitment</th>
+<th align="left">what flow could act on</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">spawning year</td>
+<td align="right">3</td>
+<td align="left">adult access, redd-site choice, incubation and
+emergence (into the next spring)</td>
+</tr>
+<tr class="even">
+<td align="left">age-0 year</td>
+<td align="right">2</td>
+<td align="left">emergence timing, first-summer rearing, displacement,
+first winter</td>
+</tr>
+<tr class="odd">
+<td align="left">age-1 year</td>
+<td align="right">1</td>
+<td align="left">second summer and winter; habitat shifts with size</td>
+</tr>
+</tbody>
+</table>
+<p>The IPM selected one flow lag per site on a summer covariate. Here it
+is only a label (marked * in the tables): every stage is tested on the
+whole hydrograph, and the <a href="results_among_sites.html">Among
+sites</a> page asks whether the IPM’s choice and the daily hydrograph
+agree.</p>
+<p>On the figures the three years are laid <strong>end to end</strong>
+on a 1095-day life-cycle axis, so incubation (December to March) reads
+as one stretch rather than two halves in different calendar years.
+Fitted one stage at a time (sections 4-5), neighbouring stages partly
+echo each other when wet years follow wet years; the pooled models
+(section 8) fit the stages jointly, which removes that echo.</p>
+</div>
+<div id="standardizing-the-hydrograph" class="section level2">
+<h2>3. Standardizing the hydrograph</h2>
+<p>Three steps, in this order, and the order matters.</p>
+<ol style="list-style-type: decimal">
+<li><strong>Logs.</strong> Discharge is multiplicative; 50 cfs means
+something different in April and September.</li>
+<li><strong>Subtract the day’s mean across years.</strong> Now a
+positive value means “wetter than this date usually is”, not “it is
+June”. Without this, beta(t) spends itself fighting the seasonal cycle,
+which dwarfs any anomaly.</li>
+<li><strong>Divide by one global standard deviation</strong> – not by
+each day’s own. Per-day standardization would make a 2% wobble in a
+stable January week and a doubling in June both equal “one SD”, erasing
+exactly the difference beta(t) is meant to weigh.</li>
+</ol>
+</div>
+<div id="each-rivers-flow-modes" class="section level2">
+<h2>4. Each river’s flow modes</h2>
+<p>365 unknown daily coefficients from a few decades of recruitment
+cannot be fitted directly. The hydrographs supply the constraint: they
+are smooth and highly autocorrelated, so a handful of <strong>modes of
+variation</strong> (functional principal components) describe nearly all
+of how one year’s hydrograph differs from another’s. beta(t) is
+estimated inside the span of those modes and rotated back onto the day
+axis.</p>
+<p>The modes come from the river’s <strong>whole flow record</strong>,
+not just the years with fish data, and they are found before any fish
+data are used. Each mode’s sign is fixed so that a positive score means
+a wetter-than-usual year over most of the mode.</p>
+<p><strong>How many modes.</strong> Modes are kept until they carry 90%
+of the flow variation, <strong>and</strong> each kept mode must carry at
+least the share of one 2-year block of the record: with <em>n</em> flow
+years, a floor of <code>100 x 2 / n</code> percent. A mode weaker than
+that is a pattern a couple of unusual years could produce on their own.
+At most 20 modes.</p>
+<table>
+<caption>Modes per river. Where ‘K above floor’ &lt; ‘K at target’, the
+floor decided.</caption>
+<colgroup>
+<col width="27%" />
+<col width="11%" />
+<col width="11%" />
+<col width="10%" />
+<col width="10%" />
+<col width="12%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="right">flow years</th>
+<th align="right">modes kept</th>
+<th align="right">floor (%)</th>
+<th align="right">% carried</th>
+<th align="right">K at target</th>
+<th align="right">K above floor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Beaverhead.FishAndGame</td>
+<td align="right">23</td>
+<td align="right">2</td>
+<td align="right">8.7</td>
+<td align="right">78.1</td>
+<td align="right">6</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Beaverhead.Hildreth</td>
+<td align="right">46</td>
+<td align="right">2</td>
+<td align="right">4.3</td>
+<td align="right">86.6</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.HogBack</td>
+<td align="right">28</td>
+<td align="right">3</td>
+<td align="right">7.1</td>
+<td align="right">70.9</td>
+<td align="right">9</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">70.9</td>
+<td align="right">14</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Bighorn.Bighorn</td>
+<td align="right">31</td>
+<td align="right">2</td>
+<td align="right">6.5</td>
+<td align="right">82.9</td>
+<td align="right">4</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.MallardsLanding</td>
+<td align="right">38</td>
+<td align="right">2</td>
+<td align="right">5.3</td>
+<td align="right">80.5</td>
+<td align="right">5</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Bitterroot.BellCrossing</td>
+<td align="right">37</td>
+<td align="right">3</td>
+<td align="right">5.4</td>
+<td align="right">86.5</td>
+<td align="right">5</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Bitterroot.Darby</td>
+<td align="right">46</td>
+<td align="right">6</td>
+<td align="right">4.3</td>
+<td align="right">70.4</td>
+<td align="right">17</td>
+<td align="right">6</td>
+</tr>
+<tr class="odd">
+<td align="left">Blackfoot.Johnsrud</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">71.7</td>
+<td align="right">13</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Blackfoot.ScottyBrown</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">71.7</td>
+<td align="right">13</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Boulder.B2</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">67.3</td>
+<td align="right">16</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.Norris</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">71.6</td>
+<td align="right">13</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.PineButte</td>
+<td align="right">45</td>
+<td align="right">4</td>
+<td align="right">4.4</td>
+<td align="right">81.4</td>
+<td align="right">7</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.Varney</td>
+<td align="right">14</td>
+<td align="right">2</td>
+<td align="right">14.3</td>
+<td align="right">72.5</td>
+<td align="right">6</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">Missouri.Cascade</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">88.5</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Missouri.Craig</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">88.5</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">RockCreek.FishAndGame</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">65.9</td>
+<td align="right">16</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Ruby.SilverSprings</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">20.0</td>
+<td align="right">56.8</td>
+<td align="right">4</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Ruby.Vigilante</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">71.9</td>
+<td align="right">11</td>
+<td align="right">4</td>
+</tr>
+<tr class="even">
+<td align="left">Shields.ConvictGrade</td>
+<td align="right">46</td>
+<td align="right">3</td>
+<td align="right">4.3</td>
+<td align="right">70.3</td>
+<td align="right">12</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith.EagleCreek</td>
+<td align="right">29</td>
+<td align="right">3</td>
+<td align="right">6.9</td>
+<td align="right">73.5</td>
+<td align="right">10</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.CorwinSprings</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">76.2</td>
+<td align="right">10</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">Yellowstone.MillCreek</td>
+<td align="right">46</td>
+<td align="right">4</td>
+<td align="right">4.3</td>
+<td align="right">74.8</td>
+<td align="right">11</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The objection, stated plainly.</strong> The modes are ranked
+by variance in the <em>predictor</em>, without reference to the
+response. A low-variance flow mode that carries the real biological
+signal is discarded before it is ever tested – the standard critique of
+principal-component regression (Jolliffe 1982, <em>Applied
+Statistics</em> 31:300-303). beta(t) cannot show structure the retained
+modes cannot build.</p>
+<p>The floor makes this sharper, not softer, and in a predictable place.
+On a regulated river the autumn hydrograph varies little from year to
+year, so the mode that carries autumn variation is small and is the
+first one the floor removes – and autumn is when brown trout spawn. A
+flat spawning-season curve at a tailwater is therefore exactly what the
+estimator would produce whether or not autumn flow matters there. Two
+checks run alongside: a penalized-spline estimator that does not use the
+modes (section 6), and the season-by-stage anchor, which does not
+either. Where they show an autumn effect the mode curve does not,
+believe them.</p>
+</div>
+<div id="which-modes-model-averaging" class="section level2">
+<h2>5. Which modes: model averaging</h2>
+<p>Kept modes are not all used at full size. For each site and stage,
+every subset of up to 5 modes is fitted by least squares, with spawner
+abundance (standardized) in every model, and ranked by AICc
+(<code>MuMIn::dredge</code>). Models within <strong>4 AICc</strong> of
+the best are kept, their Akaike weights renormalized, and each mode’s
+coefficient averaged over them, <strong>counting as zero</strong> in
+models that leave it out (the “full” average). A mode the data do not
+support is shrunk toward zero rather than kept at full size or dropped
+outright, which is a gentler and more honest version of choosing modes
+by hand.</p>
+<p>A mode’s <strong>importance</strong> <code>w</code> is the summed
+weight of the kept models that contain it. <code>w</code> near 1 means
+every plausible model uses it; it is not a p-value, and a mode can have
+<code>w</code> = 1 and a small effect.</p>
+<p><strong>Uncertainty.</strong> Each coefficient’s variance is the sum
+of three parts: the weighted within-model variance, the spread of the
+coefficient <em>between</em> the kept models, and the spread across IPM
+posterior draws. All draws are fitted at once,
+<code>B = (X'X)^-1 X'Y</code>, so draws cost nothing extra. The model
+set is chosen on the posterior-mean response and held fixed across
+draws.</p>
+<p>beta(t) for a stage is then the weighted sum of mode shapes:
+<code>beta(t) = sum_k b_k phi_k(t)</code>. The site pages draw each
+mode’s piece of it separately, so a feature of the curve can be traced
+to the mode that makes it.</p>
+</div>
+<div id="the-gate" class="section level2">
+<h2>6. The gate</h2>
+<p>beta(t) always comes out of the arithmetic. The gate decides whether
+it means anything, and it is applied <strong>per life stage</strong>: a
+site can carry a real age-0 signal and nothing in the spawning year.</p>
+<table>
+<caption>Every site and life stage, flow-mode form. cv_gain and p_adj
+decide.</caption>
+<colgroup>
+<col width="18%" />
+<col width="9%" />
+<col width="5%" />
+<col width="8%" />
+<col width="7%" />
+<col width="11%" />
+<col width="5%" />
+<col width="5%" />
+<col width="4%" />
+<col width="5%" />
+<col width="12%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="left">stage</th>
+<th align="right">n_years</th>
+<th align="right">r2_insample</th>
+<th align="right">r2_blocked</th>
+<th align="right">r2_blocked_stock</th>
+<th align="right">cv_gain</th>
+<th align="right">p_value</th>
+<th align="right">p_adj</th>
+<th align="right">p_floor</th>
+<th align="right">cor_fpc_penalized</th>
+<th align="left">passes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Beaverhead.FishAndGame</td>
+<td align="left">spawning year</td>
+<td align="right">18</td>
+<td align="right">0.431</td>
+<td align="right">-0.620</td>
+<td align="right">-0.400</td>
+<td align="right">-0.220</td>
+<td align="right">0.139</td>
+<td align="right">0.278</td>
+<td align="right">0.083</td>
+<td align="right">0.907</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Beaverhead.FishAndGame</td>
+<td align="left">age-0 year</td>
+<td align="right">18</td>
+<td align="right">0.318</td>
+<td align="right">-0.379</td>
+<td align="right">-0.400</td>
+<td align="right">0.021</td>
+<td align="right">0.194</td>
+<td align="right">0.278</td>
+<td align="right">0.083</td>
+<td align="right">0.290</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Beaverhead.FishAndGame</td>
+<td align="left">age-1 year</td>
+<td align="right">18</td>
+<td align="right">0.512</td>
+<td align="right">0.139</td>
+<td align="right">-0.400</td>
+<td align="right">0.539</td>
+<td align="right">0.083</td>
+<td align="right">0.250</td>
+<td align="right">0.083</td>
+<td align="right">0.456</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Beaverhead.Hildreth</td>
+<td align="left">spawning year</td>
+<td align="right">41</td>
+<td align="right">0.270</td>
+<td align="right">-0.047</td>
+<td align="right">0.101</td>
+<td align="right">-0.147</td>
+<td align="right">0.415</td>
+<td align="right">0.659</td>
+<td align="right">0.037</td>
+<td align="right">-0.601</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Beaverhead.Hildreth</td>
+<td align="left">age-0 year</td>
+<td align="right">41</td>
+<td align="right">0.279</td>
+<td align="right">0.020</td>
+<td align="right">0.101</td>
+<td align="right">-0.081</td>
+<td align="right">0.329</td>
+<td align="right">0.659</td>
+<td align="right">0.037</td>
+<td align="right">-0.533</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Beaverhead.Hildreth</td>
+<td align="left">age-1 year</td>
+<td align="right">41</td>
+<td align="right">0.348</td>
+<td align="right">0.092</td>
+<td align="right">0.101</td>
+<td align="right">-0.009</td>
+<td align="right">0.085</td>
+<td align="right">0.256</td>
+<td align="right">0.037</td>
+<td align="right">0.563</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.HogBack</td>
+<td align="left">spawning year</td>
+<td align="right">23</td>
+<td align="right">0.480</td>
+<td align="right">0.054</td>
+<td align="right">0.087</td>
+<td align="right">-0.033</td>
+<td align="right">0.478</td>
+<td align="right">0.957</td>
+<td align="right">0.065</td>
+<td align="right">0.133</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.HogBack</td>
+<td align="left">age-0 year</td>
+<td align="right">23</td>
+<td align="right">0.653</td>
+<td align="right">0.250</td>
+<td align="right">0.087</td>
+<td align="right">0.163</td>
+<td align="right">0.043</td>
+<td align="right">0.130</td>
+<td align="right">0.065</td>
+<td align="right">0.680</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.HogBack</td>
+<td align="left">age-1 year</td>
+<td align="right">23</td>
+<td align="right">0.442</td>
+<td align="right">0.052</td>
+<td align="right">0.087</td>
+<td align="right">-0.035</td>
+<td align="right">0.652</td>
+<td align="right">0.957</td>
+<td align="right">0.065</td>
+<td align="right">0.568</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">spawning year</td>
+<td align="right">30</td>
+<td align="right">0.278</td>
+<td align="right">-0.374</td>
+<td align="right">-0.132</td>
+<td align="right">-0.242</td>
+<td align="right">0.133</td>
+<td align="right">0.267</td>
+<td align="right">0.050</td>
+<td align="right">0.266</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.Melrose</td>
+<td align="left">age-0 year</td>
+<td align="right">30</td>
+<td align="right">0.329</td>
+<td align="right">-0.135</td>
+<td align="right">-0.132</td>
+<td align="right">-0.003</td>
+<td align="right">0.067</td>
+<td align="right">0.200</td>
+<td align="right">0.050</td>
+<td align="right">-0.140</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="left">age-1 year</td>
+<td align="right">30</td>
+<td align="right">0.252</td>
+<td align="right">-0.089</td>
+<td align="right">-0.132</td>
+<td align="right">0.043</td>
+<td align="right">0.183</td>
+<td align="right">0.267</td>
+<td align="right">0.050</td>
+<td align="right">0.130</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bighorn.Bighorn</td>
+<td align="left">spawning year</td>
+<td align="right">26</td>
+<td align="right">0.192</td>
+<td align="right">-0.239</td>
+<td align="right">-0.317</td>
+<td align="right">0.078</td>
+<td align="right">0.365</td>
+<td align="right">1.000</td>
+<td align="right">0.058</td>
+<td align="right">0.347</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.Bighorn</td>
+<td align="left">age-0 year</td>
+<td align="right">26</td>
+<td align="right">0.092</td>
+<td align="right">-0.443</td>
+<td align="right">-0.317</td>
+<td align="right">-0.125</td>
+<td align="right">0.808</td>
+<td align="right">1.000</td>
+<td align="right">0.058</td>
+<td align="right">0.576</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bighorn.Bighorn</td>
+<td align="left">age-1 year</td>
+<td align="right">26</td>
+<td align="right">0.185</td>
+<td align="right">-0.506</td>
+<td align="right">-0.317</td>
+<td align="right">-0.189</td>
+<td align="right">0.462</td>
+<td align="right">1.000</td>
+<td align="right">0.058</td>
+<td align="right">-0.629</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.MallardsLanding</td>
+<td align="left">spawning year</td>
+<td align="right">33</td>
+<td align="right">0.471</td>
+<td align="right">0.276</td>
+<td align="right">0.281</td>
+<td align="right">-0.005</td>
+<td align="right">0.818</td>
+<td align="right">1.000</td>
+<td align="right">0.045</td>
+<td align="right">0.627</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bighorn.MallardsLanding</td>
+<td align="left">age-0 year</td>
+<td align="right">33</td>
+<td align="right">0.495</td>
+<td align="right">0.226</td>
+<td align="right">0.281</td>
+<td align="right">-0.055</td>
+<td align="right">0.561</td>
+<td align="right">1.000</td>
+<td align="right">0.045</td>
+<td align="right">0.525</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.MallardsLanding</td>
+<td align="left">age-1 year</td>
+<td align="right">33</td>
+<td align="right">0.523</td>
+<td align="right">0.079</td>
+<td align="right">0.281</td>
+<td align="right">-0.202</td>
+<td align="right">0.303</td>
+<td align="right">0.909</td>
+<td align="right">0.045</td>
+<td align="right">0.245</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bitterroot.BellCrossing</td>
+<td align="left">spawning year</td>
+<td align="right">28</td>
+<td align="right">0.790</td>
+<td align="right">0.574</td>
+<td align="right">0.640</td>
+<td align="right">-0.066</td>
+<td align="right">0.036</td>
+<td align="right">0.107</td>
+<td align="right">0.054</td>
+<td align="right">0.852</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Bitterroot.BellCrossing</td>
+<td align="left">age-0 year</td>
+<td align="right">28</td>
+<td align="right">0.755</td>
+<td align="right">0.661</td>
+<td align="right">0.640</td>
+<td align="right">0.021</td>
+<td align="right">0.143</td>
+<td align="right">0.286</td>
+<td align="right">0.054</td>
+<td align="right">0.313</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bitterroot.BellCrossing</td>
+<td align="left">age-1 year</td>
+<td align="right">28</td>
+<td align="right">0.691</td>
+<td align="right">0.597</td>
+<td align="right">0.640</td>
+<td align="right">-0.043</td>
+<td align="right">0.804</td>
+<td align="right">0.804</td>
+<td align="right">0.054</td>
+<td align="right">0.312</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Bitterroot.Darby</td>
+<td align="left">spawning year</td>
+<td align="right">32</td>
+<td align="right">0.879</td>
+<td align="right">0.815</td>
+<td align="right">0.830</td>
+<td align="right">-0.015</td>
+<td align="right">0.484</td>
+<td align="right">0.484</td>
+<td align="right">0.047</td>
+<td align="right">0.596</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Bitterroot.Darby</td>
+<td align="left">age-0 year</td>
+<td align="right">32</td>
+<td align="right">0.904</td>
+<td align="right">0.810</td>
+<td align="right">0.830</td>
+<td align="right">-0.020</td>
+<td align="right">0.094</td>
+<td align="right">0.188</td>
+<td align="right">0.047</td>
+<td align="right">0.423</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Bitterroot.Darby</td>
+<td align="left">age-1 year</td>
+<td align="right">32</td>
+<td align="right">0.921</td>
+<td align="right">0.856</td>
+<td align="right">0.830</td>
+<td align="right">0.027</td>
+<td align="right">0.031</td>
+<td align="right">0.094</td>
+<td align="right">0.047</td>
+<td align="right">0.678</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Blackfoot.Johnsrud</td>
+<td align="left">spawning year</td>
+<td align="right">32</td>
+<td align="right">0.162</td>
+<td align="right">-0.199</td>
+<td align="right">-0.138</td>
+<td align="right">-0.061</td>
+<td align="right">0.438</td>
+<td align="right">0.656</td>
+<td align="right">0.047</td>
+<td align="right">0.103</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Blackfoot.Johnsrud</td>
+<td align="left">age-0 year</td>
+<td align="right">32</td>
+<td align="right">0.349</td>
+<td align="right">0.051</td>
+<td align="right">-0.138</td>
+<td align="right">0.189</td>
+<td align="right">0.031</td>
+<td align="right">0.094</td>
+<td align="right">0.047</td>
+<td align="right">0.536</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Blackfoot.Johnsrud</td>
+<td align="left">age-1 year</td>
+<td align="right">32</td>
+<td align="right">0.202</td>
+<td align="right">-0.204</td>
+<td align="right">-0.138</td>
+<td align="right">-0.066</td>
+<td align="right">0.328</td>
+<td align="right">0.656</td>
+<td align="right">0.047</td>
+<td align="right">0.423</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Blackfoot.ScottyBrown</td>
+<td align="left">spawning year</td>
+<td align="right">32</td>
+<td align="right">0.911</td>
+<td align="right">0.875</td>
+<td align="right">0.888</td>
+<td align="right">-0.013</td>
+<td align="right">0.844</td>
+<td align="right">1.000</td>
+<td align="right">0.047</td>
+<td align="right">0.439</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Blackfoot.ScottyBrown</td>
+<td align="left">age-0 year</td>
+<td align="right">32</td>
+<td align="right">0.918</td>
+<td align="right">0.882</td>
+<td align="right">0.888</td>
+<td align="right">-0.006</td>
+<td align="right">0.438</td>
+<td align="right">1.000</td>
+<td align="right">0.047</td>
+<td align="right">-0.321</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Blackfoot.ScottyBrown</td>
+<td align="left">age-1 year</td>
+<td align="right">32</td>
+<td align="right">0.910</td>
+<td align="right">0.883</td>
+<td align="right">0.888</td>
+<td align="right">-0.004</td>
+<td align="right">0.906</td>
+<td align="right">1.000</td>
+<td align="right">0.047</td>
+<td align="right">0.404</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Boulder.B2</td>
+<td align="left">spawning year</td>
+<td align="right">39</td>
+<td align="right">0.107</td>
+<td align="right">-0.318</td>
+<td align="right">-0.088</td>
+<td align="right">-0.231</td>
+<td align="right">0.551</td>
+<td align="right">1.000</td>
+<td align="right">0.038</td>
+<td align="right">0.461</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Boulder.B2</td>
+<td align="left">age-0 year</td>
+<td align="right">39</td>
+<td align="right">0.141</td>
+<td align="right">-0.209</td>
+<td align="right">-0.088</td>
+<td align="right">-0.121</td>
+<td align="right">0.346</td>
+<td align="right">1.000</td>
+<td align="right">0.038</td>
+<td align="right">0.377</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Boulder.B2</td>
+<td align="left">age-1 year</td>
+<td align="right">39</td>
+<td align="right">0.144</td>
+<td align="right">-0.045</td>
+<td align="right">-0.088</td>
+<td align="right">0.043</td>
+<td align="right">0.346</td>
+<td align="right">1.000</td>
+<td align="right">0.038</td>
+<td align="right">0.252</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.Norris</td>
+<td align="left">spawning year</td>
+<td align="right">41</td>
+<td align="right">0.214</td>
+<td align="right">-0.143</td>
+<td align="right">-0.127</td>
+<td align="right">-0.016</td>
+<td align="right">0.207</td>
+<td align="right">0.622</td>
+<td align="right">0.037</td>
+<td align="right">0.539</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.Norris</td>
+<td align="left">age-0 year</td>
+<td align="right">41</td>
+<td align="right">0.082</td>
+<td align="right">-0.295</td>
+<td align="right">-0.127</td>
+<td align="right">-0.169</td>
+<td align="right">0.768</td>
+<td align="right">1.000</td>
+<td align="right">0.037</td>
+<td align="right">0.526</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.Norris</td>
+<td align="left">age-1 year</td>
+<td align="right">41</td>
+<td align="right">0.083</td>
+<td align="right">-0.173</td>
+<td align="right">-0.127</td>
+<td align="right">-0.046</td>
+<td align="right">0.707</td>
+<td align="right">1.000</td>
+<td align="right">0.037</td>
+<td align="right">0.420</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.PineButte</td>
+<td align="left">spawning year</td>
+<td align="right">40</td>
+<td align="right">0.429</td>
+<td align="right">0.229</td>
+<td align="right">0.295</td>
+<td align="right">-0.066</td>
+<td align="right">0.863</td>
+<td align="right">1.000</td>
+<td align="right">0.038</td>
+<td align="right">0.637</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.PineButte</td>
+<td align="left">age-0 year</td>
+<td align="right">40</td>
+<td align="right">0.428</td>
+<td align="right">0.135</td>
+<td align="right">0.295</td>
+<td align="right">-0.160</td>
+<td align="right">0.875</td>
+<td align="right">1.000</td>
+<td align="right">0.038</td>
+<td align="right">0.442</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.PineButte</td>
+<td align="left">age-1 year</td>
+<td align="right">40</td>
+<td align="right">0.504</td>
+<td align="right">0.219</td>
+<td align="right">0.295</td>
+<td align="right">-0.076</td>
+<td align="right">0.425</td>
+<td align="right">1.000</td>
+<td align="right">0.038</td>
+<td align="right">0.315</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Missouri.Cascade</td>
+<td align="left">spawning year</td>
+<td align="right">33</td>
+<td align="right">0.393</td>
+<td align="right">0.086</td>
+<td align="right">0.153</td>
+<td align="right">-0.067</td>
+<td align="right">0.470</td>
+<td align="right">0.939</td>
+<td align="right">0.045</td>
+<td align="right">0.559</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Missouri.Cascade</td>
+<td align="left">age-0 year</td>
+<td align="right">33</td>
+<td align="right">0.449</td>
+<td align="right">0.016</td>
+<td align="right">0.153</td>
+<td align="right">-0.137</td>
+<td align="right">0.136</td>
+<td align="right">0.409</td>
+<td align="right">0.045</td>
+<td align="right">0.556</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Missouri.Cascade</td>
+<td align="left">age-1 year</td>
+<td align="right">33</td>
+<td align="right">0.367</td>
+<td align="right">-0.047</td>
+<td align="right">0.153</td>
+<td align="right">-0.200</td>
+<td align="right">0.682</td>
+<td align="right">0.939</td>
+<td align="right">0.045</td>
+<td align="right">0.424</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Missouri.Craig</td>
+<td align="left">spawning year</td>
+<td align="right">38</td>
+<td align="right">0.443</td>
+<td align="right">0.005</td>
+<td align="right">0.292</td>
+<td align="right">-0.287</td>
+<td align="right">0.447</td>
+<td align="right">0.895</td>
+<td align="right">0.039</td>
+<td align="right">0.245</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Missouri.Craig</td>
+<td align="left">age-0 year</td>
+<td align="right">38</td>
+<td align="right">0.598</td>
+<td align="right">0.280</td>
+<td align="right">0.292</td>
+<td align="right">-0.012</td>
+<td align="right">0.013</td>
+<td align="right">0.039</td>
+<td align="right">0.039</td>
+<td align="right">0.693</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Missouri.Craig</td>
+<td align="left">age-1 year</td>
+<td align="right">38</td>
+<td align="right">0.400</td>
+<td align="right">0.259</td>
+<td align="right">0.292</td>
+<td align="right">-0.033</td>
+<td align="right">0.921</td>
+<td align="right">0.921</td>
+<td align="right">0.039</td>
+<td align="right">0.348</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">RockCreek.FishAndGame</td>
+<td align="left">spawning year</td>
+<td align="right">17</td>
+<td align="right">0.930</td>
+<td align="right">0.766</td>
+<td align="right">0.866</td>
+<td align="right">-0.099</td>
+<td align="right">0.324</td>
+<td align="right">0.647</td>
+<td align="right">0.088</td>
+<td align="right">-0.272</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">RockCreek.FishAndGame</td>
+<td align="left">age-0 year</td>
+<td align="right">17</td>
+<td align="right">0.937</td>
+<td align="right">0.868</td>
+<td align="right">0.866</td>
+<td align="right">0.003</td>
+<td align="right">0.147</td>
+<td align="right">0.441</td>
+<td align="right">0.088</td>
+<td align="right">0.156</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">RockCreek.FishAndGame</td>
+<td align="left">age-1 year</td>
+<td align="right">17</td>
+<td align="right">0.902</td>
+<td align="right">0.854</td>
+<td align="right">0.866</td>
+<td align="right">-0.012</td>
+<td align="right">0.941</td>
+<td align="right">0.941</td>
+<td align="right">0.088</td>
+<td align="right">0.247</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Ruby.Vigilante</td>
+<td align="left">spawning year</td>
+<td align="right">23</td>
+<td align="right">0.393</td>
+<td align="right">-0.444</td>
+<td align="right">-0.379</td>
+<td align="right">-0.065</td>
+<td align="right">0.283</td>
+<td align="right">0.848</td>
+<td align="right">0.065</td>
+<td align="right">0.668</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Ruby.Vigilante</td>
+<td align="left">age-0 year</td>
+<td align="right">23</td>
+<td align="right">0.253</td>
+<td align="right">-0.463</td>
+<td align="right">-0.379</td>
+<td align="right">-0.084</td>
+<td align="right">0.717</td>
+<td align="right">1.000</td>
+<td align="right">0.065</td>
+<td align="right">0.557</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Ruby.Vigilante</td>
+<td align="left">age-1 year</td>
+<td align="right">23</td>
+<td align="right">0.130</td>
+<td align="right">-0.436</td>
+<td align="right">-0.379</td>
+<td align="right">-0.058</td>
+<td align="right">0.935</td>
+<td align="right">1.000</td>
+<td align="right">0.065</td>
+<td align="right">-0.262</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Shields.ConvictGrade</td>
+<td align="left">spawning year</td>
+<td align="right">38</td>
+<td align="right">0.066</td>
+<td align="right">-0.168</td>
+<td align="right">-0.130</td>
+<td align="right">-0.038</td>
+<td align="right">0.697</td>
+<td align="right">1.000</td>
+<td align="right">0.039</td>
+<td align="right">0.292</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Shields.ConvictGrade</td>
+<td align="left">age-0 year</td>
+<td align="right">38</td>
+<td align="right">0.208</td>
+<td align="right">-0.172</td>
+<td align="right">-0.130</td>
+<td align="right">-0.042</td>
+<td align="right">0.118</td>
+<td align="right">0.355</td>
+<td align="right">0.039</td>
+<td align="right">0.391</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Shields.ConvictGrade</td>
+<td align="left">age-1 year</td>
+<td align="right">38</td>
+<td align="right">0.053</td>
+<td align="right">-0.222</td>
+<td align="right">-0.130</td>
+<td align="right">-0.092</td>
+<td align="right">0.763</td>
+<td align="right">1.000</td>
+<td align="right">0.039</td>
+<td align="right">0.404</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith.EagleCreek</td>
+<td align="left">spawning year</td>
+<td align="right">24</td>
+<td align="right">0.331</td>
+<td align="right">-0.335</td>
+<td align="right">-0.100</td>
+<td align="right">-0.235</td>
+<td align="right">0.292</td>
+<td align="right">0.583</td>
+<td align="right">0.062</td>
+<td align="right">0.357</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Smith.EagleCreek</td>
+<td align="left">age-0 year</td>
+<td align="right">24</td>
+<td align="right">0.280</td>
+<td align="right">-0.163</td>
+<td align="right">-0.100</td>
+<td align="right">-0.064</td>
+<td align="right">0.521</td>
+<td align="right">0.583</td>
+<td align="right">0.062</td>
+<td align="right">0.727</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith.EagleCreek</td>
+<td align="left">age-1 year</td>
+<td align="right">24</td>
+<td align="right">0.468</td>
+<td align="right">-0.187</td>
+<td align="right">-0.100</td>
+<td align="right">-0.087</td>
+<td align="right">0.021</td>
+<td align="right">0.062</td>
+<td align="right">0.062</td>
+<td align="right">-0.028</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.CorwinSprings</td>
+<td align="left">spawning year</td>
+<td align="right">38</td>
+<td align="right">0.503</td>
+<td align="right">0.267</td>
+<td align="right">0.066</td>
+<td align="right">0.201</td>
+<td align="right">0.026</td>
+<td align="right">0.079</td>
+<td align="right">0.039</td>
+<td align="right">-0.027</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Yellowstone.CorwinSprings</td>
+<td align="left">age-0 year</td>
+<td align="right">38</td>
+<td align="right">0.448</td>
+<td align="right">0.181</td>
+<td align="right">0.066</td>
+<td align="right">0.115</td>
+<td align="right">0.066</td>
+<td align="right">0.132</td>
+<td align="right">0.039</td>
+<td align="right">0.657</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.CorwinSprings</td>
+<td align="left">age-1 year</td>
+<td align="right">38</td>
+<td align="right">0.382</td>
+<td align="right">0.017</td>
+<td align="right">0.066</td>
+<td align="right">-0.049</td>
+<td align="right">0.184</td>
+<td align="right">0.184</td>
+<td align="right">0.039</td>
+<td align="right">0.362</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Yellowstone.MillCreek</td>
+<td align="left">spawning year</td>
+<td align="right">40</td>
+<td align="right">0.542</td>
+<td align="right">0.376</td>
+<td align="right">0.048</td>
+<td align="right">0.328</td>
+<td align="right">0.013</td>
+<td align="right">0.038</td>
+<td align="right">0.038</td>
+<td align="right">0.621</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.MillCreek</td>
+<td align="left">age-0 year</td>
+<td align="right">40</td>
+<td align="right">0.276</td>
+<td align="right">-0.041</td>
+<td align="right">0.048</td>
+<td align="right">-0.089</td>
+<td align="right">0.375</td>
+<td align="right">0.375</td>
+<td align="right">0.038</td>
+<td align="right">0.675</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">Yellowstone.MillCreek</td>
+<td align="left">age-1 year</td>
+<td align="right">40</td>
+<td align="right">0.387</td>
+<td align="right">0.077</td>
+<td align="right">0.048</td>
+<td align="right">0.028</td>
+<td align="right">0.075</td>
+<td align="right">0.150</td>
+<td align="right">0.038</td>
+<td align="right">0.757</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<p>A stage passes when <strong>both</strong> hold:</p>
+<ol style="list-style-type: decimal">
+<li><strong><code>cv_gain</code> &gt; 0.</strong> The blocked
+cross-validated R-squared of the flow model minus that of spawner
+abundance alone: what flow adds, out of sample, beyond density
+dependence. Folds hold out runs of 3 consecutive years, because
+hydrographs and responses are both autocorrelated and leave-one-out
+would let a model half-recognize a test year from its neighbours. The
+<strong>whole model-averaging step is redone inside every fold</strong>
+– choosing modes on all the data and then cross-validating would leak
+the test years into the choice.</li>
+<li><strong><code>p_adj</code> &lt;= 0.1.</strong> The permutation null
+is “this response, paired with the wrong years of this flow record”: the
+response is rotated against the flow series (every circular shift, and
+every shift of the time-reversed series), which preserves each series’
+own autocorrelation. The statistic is the in-sample R-squared of the
+model with all kept modes (not re-averaged per alignment; the null
+hypothesis is the same and re-dredging 2n - 1 times would multiply the
+run time). The p-value is Holm-adjusted across the three stages, because
+three stages were tried. <strong><code>p_floor</code></strong> is the
+smallest adjusted value attainable with that many years; where it
+exceeds 0.1, no stage at that site can pass by construction, and the
+page says so.</li>
+</ol>
+<p><strong><code>cor_fpc_penalized</code></strong> is not part of the
+pass rule but is reported beside it. A second estimator – a penalized
+spline in day of year, smoothness chosen by REML, no modes – is fitted
+to the same data. Where its curve and the mode curve disagree in shape,
+the daily structure is coming from the estimator rather than the data,
+and only seasonal statements are defensible.</p>
+<p>Adult survival (script 04) is gated the same way, on the logit-scale
+process deviate from the null IPM, against the same year’s hydrograph or
+the year before; its p-value is multiplied by the number of lags
+tried.</p>
+</div>
+<div id="one-set-of-flow-modes-for-every-river" class="section level2">
+<h2>7. One set of flow modes for every river</h2>
+<p>Each river’s own modes are the right description of that river, but
+they are different shapes at different sites, so their coefficients
+cannot be compared or pooled. Script 06 runs one functional PCA over
+every river’s standardized hydrographs (sites that read the same gage
+enter once) and keeps 90% of the variation, at most 10 modes. Every
+site-year is then scored on these <strong>common modes</strong>.</p>
+<table>
+<caption>How much of each river’s own flow variation the common modes
+carry.</caption>
+<colgroup>
+<col width="31%" />
+<col width="19%" />
+<col width="15%" />
+<col width="7%" />
+<col width="15%" />
+<col width="10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">site</th>
+<th align="right">captured_common</th>
+<th align="right">captured_own</th>
+<th align="right">K_own</th>
+<th align="right">peak_to_base</th>
+<th align="right">peak_doy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Bitterroot.Darby</td>
+<td align="right">74.5</td>
+<td align="right">70.4</td>
+<td align="right">6</td>
+<td align="right">15.7</td>
+<td align="right">150</td>
+</tr>
+<tr class="even">
+<td align="left">Madison.Norris</td>
+<td align="right">75.5</td>
+<td align="right">71.6</td>
+<td align="right">4</td>
+<td align="right">2.5</td>
+<td align="right">159</td>
+</tr>
+<tr class="odd">
+<td align="left">Boulder.B2</td>
+<td align="right">76.4</td>
+<td align="right">67.3</td>
+<td align="right">4</td>
+<td align="right">23.9</td>
+<td align="right">158</td>
+</tr>
+<tr class="even">
+<td align="left">RockCreek.FishAndGame</td>
+<td align="right">77.0</td>
+<td align="right">65.9</td>
+<td align="right">4</td>
+<td align="right">11.7</td>
+<td align="right">150</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.Varney</td>
+<td align="right">80.7</td>
+<td align="right">72.5</td>
+<td align="right">2</td>
+<td align="right">2.9</td>
+<td align="right">157</td>
+</tr>
+<tr class="even">
+<td align="left">BigHole.Melrose</td>
+<td align="right">81.0</td>
+<td align="right">70.9</td>
+<td align="right">4</td>
+<td align="right">14.5</td>
+<td align="right">159</td>
+</tr>
+<tr class="odd">
+<td align="left">Smith.EagleCreek</td>
+<td align="right">81.8</td>
+<td align="right">73.5</td>
+<td align="right">3</td>
+<td align="right">8.0</td>
+<td align="right">148</td>
+</tr>
+<tr class="even">
+<td align="left">Blackfoot.Johnsrud</td>
+<td align="right">82.1</td>
+<td align="right">71.7</td>
+<td align="right">4</td>
+<td align="right">10.4</td>
+<td align="right">148</td>
+</tr>
+<tr class="odd">
+<td align="left">Blackfoot.ScottyBrown</td>
+<td align="right">82.1</td>
+<td align="right">71.7</td>
+<td align="right">4</td>
+<td align="right">10.4</td>
+<td align="right">148</td>
+</tr>
+<tr class="even">
+<td align="left">Ruby.Vigilante</td>
+<td align="right">82.2</td>
+<td align="right">71.9</td>
+<td align="right">4</td>
+<td align="right">13.9</td>
+<td align="right">150</td>
+</tr>
+<tr class="odd">
+<td align="left">Shields.ConvictGrade</td>
+<td align="right">83.1</td>
+<td align="right">70.3</td>
+<td align="right">3</td>
+<td align="right">10.7</td>
+<td align="right">150</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.MillCreek</td>
+<td align="right">86.2</td>
+<td align="right">74.8</td>
+<td align="right">4</td>
+<td align="right">12.3</td>
+<td align="right">158</td>
+</tr>
+<tr class="odd">
+<td align="left">BigHole.HogBack</td>
+<td align="right">86.6</td>
+<td align="right">70.9</td>
+<td align="right">3</td>
+<td align="right">15.2</td>
+<td align="right">159</td>
+</tr>
+<tr class="even">
+<td align="left">Yellowstone.CorwinSprings</td>
+<td align="right">87.1</td>
+<td align="right">76.2</td>
+<td align="right">4</td>
+<td align="right">15.5</td>
+<td align="right">157</td>
+</tr>
+<tr class="odd">
+<td align="left">Madison.PineButte</td>
+<td align="right">87.7</td>
+<td align="right">81.4</td>
+<td align="right">4</td>
+<td align="right">1.9</td>
+<td align="right">157</td>
+</tr>
+<tr class="even">
+<td align="left">Ruby.SilverSprings</td>
+<td align="right">88.0</td>
+<td align="right">56.8</td>
+<td align="right">1</td>
+<td align="right">3.0</td>
+<td align="right">154</td>
+</tr>
+<tr class="odd">
+<td align="left">Beaverhead.FishAndGame</td>
+<td align="right">88.7</td>
+<td align="right">78.1</td>
+<td align="right">2</td>
+<td align="right">1.6</td>
+<td align="right">74</td>
+</tr>
+<tr class="even">
+<td align="left">Missouri.Cascade</td>
+<td align="right">92.6</td>
+<td align="right">88.5</td>
+<td align="right">4</td>
+<td align="right">1.8</td>
+<td align="right">170</td>
+</tr>
+<tr class="odd">
+<td align="left">Missouri.Craig</td>
+<td align="right">92.6</td>
+<td align="right">88.5</td>
+<td align="right">4</td>
+<td align="right">1.8</td>
+<td align="right">170</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.MallardsLanding</td>
+<td align="right">92.9</td>
+<td align="right">80.5</td>
+<td align="right">2</td>
+<td align="right">2.1</td>
+<td align="right">174</td>
+</tr>
+<tr class="odd">
+<td align="left">Bitterroot.BellCrossing</td>
+<td align="right">93.9</td>
+<td align="right">86.5</td>
+<td align="right">3</td>
+<td align="right">33.4</td>
+<td align="right">158</td>
+</tr>
+<tr class="even">
+<td align="left">Bighorn.Bighorn</td>
+<td align="right">93.9</td>
+<td align="right">82.9</td>
+<td align="right">2</td>
+<td align="right">2.3</td>
+<td align="right">169</td>
+</tr>
+<tr class="odd">
+<td align="left">Beaverhead.Hildreth</td>
+<td align="right">94.3</td>
+<td align="right">86.6</td>
+<td align="right">2</td>
+<td align="right">10.4</td>
+<td align="right">205</td>
+</tr>
+</tbody>
+</table>
+<p>The cost is that a river whose year-to-year variation is unusual – a
+tailwater among freestones – is described less well. The site pages
+compare each river’s own curve with its curve on the common modes
+(figure <code>06_basis_check</code>); where they disagree, the pooled
+results describe that river poorly.</p>
+</div>
+<div id="pooling-the-montana-wide-picture" class="section level2">
+<h2>8. Pooling: the Montana-wide picture</h2>
+<p>One row per site and recruit year. Every site keeps its own intercept
+and its own density dependence (<code>site + site:stock</code>); only
+the flow terms are shared, and all <strong>three stages enter
+together</strong>, so each stage’s effect is estimated holding the
+others fixed. Fitted in <code>mgcv</code> by REML.</p>
+<table>
+<caption>The pooled models (R/07_pooled_lifecycle.R).</caption>
+<colgroup>
+<col width="4%" />
+<col width="60%" />
+<col width="34%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="left">flow terms</th>
+<th align="left">role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A</td>
+<td align="left">common modes x stage, a Montana-wide slope plus a
+random slope per site</td>
+<td align="left">primary</td>
+</tr>
+<tr class="even">
+<td align="left">A0</td>
+<td align="left">common modes x stage, Montana-wide slope only</td>
+<td align="left">tests whether sites differ (A vs A0)</td>
+</tr>
+<tr class="odd">
+<td align="left">B</td>
+<td align="left">one penalized spline over the whole 1095-day life cycle
+(k = 40)</td>
+<td align="left">robustness: different assumptions, no modes</td>
+</tr>
+<tr class="even">
+<td align="left">C</td>
+<td align="left">four seasons x three stages, Montana-wide slope plus a
+random slope per site</td>
+<td align="left">pre-registered, low-resolution anchor</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Partial pooling.</strong> In A and C each site’s slope is the
+Montana-wide slope plus a site departure that is shrunk toward zero by
+as much as that site’s data are uncertain; the size of the departures (a
+variance component per term) is itself the answer to “do populations
+respond alike?”.</p>
+<p><strong>IPM uncertainty.</strong> With smoothing parameters and
+variance components held at their REML values, every coefficient is a
+linear function of the response, so all 10^{4} posterior draws at every
+site go through one matrix product (checked exact against refitting to
+1e-15). Intervals add between-draw and within-fit covariance, as in
+section 5.</p>
+<p><strong>Cross-validation.</strong> Folds hold out the <strong>same
+block of calendar years at every site at once</strong>, so a shared wet
+or dry year cannot be in training at one river and in test at another.
+R-squared is computed on within-site variation, so differences in site
+means do not inflate it, and reported as a gain over site + stock
+alone.</p>
+<p><strong>How populations differ.</strong> The site departures (BLUPs)
+from model A are put through a PCA of their own: populations placed
+close together respond to flow alike, whatever their mean
+recruitment.</p>
+</div>
+<div id="what-this-does-not-establish" class="section level2">
+<h2>9. What this does not establish</h2>
+<ul>
+<li><strong>The gate tests prediction, not causation.</strong> A
+validated curve predicts years the model has not seen; it does not
+identify the mechanism, or say whether the relation holds outside the
+observed flow range.</li>
+<li><strong>Life-history windows are provisional.</strong> The shaded
+spawning, incubation, emergence and rearing windows on the figures are
+placeholders until replaced with cited, river-specific dates.</li>
+<li><strong>Pooling assumes the common modes describe each river
+adequately.</strong> Where section 7 shows they do not, that river’s
+contribution to the Montana-wide curve is through a poor description of
+its flow.</li>
+<li><strong>A few dozen years against 365 days.</strong> Seasonal
+statements are usually supportable; single days often are not.</li>
+</ul>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

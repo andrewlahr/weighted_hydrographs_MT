@@ -1,0 +1,98 @@
+---
+title: "Weighted hydrographs for Montana brown trout"
+subtitle: "When does water help, by how much, and what do the forecasts imply?"
+---
+
+```{r setup, include=FALSE}
+source("_common.R")
+```
+
+## The question
+
+Reclamation and its partners can move water, but not much of it and not whenever
+they like. The operational question is not whether trout like water. It is
+**when** a given volume does the most good, and what the flow futures already in
+the models imply for populations that are managed on that basis.
+
+Most flow-ecology work answers a related but different question, because it
+collapses the hydrograph before analysing it: summer mean discharge, peak
+magnitude, days below a threshold. Every one of those summaries is a hypothesis
+about when flow matters, chosen before looking at the data. This analysis does
+not collapse the hydrograph. It estimates a coefficient for **every day of the
+year**.
+
+## What a weighted hydrograph is
+
+For each year *i*, with `x_i(t)` the standardized discharge anomaly on day *t*:
+
+$$ y_i = a + \sum_{t=1}^{365} \beta(t)\, x_i(t) + \varepsilon_i $$
+
+$\beta(t)$ is the weighted hydrograph: how much a wet day on 3 August is
+worth compared with a wet day on 3 March. Score any hydrograph with it - an
+observed year, a forecast, a proposed release - and the sum is the predicted
+change in the response.
+
+The seasonal-average model is a special case of this: $\beta(t)$ constant
+inside the season and zero outside. So this framework can *test* whether a
+seasonal covariate was looking in the right place, instead of assuming it.
+
+## How to read this site
+
+```{r nav, results='asis'}
+cat("- **[Methods](methods.html)** - how beta(t) is estimated, validated, and converted into cfs.\n",
+    "- **[Results by site](results.html)** - a dropdown and one row per population. Start here.\n",
+    "- **[Among sites](results_among_sites.html)** - what the daily curves say across Montana.\n\n", sep = "")
+```
+
+**Read the gate before the figures.** Every per-site page opens with it. The
+arithmetic produces a curve whether or not the record supports one; the gate is
+what separates a finding from a shape. A site that fails is a result about the
+resolution of Montana flow records, and it is reported as such rather than
+quietly dropped.
+
+## What exists right now
+
+```{r state}
+have <- data.frame(
+  Stage = c("Response (null IPM)", "Daily flow", "beta(t) recruitment",
+            "beta(t) survival", "Validation gate", "Daily sensitivity",
+            "Decision window", "Production", "BoR scenarios", "Rule curve"),
+  Script = c("01","02","03","04","05","06","06b","07","08","10"),
+  Built = c(!is.null(RESP), !is.null(FLOW), !is.null(BR), !is.null(BS), !is.null(GATE),
+            !is.null(SE), !is.null(DW), !is.null(PR),
+            any(vapply(CFG$sites$bor %||% character(0),
+                       function(s) !is.null(SCEN(s)), logical(1))),
+            any(vapply(CFG$sites$bor %||% character(0),
+                       function(s) !is.null(RULE(s)), logical(1)))))
+TBL(have, caption = "Which stages have output on disk. FALSE means those sections read NOT AVAILABLE.")
+```
+
+```{r coverage, results='asis'}
+n_act <- length(CFG$sites$active)
+n_bor <- length(intersect(CFG$sites$active, CFG$sites$bor %||% character(0)))
+cat(sprintf(paste0("\n%d population%s on this site; %d ha%s a Bureau of Reclamation ",
+                   "forecast hydrograph. A population without one gets every result ",
+                   "except the scenario sections, which say *data not available* - ",
+                   "deliberately distinct from *no effect found*.\n\n"),
+            n_act, if (n_act == 1) "" else "s", n_bor, if (n_bor == 1) "s" else "ve"))
+```
+
+## The honest limits
+
+- **About 40 years against 365 days.** Seasonal statements are usually
+  supportable; single days often are not. Each site page reports the width of the
+  best-day interval and says outright when a season is the finest honest claim.
+- **The estimator can only build beta(t) from the leading modes of variation in
+  flow,** which are chosen without looking at the response. A signal living in a
+  low-variance flow mode cannot appear in the curve, however real it is.
+- **The gate tests prediction, not causation.** A curve that passes predicts
+  years the model did not see. It does not identify the mechanism, and the
+  mechanism is what a flow recommendation ultimately rests on.
+- **Scenario effects are measured against the observed gage climatology,** not
+  against the forecast model's own historical run. Hydrologic model bias at a
+  site is therefore reported as a climate effect.
+
+```{r built, results='asis'}
+cat(sprintf("\n<p style=\"color:#777;font-size:90%%\">Built %s from output/ on this machine.</p>\n",
+            format(Sys.time(), "%d %B %Y")))
+```
